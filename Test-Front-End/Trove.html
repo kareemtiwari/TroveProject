@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Trove</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- NAV -->
+  <div class="NAV">
+    <h1>Header NAV</h1>
+  </div>
+
+  <!-- Main Display Area -->
+  <div class="mainDisplay" id="mainDisplay">
+
+    <!-- Schedule Teaser Widget -->
+    <div class="ScheduleTeaser" onclick="displayScheduleFull()">
+      <h1>Schedule Teaser Widget</h1>
+    </div>
+
+    <!-- Budget Teaser Widget -->
+    <div class="BudgetTeaser" onclick="displayBudgetFull()">
+      <h1>Budget Teaser Widget</h1>
+    </div>
+
+    <!-- Troves Teaser Widget -->
+    <div class="TrovesTeaser" onclick="displayTrovesFull()">
+      <h1>Troves Teaser Widget</h1>
+    </div>
+  </div>
+
+  <!-- Full Schedule View -->
+  <div class="ScheduleFull" id="ScheduleFull">
+    <img src="back-arrow.png" onclick="hideScheduleFull()"></img>
+    <h1>Full Schedule View</h1>
+  </div>
+
+  <!-- Full Budget View -->
+  <div class="BudgetFull" id="BudgetFull">
+    <img src="back-arrow.png" onclick="hideBudgetFull()"></img>
+    <h1>Full Budget View</h1>
+  </div>
+
+  <!-- Full Troves View -->
+  <div class="TrovesFull" id="TrovesFull">
+    <img src="back-arrow.png" onclick="hideTrovesFull()"></img>
+    <h1>Full Troves View</h1>
+  </div>
+
+  <!-- Footer Area -->
+  <div class="footer">
+    <p><em>Trove&copy; 2022</em></p>
+  </div>
+
+  <!-- Add JS Link -->
+  <script src="script.js"></script>
+</body>
+</html>
