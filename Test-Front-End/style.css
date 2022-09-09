@@ -12,7 +12,8 @@ body {width: 90%; height: 100%; margin-left: auto; margin-right: auto;
 .NAV {height: 8%; background-color: #342E37;line-height: 50px;
   color: #FAFFFD; text-align: center;}
 .NAV ul {list-style-type: none; margin: 0; padding: 0; overflow: hidden;}
-.NAV li {float: left; display: block; text-align: center; padding: 14px 16px;}
+.NAV li {float: left; display: block; text-align: center; font-size: 30px;
+  padding-top: 10px; padding-bottom: 5px; margin-left: 10px; margin-right: 10px;}
 .NAV li:hover {background-color: #FAFFFD; color: #342E37; cursor: pointer;}
 #logOut {float: right !important; display: none;}
 

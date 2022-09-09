@@ -65,3 +65,19 @@ function showLogin() {
   hide.style.display = "none";
   show.style.display = "flex";
 }
+
+// Trove Home Button Clicked
+function troveHome() {
+  var schedule = document.getElementById("ScheduleFull");
+  var budget = document.getElementById("BudgetFull");
+  var troves = document.getElementById("TrovesFull");
+  if (schedule.style.display == "flex") {
+    hideScheduleFull();
+  }
+  else if (budget.style.display == "flex") {
+    hideBudgetFull();
+  }
+  else if (troves.style.display == "flex") {
+    hideTrovesFull();
+  }
+}
