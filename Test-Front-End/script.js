@@ -45,3 +45,23 @@ function hideTrovesFull() {
   hide.style.display = "none";
   show.style.display = "flex";
 }
+
+// Show Main Display After Login
+function hideLogin() {
+  var hide = document.getElementById("Login");
+  var show = document.getElementById("mainDisplay");
+  var logout = document.getElementById("logOut");
+  logout.style.display = "block";
+  hide.style.display = "none";
+  show.style.display = "flex";
+}
+
+// Hide Main Display After Log Out
+function showLogin() {
+  var hide = document.getElementById("mainDisplay");
+  var show = document.getElementById("Login");
+  var logout = document.getElementById("logOut");
+  logout.style.display = "none";
+  hide.style.display = "none";
+  show.style.display = "flex";
+}

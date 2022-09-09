@@ -11,13 +11,23 @@ body {width: 90%; height: 100%; margin-left: auto; margin-right: auto;
 /* NAV Style */
 .NAV {height: 8%; background-color: #342E37;line-height: 50px;
   color: #FAFFFD; text-align: center;}
-.NAV h1 {font-size: 36px; color: #FAFFFD;}
+.NAV ul {list-style-type: none; margin: 0; padding: 0; overflow: hidden;}
+.NAV li {float: left; display: block; text-align: center; padding: 14px 16px;}
+.NAV li:hover {background-color: #FAFFFD; color: #342E37; cursor: pointer;}
+#logOut {float: right !important; display: none;}
 
 /* Footer Style */
 .footer {text-align: center; margin-top: 3%;}
 
+/* Login Area Style */ /* CHANGE DISPLAY TO "flex" TO VIEW */
+#Login {display: flex; width: 100%; height: 75%; color: #342E37;
+  background-color: #FAFFFD; clip-path: inset(0 0 0 round 30px);
+  flex-direction: row; margin-top: 25px;}
+#Login h1 {position: absolute; padding-left: 40%;}
+#Login button {position: absolute; margin-left: 43%; margin-top:35%;}
+
 /* Main Container Style */ /* CHANGE DISPLAY TO "flex" TO VIEW */
-#mainDisplay {display: flex; flex-direction: row; height: 75%; width: 100%;
+#mainDisplay {display: none; flex-direction: row; height: 75%; width: 100%;
 padding-top: 25px;}
 
 /* Schedule Teaser Widget Style */
@@ -38,7 +48,7 @@ padding-top: 25px;}
   text-align: center;}
 .TrovesTeaser:hover {clip-path: inset(0 0 0 round 30px); cursor: pointer;}
 
-/* Full Schedule View Style */ /* CHANGE DISPLAY TO "block" TO VIEW */
+/* Full Schedule View Style */ /* CHANGE DISPLAY TO "flex" TO VIEW */
 #ScheduleFull {display: none; width: 100%; height: 75%; color: #FAFFFD;
   background-color: #FA824C; clip-path: inset(0 0 0 round 30px);
   flex-direction: row; margin-top: 25px;}
@@ -47,7 +57,7 @@ padding-left: 10px; padding-top: 10px;}
 #ScheduleFull img:hover {width: 55px; height: 55px; cursor: pointer;}
 #ScheduleFull h1 {position: absolute; padding-left: 35%;}
 
-/* Full Budget View Style */ /* CHANGE DISPLAY TO "block" TO VIEW */
+/* Full Budget View Style */ /* CHANGE DISPLAY TO "flex" TO VIEW */
 #BudgetFull {display: none; width: 100%; height: 75%; color: #FAFFFD;
   background-color: #A2D729; clip-path: inset(0 0 0 round 30px);
   flex-direction: row; margin-top: 25px;}
@@ -56,7 +66,7 @@ padding-left: 10px; padding-top: 10px;}
 #BudgetFull img:hover {width: 55px; height: 55px; cursor: pointer;}
 #BudgetFull h1 {position: absolute; padding-left: 35%;}
 
-/* Full Troves View Style */ /* CHANGE DISPLAY TO "block" TO VIEW */
+/* Full Troves View Style */ /* CHANGE DISPLAY TO "flex" TO VIEW */
 #TrovesFull {display: none; width: 100%; height: 75%; color: #FAFFFD;
   background-color: #3C91E6; clip-path: inset(0 0 0 round 30px);
   flex-direction: row; margin-top: 25px;}
