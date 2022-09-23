@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-var names = ["Hayden Tuttle","Jonah Fullen","Name","Name","Name"]; //add your names to this array
+var names = ["Hayden Tuttle","Jonah Fullen","Name","Kareem Tiwari","Name"]; //add your names to this array
 
 app.get('/', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
