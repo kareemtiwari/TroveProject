@@ -46,6 +46,32 @@ function hideTrovesFull() {
   show.style.display = "flex";
 }
 
+// Show Create Account After Sign Up Clicked
+function showCreateAccount() {
+  var hide = document.getElementById("Login");
+  var show = document.getElementById("CreateAccount");
+  hide.style.display = "none";
+  show.style.display = "flex";
+}
+
+// Show Main Display After Accout Created
+function confirmCreateAccount() {
+  var hide = document.getElementById("CreateAccount");
+  var show = document.getElementById("mainDisplay");
+  var logout = document.getElementById("logOut");
+  logout.style.display = "block";
+  hide.style.display = "none";
+  show.style.display = "flex";
+}
+
+// Show Main Display - Hide CreateAccount
+function hideCreateAccount() {
+  var hide = document.getElementById("CreateAccount");
+  var show = document.getElementById("Login");
+  hide.style.display = "none";
+  show.style.display = "flex";
+}
+
 // Show Main Display After Login
 function hideLogin() {
   var hide = document.getElementById("Login");
