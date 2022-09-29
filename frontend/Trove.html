@@ -17,7 +17,10 @@
   <!-- Login Display Area -->
   <div id="Login">
     <h1>Login View</h1>
-    <button onclick="hideLogin()">Login</button>
+    <ul>
+      <li><button onclick="hideLogin()">Log In</button></li>
+      <li><button onclick="showCreateAccount()">Sign Up</button></li>
+    </ul>
   </div>
 
   <!-- Main Display Area -->
@@ -37,6 +40,13 @@
     <div class="TrovesTeaser" onclick="displayTrovesFull()">
       <h1>Troves Teaser Widget</h1>
     </div>
+  </div>
+
+  <!-- Create Account View -->
+  <div class="CreateAccount" id="CreateAccount">
+    <img src="back-arrow.png" onclick="hideCreateAccount()"></img>
+    <h1>Create Account View</h1>
+    <li><button onclick="confirmCreateAccount()">Create Account</button></li>
   </div>
 
   <!-- Full Schedule View -->
