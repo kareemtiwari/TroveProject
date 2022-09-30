@@ -1,0 +1,10 @@
+doctype html
+html
+   head
+      title= title
+      link(rel='stylesheet', href='/stylesheets/style.css')
+   body
+      div(class='topnav')
+         a(class={active: path == '/'} href='/') Home
+         a(class={active: path == '/accSettings'} href='/accSettings') Account settings
+   block content
