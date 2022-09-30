@@ -3,8 +3,8 @@
 I am using the trove folder in the root of the repository to put all of the server code into, this means that in order to be used by the server, any code needs to be put in this (or a subfolder of this) directory 
 ## Running the application
 - Using a terminal navigate to the "csc450fa22-project-group-4" directory where you have pulled the github repository. 
-- The script that needs to be run is in trove\bin 
-- To run the application type "node www" - you should get the output "Trove server is now running!"
+- Navigate into the trove folder 
+- To run the application type "npm start" - you should get the output "Trove server is now running!"
 - To vist the page goto http://localhost:3000/ and you should see the homepage
 # Understanding the Express folder structure
 - **bin** - This is where the main executable is stored [dont edit]
