@@ -17,6 +17,8 @@ I am using the trove folder in the root of the repository to put all of the serv
 # Creating new pages 
 ## Create the page
 Use Pug, static HTML, or build HTML inside the router script. which ever you are more comforatable using
+- for static page you just place your file in public, then it is available at http://localhost.com/filename.html
+- for pug pages see https://pugjs.org/api/getting-started.html
 ## Create a route
 Example "route.js" file for a pug page
 ```
