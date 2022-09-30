@@ -20,6 +20,8 @@ Use Pug, static HTML, or build HTML inside the router script. which ever you are
 - for static page you just place your file in public, then it is available at http://localhost.com/filename.html
 - for pug pages see https://pugjs.org/api/getting-started.html
 ## Create a route
+Routes are only required for dynamic pages, static pages should just work once they are in public
+
 Example "route.js" file for a pug page
 ```
 var express = require('express');
