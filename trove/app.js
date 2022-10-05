@@ -10,6 +10,31 @@ var accSetRouter = require('./routes/accSettings');
 
 var app = express();
 
+//Integrated Database section (Database option 1)
+
+/*
+var mySQL = require('mysql');
+
+var dbConnection = mysql.createConnection({
+  host: "localhost",
+  user: "troveserver",
+  password: "66yEc!#$4{{*89gH"
+});
+
+con.connect(function(err){
+  if(err) throw err;
+  console.log("Connected");
+});
+ */
+
+const SQLite = require('sqlite3');
+let db = new SQLite.Database('./db/trove.db',(err) =>{
+  if(err){
+    console.error(err.message);
+  }
+  console.log('connected to trove database');
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -20,9 +45,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+//app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/accSettings', accSetRouter);
+//app.use('/accSettings', accSetRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
