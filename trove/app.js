@@ -27,6 +27,7 @@ con.connect(function(err){
 });
  */
 
+/*
 const SQLite = require('sqlite3');
 let db = new SQLite.Database('./db/trove.db',(err) =>{
   if(err){
@@ -34,6 +35,8 @@ let db = new SQLite.Database('./db/trove.db',(err) =>{
   }
   console.log('connected to trove database');
 });
+
+*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
