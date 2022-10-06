@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <title>Weekly Calendar</title>
 </head>
-<body>
+<body onload="main()">
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p>
-<p id="change">None</p>
+<p>Content Test 1: <span id="test1"></span></p>
+<p>Content Test 2: <span id="test2"></span></p>
+<p>Content Test 3: <span id="test3"></span></p>
 </body>
 <script>
 class Calendar {
@@ -64,12 +66,57 @@ class Event {
     getHourlyWage() {return this.HourlyWage;}
 
     calculateNumHours() {
-        return getStartTime() - getEndTime();
+        return this.EndTime - this.StartTime;
+    }
+
+    calculateEventIncome() {
+        return this.calculateNumHours() * this.HourlyWage;
+    }
+
+    printEvent() {
+        let s = "";
+        s += this.EventName + ", ";
+        switch(this.Day) {
+            case 0:
+                s += "Sunday, ";
+                break;
+            case 1:
+                s += "Monday, ";
+                break;
+            case 2:
+                s += "Tuesday, ";
+                break;
+            case 3:
+                s += "Wednesday, ";
+                break;
+            case 4:
+                s += "Thursday, ";
+                break;
+            case 5:
+                s += "Friday, ";
+                break;
+            case 6:
+                s += "Saturday, ";
+                break;
+        }
+        s += "Start: " + this.StartTime.toString() + ", ";
+        s += "End: " + this.EndTime.toString() + ", ";
+        s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
+        s += "Event Length: " + this.calculateNumHours().toString() + " hours, ";
+        s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
+        return s;
     }
 }
 
-let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
-let s = Event1.calculateNumHours();
-document.getElementById("change").innerHTML = "Text";
+function main() {
+    let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
+    let s = Event1.printEvent();
+    document.getElementById("test1").innerHTML = s;
+    let Event2 = new Event(2, "Work", 1, 15.5, 17, 11.0);
+    let s2 = Event2.printEvent();
+    document.getElementById("test2").innerHTML = s2;
+    let d = Event2.getDay();
+    document.getElementById("test3").innerHTML = d;
+}
 </script>
 </html>
