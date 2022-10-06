@@ -9,16 +9,33 @@
 <p>Manage your calendar by adding, editing, and removing events here!</p>
 </body>
 <script>
-class Calendar(UserID) {
+class Calendar(UserID, CalendarID, EventsList) {
   /**
-     * The constructor - Empty calendar will be created for the user.
-     * @param UserID - Key to link the calendar to the user
+     * The Calendar Constructor - Empty calendar will be created for the user.
+     * @param UserID - type: int - Key to link the calendar to the user
+     * @param CalendarID - type: int - Unique key to identify the calendar
+     * @param EventsList - type: list - An initially empty list representing the user's weekly calendar
      *
      */
-     constructor(UserID){
+     constructor(UserID, CalendarID, EventsList) {
        this.UserID = UserID;
-       
+       this.CalendarID = CalendarID;
+       this.EventsList = EventsList;
+
      }
+}
+
+class Event(EventID, EventName, Day, StartTime, EndTime, HourlyWage) {
+  /**
+     * The Event Constructor - Creates an event and adds it to the User's calendar.
+     * @param EventID - type: int - Key to link the event to the calendar
+     * @param EventName - type: string - User-given name for their event
+     * @param Day - type: int - Integer representing the day of the week (0=Sunday, 6=Saturday)
+     * @param StartTime - type: float - Float representation of the event's start time (
+     * @param EndTime - type: float -
+     * @param HourlyWage - type: float -
+     *
+     */
 }
 </script>
 </html>
