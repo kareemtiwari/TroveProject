@@ -61,8 +61,76 @@ class Event {
     getEventID() {return this.EventID;}
     getEventName() {return this.EventName;}
     getDay() {return this.Day;}
-    getStartTime() {return this.StartTime;}
-    getEndTime() {return this.EndTime;}
+    getStartTime() {
+        let minutes = this.StartTime;
+        let min = "";
+        while(minutes > 1) {
+            minutes -= 1;
+        }
+        switch(minutes){
+            case 0.25:
+                min = ":15";
+                break;
+            case 0.5:
+                min = ":30";
+                break;
+            case 0.75:
+                min = ":45";
+                break;
+            default:
+                min = ":00";
+                break;
+        }
+        if(this.StartTime - 12 > 0.76) {
+            let time = Math.floor(this.StartTime - 12);
+            time = time.toString() + min + "pm";
+            return time
+        }
+        else if (this.StartTime - 12 >= 0) {
+            let time = Math.floor(this.StartTime);
+            time = time.toString() + min + "pm";
+            return time
+        }
+        else {
+            let time = Math.floor(this.StartTime);
+            return time.toString() + min + "am";
+        }
+    }
+    getEndTime() {
+        let minutes = this.EndTime;
+        let min = "";
+        while(minutes > 1) {
+            minutes -= 1;
+        }
+        switch(minutes){
+            case 0.25:
+                min = ":15";
+                break;
+            case 0.5:
+                min = ":30";
+                break;
+            case 0.75:
+                min = ":45";
+                break;
+            default:
+                min = ":00";
+                break;
+        }
+        if(this.EndTime - 12 > 0.76) {
+            let time = Math.floor(this.EndTime - 12);
+            time = time.toString() + min + "pm";
+            return time
+        }
+        else if (this.EndTime - 12 >= 0) {
+            let time = Math.floor(this.EndTime);
+            time = time.toString() + min + "pm";
+            return time
+        }
+        else {
+            let time = Math.floor(this.EndTime);
+            return time.toString() + min + "am";
+        }
+    }
     getHourlyWage() {return this.HourlyWage;}
 
     calculateNumHours() {
@@ -99,8 +167,8 @@ class Event {
                 s += "Saturday, ";
                 break;
         }
-        s += "Start: " + this.StartTime.toString() + ", ";
-        s += "End: " + this.EndTime.toString() + ", ";
+        s += "Start: " + this.getStartTime() + ", ";
+        s += "End: " + this.getEndTime() + ", ";
         s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
         s += "Event Length: " + this.calculateNumHours().toString() + " hours, ";
         s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
@@ -112,10 +180,10 @@ function main() {
     let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
     let s = Event1.printEvent();
     document.getElementById("test1").innerHTML = s;
-    let Event2 = new Event(2, "Work", 1, 15.5, 17, 11.0);
+    let Event2 = new Event(2, "Work", 1, 12.5, 17, 11.0);
     let s2 = Event2.printEvent();
     document.getElementById("test2").innerHTML = s2;
-    let d = Event2.getDay();
+    let d = Event2.getStartTime();
     document.getElementById("test3").innerHTML = d;
 }
 </script>
