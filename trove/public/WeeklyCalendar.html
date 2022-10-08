@@ -2,11 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="stylesheets/style.css">
     <title>Weekly Calendar</title>
 </head>
 <body onload="main()">
 <h1>Weekly Calendar</h1>
-<p>Manage your calendar by adding, editing, and removing events here!</p>
+<p>Manage your calendar by adding, editing, and removing events here!</p></br>
+
+<form id="addEvent">
+    <fieldset>
+        <legend>Add Event</legend>
+        <label for="eName">Event Name:</label>
+        <input id="eName" name="eName" type="text"></br>
+        <label for="eDay">Day:</label>
+        <select id="eDay" name=""eDay>
+            <option value="0">Sunday</option>
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+        </select></br>
+        <label for="eStart">Start Time:</label>
+        <select id="eStart" name="eStart">
+            <option value="0.0">12:00am</option>
+            <!--<option value="0.5">12:30am</option>-->
+            <option value="1.0">1:00am</option>
+            <!--<option value="1.5">1:30am</option>-->
+            <option value="2.0">2:00am</option>
+            <!--<option value="2.5">2:30am</option>-->
+            <option value="3.0">3:00am</option>
+            <option value="4.0">4:00am</option>
+            <option value="5.0">5:00am</option>
+            <option value="6.0">6:00am</option>
+            <option value="7.0">7:00am</option>
+            <option value="8.0">8:00am</option>
+            <option value="9.0">9:00am</option>
+            <option value="10.0">10:00am</option>
+            <option value="11.0">11:00am</option>
+            <option value="12.0">12:00pm</option>
+            <option value="13.0">1:00pm</option>
+            <option value="14.0">2:00pm</option>
+            <option value="15.0">3:00pm</option>
+            <option value="16.0">4:00pm</option>
+            <option value="17.0">5:00pm</option>
+            <option value="18.0">6:00pm</option>
+            <option value="19.0">7:00pm</option>
+            <option value="20.0">8:00pm</option>
+            <option value="21.0">9:00pm</option>
+            <option value="22.0">10:00pm</option>
+            <option value="23.0">11:00pm</option>
+        </select></br>
+        <label for="eEnd">End Time:</label>
+        <select id="eEnd" name="eEnd">
+            <option value="0.0">12:00am</option>
+            <!--<option value="0.5">12:30am</option>-->
+            <option value="1.0">1:00am</option>
+            <!--<option value="1.5">1:30am</option>-->
+            <option value="2.0">2:00am</option>
+            <!--<option value="2.5">2:30am</option>-->
+            <option value="3.0">3:00am</option>
+            <option value="4.0">4:00am</option>
+            <option value="5.0">5:00am</option>
+            <option value="6.0">6:00am</option>
+            <option value="7.0">7:00am</option>
+            <option value="8.0">8:00am</option>
+            <option value="9.0">9:00am</option>
+            <option value="10.0">10:00am</option>
+            <option value="11.0">11:00am</option>
+            <option value="12.0">12:00pm</option>
+            <option value="13.0">1:00pm</option>
+            <option value="14.0">2:00pm</option>
+            <option value="15.0">3:00pm</option>
+            <option value="16.0">4:00pm</option>
+            <option value="17.0">5:00pm</option>
+            <option value="18.0">6:00pm</option>
+            <option value="19.0">7:00pm</option>
+            <option value="20.0">8:00pm</option>
+            <option value="21.0">9:00pm</option>
+            <option value="22.0">10:00pm</option>
+            <option value="23.0">11:00pm</option>
+        </select></br>
+        <label for="eHourly">Hourly Wage:</label>
+        <input id="eHourly" name="eHourly" type="number"></br></br>
+        <button type="button" onclick="addEvent()">Create Event</button>
+    </fieldset>
+</form></br>
+
 <p>Content Test 1: <span id="test1"></span></p>
 <p>Content Test 2: <span id="test2"></span></p>
 <p>Content Test 3: <span id="test3"></span></p>
@@ -175,16 +258,45 @@ class Event {
         return s;
     }
 }
+// Temp Events List
+let TempEventsList = [];
+let EventNum = 0;
+
+function updateTest3() {
+    let d = "";
+    for (let i = 0; i < TempEventsList.length; i++) {
+        d += "[" + TempEventsList[i].printEvent() +"], ";
+    }
+    document.getElementById("test3").innerHTML = d;
+}
+
+function addEvent() {
+    let eventName = document.getElementById("eName").value;
+    let eventDay = document.getElementById("eDay").value;
+    let eventStart = document.getElementById("eStart").value;
+    let eventEnd = document.getElementById("eEnd").value;
+    let eventWage = document.getElementById("eHourly").value;
+    let d = "";
+    d += EventNum.toString() + ", " + eventName + ", " + eventDay.toString() + ", ";
+    d += eventStart.toString() + ", " + eventEnd.toString() + ", " + eventWage.toString();
+    let newEvent = new Event(EventNum, eventName, eventDay, eventStart, eventEnd, eventWage);
+    TempEventsList.push(d);
+    // updateTest3();
+    document.getElementById("test3").innerHTML = TempEventsList[0];
+    EventNum++;
+}
 
 function main() {
-    let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
-    let s = Event1.printEvent();
-    document.getElementById("test1").innerHTML = s;
-    let Event2 = new Event(2, "Work", 1, 12.5, 17, 11.0);
-    let s2 = Event2.printEvent();
-    document.getElementById("test2").innerHTML = s2;
-    let d = Event2.getStartTime();
-    document.getElementById("test3").innerHTML = d;
+    // let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
+    // Event1.setEventName("New Event");
+    // TempEventsList.push(Event1);
+    // let s = Event1.printEvent();
+    // document.getElementById("test1").innerHTML = TempEventsList[0].printEvent();
+    // let Event2 = new Event(2, "Work", 1, 12.5, 17, 11.0);
+    // TempEventsList.push(Event2);
+    // let s2 = Event2.printEvent();
+    // document.getElementById("test2").innerHTML = s2;
+
 }
 </script>
 </html>
