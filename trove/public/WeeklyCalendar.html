@@ -90,6 +90,9 @@
     </fieldset>
 </form></br>
 
+<button type="button" onclick="btn1()">Button 1</button>
+<button type="button" onclick="btn2()">Button 1</button>
+
 <p>Content Test 1: <span id="test1"></span></p>
 <p>Content Test 2: <span id="test2"></span></p>
 <p>Content Test 3: <span id="test3"></span></p>
@@ -263,11 +266,12 @@ let TempEventsList = [];
 let EventNum = 0;
 
 function updateTest3() {
-    let d = "";
+    let text = "<ul>";
     for (let i = 0; i < TempEventsList.length; i++) {
-        d += "[" + TempEventsList[i].printEvent() +"], ";
+        text += "<li>" + TempEventsList[i].printEvent() + "</li>";
     }
-    document.getElementById("test3").innerHTML = d;
+    text += "</ul>";
+    document.getElementById("test3").innerHTML = text;
 }
 
 function addEvent() {
@@ -276,26 +280,33 @@ function addEvent() {
     let eventStart = document.getElementById("eStart").value;
     let eventEnd = document.getElementById("eEnd").value;
     let eventWage = document.getElementById("eHourly").value;
-    let d = "";
-    d += EventNum.toString() + ", " + eventName + ", " + eventDay.toString() + ", ";
-    d += eventStart.toString() + ", " + eventEnd.toString() + ", " + eventWage.toString();
+    // let d = "";
+    // d += EventNum.toString() + ", " + eventName + ", " + eventDay.toString() + ", ";
+    // d += eventStart.toString() + ", " + eventEnd.toString() + ", " + eventWage.toString();
     let newEvent = new Event(EventNum, eventName, eventDay, eventStart, eventEnd, eventWage);
-    TempEventsList.push(d);
-    // updateTest3();
-    document.getElementById("test3").innerHTML = TempEventsList[0];
+    TempEventsList.push(newEvent);
+    updateTest3();
+    // document.getElementById("test3").innerHTML = TempEventsList[0];
     EventNum++;
 }
 
+function btn1() {
+    let newEvent = new Event(6, "Event 1", 2, 9.0, 17.0, 11.5);
+    TempEventsList.push(newEvent);
+    updateTest3();
+}
+
 function main() {
-    // let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
-    // Event1.setEventName("New Event");
-    // TempEventsList.push(Event1);
-    // let s = Event1.printEvent();
-    // document.getElementById("test1").innerHTML = TempEventsList[0].printEvent();
-    // let Event2 = new Event(2, "Work", 1, 12.5, 17, 11.0);
-    // TempEventsList.push(Event2);
-    // let s2 = Event2.printEvent();
-    // document.getElementById("test2").innerHTML = s2;
+    let Event1 = new Event(1, "Event 1", 0, 9.0, 12.0, 10.0);
+    Event1.setEventName("New Event");
+    TempEventsList.push(Event1);
+    let s = Event1.printEvent();
+    document.getElementById("test1").innerHTML = TempEventsList[0].printEvent();
+    let Event2 = new Event(2, "Work", 1, 12.5, 17, 11.0);
+    TempEventsList.push(Event2);
+    let s2 = Event2.printEvent();
+    document.getElementById("test2").innerHTML = s2;
+    updateTest3();
 
 }
 </script>
