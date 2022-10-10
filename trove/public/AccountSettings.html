@@ -18,7 +18,11 @@
         constructor(login) {
             this.userID = login.userID;
             this.sessionID = login.sessionID;
-            this.expenditures = 0; //get from database or user input later
+            this.firstName = "from db";
+            this.lastName = "from db";
+            this.email = "from db";
+            //password and secuirty question not instantiated
+            this.expenditures = 0; //get from database or user input later (should be a table)
             this.wageInfo = 0; //get from database or user input later
         }
 
