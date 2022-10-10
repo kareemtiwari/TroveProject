@@ -8,4 +8,43 @@
 <h1>Account settings</h1>
 <p>Manage your account here!</p>
 </body>
+<script>
+    class AccountSettings {
+
+        /**
+         * The constructor - Database will instantiate
+         * @param login object
+         */
+        constructor(login) {
+            this.userID = login.userID;
+            this.sessionID = login.sessionID;
+            this.expenditures = 0; //get from database or user input later
+            this.wageInfo = 0; //get from database or user input later
+        }
+
+        /**
+         * Getter for userID
+         * @returns {*}
+         */
+        get userID(){              //example function
+            return this.userID;
+        }
+
+        /**
+         * Getter for expenditures
+         * @returns {*}
+         */
+        get Expenditures(){            //example getter
+            return this.expenditures;
+        }
+
+        /**
+         * Getter for wage info
+         * @returns {*}
+         */
+        get WageInfo(){
+            return this.wageInfo;
+        }
+    }
+</script>
 </html>
