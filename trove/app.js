@@ -4,62 +4,30 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sessions = require('express-session');
-//var SQLite = require('sqlite3');
 var {Sequelize, DataTypes, Model} = require('sequelize');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
+var dataRouter = require('./routes/data');
 
 //domain model classes
-//var accountModel = require('./db/Objects/account.js');
-//var calendarModel = require('./db/name.js');
+var accountModel = require('./db/Objects/account.js');
+//var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
 //var troveModel = require('./db/name.js');
 //var eventModel = require('./db/name.js');
 
 var app = express();
 
-//Integrated Database section (Database option 1)
-
-/*
-var mySQL = require('mysql');
-
-var dbConnection = mysql.createConnection({
-  host: "localhost",
-  user: "troveserver",
-  password: "66yEc!#$4{{*89gH"
-});
-
-con.connect(function(err){
-  if(err) throw err;
-  console.log("Connected");
-});
- */
-
-/*
-let db = new SQLite.Database('./db/trove.db',(err) =>{
-  if(err){
-    console.error(err.message);
-  }
-  console.log('connected to trove database');
-});
- */
-
 sequelize = new Sequelize('sqlite::memory:');
-//accountModel.Account.createModel(sequelize);
-/*
-User = sequelize.define('User',{
-  firstName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  lastName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-});
- */
+
+accountModel.Account.createModel(sequelize);
+async function createTables(){
+  await sequelize.sync();
+  console.log("created DB tables");
+}
+createTables();
 
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
@@ -80,14 +48,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use('/', indexRouter);
+
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
-//app.use('/accSettings', accSetRouter);
+app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
+app.use('/data/', dataRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
