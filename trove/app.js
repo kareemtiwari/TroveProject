@@ -15,6 +15,7 @@ var calendarRouter = require('./routes/WeeklyCalendar');
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
+let eventsModel = require('./db/Objects/events.js').Events;
 //var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
 //var troveModel = require('./db/name.js');
 //var eventModel = require('./db/name.js');
@@ -25,7 +26,8 @@ var app = express();
 
 sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
 
-accountModel.createModel(sequelize);                    //create database models
+accountModel.createModel(sequelize);
+eventsModel.createModel(sequelize);//create database models
 testUser = null;
 async function createTables(){
   await sequelize.sync();

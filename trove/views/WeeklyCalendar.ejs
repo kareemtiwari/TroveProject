@@ -9,7 +9,7 @@
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p></br>
 
-<form id="addEvent">
+<form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
         <legend>Add Event</legend>
         <label for="eName">Event Name:</label>
@@ -128,7 +128,7 @@
         </select></br>
         <label for="eHourly">Hourly Wage:</label>
         <input id="eHourly" name="eHourly" type="text"></br></br>
-        <button type="button" onclick="addEvent()">Create Event</button>
+        <button type="submit" onclick="addEvent()">Create Event</button>
     </fieldset>
 </form></br>
 
