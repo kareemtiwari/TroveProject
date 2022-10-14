@@ -9,8 +9,28 @@ class Account extends Model {
                 allowNull: false
             },
             lastName: {
-                type: DataTypes.STRING
-                // allowNull defaults to true
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            dob: {
+                type: DataTypes.DATE,
+                //allowNull: false
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            securityQuestion: {
+                type: DataTypes.STRING,
+                //allowNull: false
+            },
+            securityQuestionAnswer: {
+                type: DataTypes.STRING,
+                //allowNull: false
             }
         }, {
             // Other model options go here

@@ -10,22 +10,32 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
-var dataRouter = require('./routes/data');
+var dashRouter = require('./routes/Dashboard');
 
 //domain model classes
-var accountModel = require('./db/Objects/account.js');
+let accountModel = require('./db/Objects/account.js').Account;
 //var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
 //var troveModel = require('./db/name.js');
 //var eventModel = require('./db/name.js');
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var app = express();
 
-sequelize = new Sequelize('sqlite::memory:');
+sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
 
-accountModel.Account.createModel(sequelize);
+accountModel.createModel(sequelize);                    //create database models
+testUser = null;
 async function createTables(){
   await sequelize.sync();
   console.log("created DB tables");
+
+  testUser = await accountModel.create({firstName: "John", lastName: "Doe",
+    email: "johndoe@gmail.com", password:"lolcleartext"});//create test user
+  console.log("filled with test data");
+
+  const users = await accountModel.findAll();
+  console.log(JSON.stringify(users,null,2));
 }
 createTables();
 
@@ -48,17 +58,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
-app.use('/data/', dataRouter);
+app.use('/Dashboard/', dashRouter);
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
 
 // error handler
 app.use(function(err, req, res, next) {
