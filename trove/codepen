@@ -1,0 +1,25 @@
+//Integrated Database section (Database option 1)
+
+/*
+var mySQL = require('mysql');
+
+var dbConnection = mysql.createConnection({
+  host: "localhost",
+  user: "troveserver",
+  password: "66yEc!#$4{{*89gH"
+});
+
+con.connect(function(err){
+  if(err) throw err;
+  console.log("Connected");
+});
+ */
+
+/*
+let db = new SQLite.Database('./db/trove.db',(err) =>{
+  if(err){
+    console.error(err.message);
+  }
+  console.log('connected to trove database');
+});
+ */
