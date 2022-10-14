@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO USE DATABASE OBJECT 
+let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO USE DATABASE OBJECT
 
 /* GET Login page. */
 router.get('*', function(req, res, next) {
@@ -17,11 +17,16 @@ router.post('*', function(req, res, next) {
   console.log(req.url);
   console.log(req.body);
 
-  query();
-
   session=req.session;
+  firstName = req.body["fname"];
+  lastName = req.body["lname"];
+  salary = req.body["salary"];
 
-  value1 = req.body["fname"];
+
+  if(getUserByName(name)["password"] == salary){
+    //login
+  }
+
   if(value1 == 'Hayden'){
     session.userID = value1;
     console.log("logged in");
@@ -34,9 +39,14 @@ router.post('*', function(req, res, next) {
   }
 });
 
-async function query(){
-  const users = await accountModel.findAll();
+async function getByUserID(userid){
+  users = await accountModel.findAll({
+    where: {
+      id: userid
+    }
+  });
   console.log(JSON.stringify(users,null,2));
+  return JSON.parse(users);
 }
 
 module.exports = router;
