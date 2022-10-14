@@ -17,22 +17,23 @@ router.post('*', function(req, res, next) {
   console.log(req.url);
   console.log(req.body);
 
-  session=req.session;
+  session = req.session;
+  uid = req.session.id; //need to check if there is one - [also eventually need to check if they are being brute forced??]
   firstName = req.body["fname"];
   lastName = req.body["lname"];
   salary = req.body["salary"];
+  mode = req.body["salhour"];
+  dob = req.body["dob"];
 
-
-  if(getUserByName(name)["password"] == salary){
-    //login
+  correct = true;
+  if(!/^([A-Za-z]{1,15})$/.test(firstName)) {
+    res.render('AccountSettings', {remessage: 'First Name must be 1-15 Letters only', path: req.originalUrl});
+    return;
   }
 
-  if(value1 == 'Hayden'){
-    session.userID = value1;
-    console.log("logged in");
-  }
+
   resp = "error";
-  if(value1.length > 0){          //logic here + [cookie?] + [url Encoding??]
+  if(correct){          //logic here + [cookie?] + [url Encoding??]
     res.redirect('/Dashboard');
   }else{
     res.redirect('/accSettings/'+ Buffer.from(resp).toString('base64url'));

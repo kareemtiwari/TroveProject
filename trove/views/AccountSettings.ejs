@@ -26,9 +26,10 @@
 
     <input type="submit" value="Submit">
 </form>
-<% if(remessage == "error") { %>
-    <h3 style="color:#FF0000"> Error, you did the form wrong! </h3>
-<% } %>
+<%// if(remessage == "error") { %>
+    <h3 style="color:#FF0000"> <%= remessage%> </h3>
+<% //} %>
+
 </body>
 <script>
     class AccountSettings {
