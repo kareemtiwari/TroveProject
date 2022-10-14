@@ -7,6 +7,28 @@
 <body>
 <h1>Account settings</h1>
 <p>Manage your account here!</p>
+<form action="/accSettings" method="post">
+    <label for="fname">First name:</label>
+    <input type="text" id="fname" name="fname"><br><br>
+    <label for="lname">Last name:</label>
+    <input type="text" id="lname" name="lname"><br><br>
+    <label for="lname">Salary/ Hourly:</label>
+    <input type="text" id="salary" name="salary"><br><br>
+    <input type="radio" id="salary" name="salhour" value="Salary">
+    <label for="html">Salary</label><br>
+    <input type="radio" id="hourly" name="salhour" value="Hourly">
+    <label for="css">Hourly</label><br>
+    <label for="start">DOB:</label>
+
+    <input type="date" id="dob" name="dob"
+           value="2000-11-06"
+           min="1901-01-01" max="2020-12-31">
+
+    <input type="submit" value="Submit">
+</form>
+<% if(remessage == "error") { %>
+    <h3 style="color:#FF0000"> Error, you did the form wrong! </h3>
+<% } %>
 </body>
 <script>
     class AccountSettings {
@@ -30,7 +52,7 @@
          * Getter for userID
          * @returns {*}
          */
-        get userID(){              //example function
+        get userID() {              //example function
             return this.userID;
         }
 
@@ -38,7 +60,7 @@
          * Getter for expenditures
          * @returns {*}
          */
-        get Expenditures(){            //example getter
+        get Expenditures() {            //example getter
             return this.expenditures;
         }
 
@@ -46,7 +68,7 @@
          * Getter for wage info
          * @returns {*}
          */
-        get WageInfo(){
+        get WageInfo() {
             return this.wageInfo;
         }
     }
