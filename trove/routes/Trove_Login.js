@@ -14,8 +14,8 @@ router.post('*', async function(req, res, next) {
             email: "UsName"
         }
     });
-
-    getUsers = JSON.parse(name)
+    console.log(name)
+    getUsers = JSON.parse(JSON.stringify(name,null,2))[0];
      if(getUsers["password"] == Passval)
     {
 
