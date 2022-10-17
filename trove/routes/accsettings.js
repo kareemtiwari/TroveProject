@@ -2,52 +2,55 @@ var express = require('express');
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO USE DATABASE OBJECT
 
-/* GET Login page. */
-router.get('*', function(req, res, next) {
-  resp = atob(req.url.substring(1));  //substring to ignore the slash at the beggining
-  if(resp == 'error'){
-    res.render('AccountSettings', {remessage : 'error' ,path: req.originalUrl});
-  }else {
-    res.render('AccountSettings', {remessage: 'Initial', path: req.originalUrl});
-  }
-  console.log(req.url);
+/**
+ * GET router - this is what is called when this routers path is hit with an HTTP get request
+ * This usually happens when a user navigated to your page, or refreshes the page
+ */
+router.get('*', async function(req, res, next) {
+  let uid = req.session.userID;
+  //TODO : have to check if there is a userID in the session
+  //get the currently logged in user
+  let query = await accountModel.findAll({
+    where: {
+      id: uid
+    },
+    raw : true
+  });
+  let user = query[0];  //the first user in query - there should really only ever be 1
+  //TODO : have to check if there is a user
+  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:user.dob}); //TODO : model doesn't have all
+  console.log(user.id);
 });
 
-router.post('*', function(req, res, next) {
+/**
+ * POST router - this is what is called when this routers path is hit with an HTTP post request
+ * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
+ */
+router.post('*', async function(req, res, next) {
   console.log(req.url);
   console.log(req.body);
 
   session = req.session;
-  uid = req.session.id; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-  firstName = req.body["fname"];
-  lastName = req.body["lname"];
-  salary = req.body["salary"];
+  uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+  fName = req.body["fname"];  //get all variables out of the form
+  lName = req.body["lname"];
+  sal = req.body["salary"];
   mode = req.body["salhour"];
-  dob = req.body["dob"];
+  dateb = req.body["dob"];
 
   correct = true;
-  if(!/^([A-Za-z]{1,15})$/.test(firstName)) {
+  if(!/^([A-Za-z]{1,15})$/.test(fName)) {
     res.render('AccountSettings', {remessage: 'First Name must be 1-15 Letters only', path: req.originalUrl});
     return;
   }
 
-
-  resp = "error";
-  if(correct){          //logic here + [cookie?] + [url Encoding??]
+  if(correct){
+    //update records
+    await accountModel.update({firstName: fName, lastName: lName, dob:dateb},{where:{id:uid}});
     res.redirect('/Dashboard');
   }else{
-    res.redirect('/accSettings/'+ Buffer.from(resp).toString('base64url'));
+    res.render('AccountSettings', {remessage: 'Input Error', path: req.originalUrl});
   }
 });
 
-async function getByUserID(userid){
-  users = await accountModel.findAll({
-    where: {
-      id: userid
-    }
-  });
-  console.log(JSON.stringify(users,null,2));
-  return JSON.parse(users);
-}
-
-module.exports = router;
+module.exports = router;  //This allows your router to be used in the main app file

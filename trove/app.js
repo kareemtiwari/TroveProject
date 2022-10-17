@@ -1,3 +1,5 @@
+//INCLUDES
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -14,30 +16,30 @@ var dashRouter = require('./routes/Dashboard');
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
-//var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
+//var calendarModel = require('./db/name.js');                  //TODO : Includes database objects here
 //var troveModel = require('./db/name.js');
 //var eventModel = require('./db/name.js');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SETUP
 
-var app = express();
+var app = express();    //include express
+sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
-sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
+accountModel.createModel(sequelize);                            //TODO : Create database models here
 
-accountModel.createModel(sequelize);                    //create database models
-testUser = null;
 async function createTables(){
-  await sequelize.sync();
+  await sequelize.sync();   //create the tables of all the objects initialized
   console.log("created DB tables");
 
-  testUser = await accountModel.create({firstName: "John", lastName: "Doe",
+  let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
     email: "johndoe@gmail.com", password:"lolcleartext"});//create test user
   console.log("filled with test data");
 
-  const users = await accountModel.findAll();
-  console.log(JSON.stringify(users,null,2));
+  //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
+  //console.log(JSON.stringify(users,null,2));
 }
-createTables();
+createTables();   //run the above function (asynchronously)
 
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
@@ -59,6 +61,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//DEFINE ROUTES
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -66,6 +69,9 @@ app.use('/accSettings', accSetRouter);                      //TODO : tell app to
 app.use('/Trove_Login', LoginRouter);
 app.use('/Dashboard/', dashRouter);
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//HANDLE ERRORS
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

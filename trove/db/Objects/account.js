@@ -1,6 +1,13 @@
 var {Model, DataTypes} = require('sequelize');
 class Account extends Model {
-    otherInfo;  //additional non-database mirrored attribute
+    otherInfo;  //example additional non-database mirrored attribute
+    //variables defined in create model are automatically defined and available
+    //do not shadow them here
+
+    /**
+     * createModel - called once to create an instance / table in the sequelize db
+     * @param sequelize - the sequelize instance
+     */
     static createModel(sequelize){
         Account.init({
             // Model attributes are defined here
