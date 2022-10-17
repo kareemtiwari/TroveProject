@@ -10,7 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
-var
+var SignUpRouter = require('./routes/Sign_Up');
 var dashRouter = require('./routes/Dashboard');
 
 //domain model classes
