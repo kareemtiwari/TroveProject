@@ -28,12 +28,6 @@ router.post('*', async function(req, res, next) {
 
 });
 
-async function getByUserName(email){
-    name = await accountModel.findAll({
-       where: {
-           email: "UsName"
-       }
-});
 
 return JSON.parse(getUser)
 

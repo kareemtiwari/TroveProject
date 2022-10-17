@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;
-/* GET Login page. */
+/* GET Sign-Up page. */
 router.get('*', function(req, res, next) {
     res.render('Sign-Up', {nmessage:""});
 });
@@ -11,16 +11,14 @@ router.post('*', async function(req, res, next) {
     LastVal = req.body["Lname"]
     EmailVal = req.body['Email']
     NewPassVal = req.body['NewPsswd']
-    CheckPassVaal = req.body['CheckPsswd']
+    CheckPassVal = req.body['CheckPsswd']
+    if(FirstVal !==  "" && LastVal !== ""&& EmailVal !== "" && NewPassVal !== "" && CheckPassVal !== "" && CheckPassVal === NewPassVal){
+        await accountModel.create({firstname:FirstVal, lastName:LastVal, Email:EmailVal, password:NewPassVal});
+        res.redirect('/accSettings')
 
-    });
-async function CheckPassword(NewPassVal,CheckPassVal){
-    First =  await accountModel.findAll({
-        where: {
-            firstName: "Fname"
-            lastName : "Lname"
-            email: "Email"
-            
-        }
-    })
-}
+    }
+
+
+});
+
+
