@@ -16,6 +16,7 @@ router.post('*', async function(req, res, next) {
         await accountModel.create({firstname:FirstVal, lastName:LastVal, Email:EmailVal, password:NewPassVal});
         res.redirect('/accSettings')
 
+
     }
 
 
