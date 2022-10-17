@@ -64,6 +64,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
+app.use('/Sign_Up',SignUpRouter);
 app.use('/Dashboard/', dashRouter);
 
 
