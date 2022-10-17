@@ -29,7 +29,5 @@ router.post('*', async function(req, res, next) {
 });
 
 
-return JSON.parse(getUser)
 
-}
 module.exports = router;
