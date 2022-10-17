@@ -38,6 +38,17 @@ class Account extends Model {
             securityQuestionAnswer: {
                 type: DataTypes.STRING,
                 //allowNull: false
+            },
+            salary: {       //TODO - were required but not in model
+                type: DataTypes.NUMBER
+
+            },
+            payMode: {
+                type: DataTypes.BOOLEAN
+            },
+            accComplete: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false
             }
         }, {
             // Other model options go here

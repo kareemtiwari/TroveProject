@@ -33,7 +33,7 @@ async function createTables(){
   console.log("created DB tables");
 
   let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
-    email: "johndoe@gmail.com", password:"lolcleartext"});//create test user
+    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false});//create test user
   console.log("filled with test data");
 
   //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
