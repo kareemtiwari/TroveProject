@@ -39,8 +39,13 @@ router.post('*', async function(req, res, next) {
   dateb = req.body["dob"];
 
   correct = true;
+  if(fName == ""||lName == ""||sal== ""){
+    res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
+    return;
+  }
+
   if(!/^([A-Za-z]{1,15})$/.test(fName)) {
-    res.render('AccountSettings', {remessage: 'First Name must be 1-15 Letters only', path: req.originalUrl});
+    res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
     return;
   }
 
@@ -49,7 +54,7 @@ router.post('*', async function(req, res, next) {
     await accountModel.update({firstName: fName, lastName: lName, dob:dateb},{where:{id:uid}});
     res.redirect('/Dashboard');
   }else{
-    res.render('AccountSettings', {remessage: 'Input Error', path: req.originalUrl});
+    res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
   }
 });
 
