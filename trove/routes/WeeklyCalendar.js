@@ -36,6 +36,11 @@ router.post('/', async function(req, res, next) {
     /* Get and Check the New Event Hourly Wage */
     let eWage = req.body["eHourly"];
     eWage = parseFloat(eWage.replace(",","."));
+    if(isNaN(eWage)) {
+        res.render('WeeklyCalendar', {log:'', name: '', saved:'', end:'',
+            wage:'Hourly Wage must be a valid number.', path: req.originalUrl});
+        return;
+    }
 
 
     newEvent = eventsModel.create({eventID:0, eventName:eName, eventDay:eDay, eventStartTime:eStart,
