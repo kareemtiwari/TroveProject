@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
+var SignUpRouter = require('./routes/Sign_Up');
 var dashRouter = require('./routes/Dashboard');
 
 //domain model classes
@@ -64,6 +65,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
+app.use('/Sign_Up', SignUpRouter);
 app.use('/Dashboard/', dashRouter);
 
 
