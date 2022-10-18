@@ -14,7 +14,7 @@ class Events extends Model {
             },
             eventDay: {
                 type: DataTypes.INTEGER,
-                //allowNull: false
+                allowNull: false
             },
             eventStartTime: {
                 type: DataTypes.FLOAT,
