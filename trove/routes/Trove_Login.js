@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;
 /* GET Login page. */
+
 router.get('*', function(req, res, next) {
     res.render('Trove_Login', {nmessage:""});
+
 });
 router.post('*', async function(req, res, next) {
     session = req.session
