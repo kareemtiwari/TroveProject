@@ -12,13 +12,17 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
+var SignUpRouter = require('./routes/Sign_Up');
 var dashRouter = require('./routes/Dashboard');
+var goalsRouter = require('./routes/GoalsRoute');
+var calendarRouter = require('./routes/WeeklyCalendar');
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
-//var calendarModel = require('./db/name.js');                  //TODO : Includes database objects here
-//var troveModel = require('./db/name.js');
-//var eventModel = require('./db/name.js');
+let eventsModel = require('./db/Objects/events.js').Events;
+//var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
+let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP
@@ -27,7 +31,10 @@ var app = express();    //include express
 sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
 accountModel.createModel(sequelize);                            //TODO : Create database models here
+DbGoalsModel.createModel(sequelize);                    //create database models
+eventsModel.createModel(sequelize);//create database models
 
+testUser = null;
 async function createTables(){
   await sequelize.sync();   //create the tables of all the objects initialized
   console.log("created DB tables");
@@ -67,8 +74,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
+app.use('/Sign_Up', SignUpRouter);
 app.use('/Dashboard/', dashRouter);
-
+app.use('/TroveAccounting/',goalsRouter);
+app.use('/Weekly-Calendar', calendarRouter);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //HANDLE ERRORS
