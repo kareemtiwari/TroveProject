@@ -11,11 +11,14 @@ var usersRouter = require('./routes/users');                    //TODO : Include
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
 var dashRouter = require('./routes/Dashboard');
+var goalsRouter = require('./routes/GoalsRoute');
+
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
 //var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
-//var troveModel = require('./db/name.js');
+let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
+
 //var eventModel = require('./db/name.js');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,8 +26,8 @@ let accountModel = require('./db/Objects/account.js').Account;
 var app = express();
 
 sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
-
-accountModel.createModel(sequelize);                    //create database models
+accountModel.createModel(sequelize);
+DbGoalsModel.createModel(sequelize);                    //create database models
 testUser = null;
 async function createTables(){
   await sequelize.sync();
@@ -65,6 +68,7 @@ app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
 app.use('/Dashboard/', dashRouter);
+app.use('/TroveAccounting/',goalsRouter);
 
 
 // catch 404 and forward to error handler

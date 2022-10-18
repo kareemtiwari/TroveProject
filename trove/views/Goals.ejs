@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Goals</title>
 </head>
 <body>
 <h1><b>Trove Goals</b></h1>
-<form name="myForm" id="myForm" onsubmit="return validateForm()">
-  <button type="button" onclick="addGoal()">Add Goal</button>
-  <button type="button" onclick="delGoal()">Del Goal</button>
+<form  method="post" action="/TroveAccounting" name="myForm" id="myForm">
+  <fieldset>
+
+  <button type="submit" >Add Goal</button>
+<!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
   <div>
     <p><b>Goal </b></p>
@@ -20,19 +22,21 @@
     </select>
     </br>
     <label for="goalAmount">Enter Goal Amount:</label>
-    <input type="input" id="goalAmount" >
+    <input type="text" id="goalAmount" >
     </br>
     <label for="goalProgress">Enter Goal Progress:</label>
-    <input type="input" id="goalProgress" >
+    <input type="text" id="goalProgress" >
     </br>
     <label for="goalName">Enter Goal Name:</label>
-    <input type="input" id="goalName" >
+    <input type="text" id="goalName" >
     </br>
     <label for="goalSlider">Enter Priority:</label>
     <input type="range" id="goalSlider" name="goalSlider"
            min="20" max="100" value="100" step="10">
   </div>
+  </fieldset>
 </form>
+
 <div id="goal1Block" style="display: none;">
   <p> Goal #: <span id="goalIDDisplay"></span></p>
   <p> Goal Name: <span id="goalIDDisplay2"></span></p>
@@ -161,12 +165,12 @@
    * @returns {*}
    */
   function addGoal(){
-    let newGoal = new Goal();
     let goalNum = document.getElementById("goalID").value;
     let goalName = document.getElementById("goalName").value;
     let goalAmount = document.getElementById("goalAmount").value;
     let goalProgress = document.getElementById("goalProgress").value;
     let goalSlider = document.getElementById("goalSlider").value;
+    let newGoal = new Goal(goalName,goalNum,goalAmount,goalProgress,goalSlider);
     clearID = document.getElementById("goalID")
     clearID.value = ""
     clearNum = document.getElementById("goalName")
