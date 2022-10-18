@@ -14,7 +14,8 @@ router.post('*', async function(req, res, next) {
     CheckPassVal = req.body["CheckPsswd"];
     if(FirstVal !==  "" && LastVal !== ""&& EmailVal !== "" && NewPassVal !== "" && CheckPassVal !== "" ){
         if(CheckPassVal === NewPassVal){
-            await accountModel.create({firstName:FirstVal, lastName:LastVal, email:EmailVal, password:NewPassVal});
+            newuser = await accountModel.create({firstName:FirstVal, lastName:LastVal, email:EmailVal, password:NewPassVal, accComplete:false});
+            session.userID = newuser.id;
             res.redirect('/accSettings')
             return;
         }
