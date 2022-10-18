@@ -6,10 +6,10 @@
 </head>
 <body>
 <h1><b>Trove Goals</b></h1>
-<form  method="post" action="/TroveAccounting" name="myForm" id="myForm">
+<form  method="post" name="myForm" id="myForm">
   <fieldset>
 
-  <button type="submit" >Add Goal</button>
+  <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
 <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
   <div>
@@ -22,13 +22,13 @@
     </select>
     </br>
     <label for="goalAmount">Enter Goal Amount:</label>
-    <input type="text" id="goalAmount" >
+    <input type="text" id="goalAmount" name="goalAmount">
     </br>
     <label for="goalProgress">Enter Goal Progress:</label>
-    <input type="text" id="goalProgress" >
+    <input type="text" id="goalProgress" name="goalProgress" >
     </br>
     <label for="goalName">Enter Goal Name:</label>
-    <input type="text" id="goalName" >
+    <input type="text" id="goalName" name="goalName">
     </br>
     <label for="goalSlider">Enter Priority:</label>
     <input type="range" id="goalSlider" name="goalSlider"
@@ -37,30 +37,36 @@
   </fieldset>
 </form>
 
-<div id="goal1Block" style="display: none;">
-  <p> Goal #: <span id="goalIDDisplay"></span></p>
-  <p> Goal Name: <span id="goalIDDisplay2"></span></p>
-  <p> Goal Amount: <span id="goalIDDisplay3"></span></p>
-  <p> Goal Progress <span id="goalIDDisplay4"></span></p>
-  <p> Goal Priority: <span id="goalIDDisplay5"></span></p>
+<%if(gd[0]["has"]){%>
+<div id="goal1Block" >
+  <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
+  <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+  <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+  <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+  <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
   <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
-<div id="goal2Block" style="display: none;">
-  <p> Goal #: <span id="goal2IDDisplay" ></span></p>
-  <p> Goal Name: <span id="goal2IDDisplay2"></span></p>
-  <p> Goal Amount: <span id="goal2IDDisplay3"></span></p>
-  <p> Goal Progress <span id="goal2IDDisplay4"></span></p>
-  <p> Goal Priority: <span id="goal2IDDisplay5"></span></p>
+<%}%>
+<%if(gd[1]["has"]){%>
+<div id="goal2Block" >
+  <p> Goal #: <%=gd[1]["goalID"]%> <span id="goalIDDisplay"></span></p>
+  <p> Goal Name: <%=gd[1]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+  <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+  <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+  <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
   <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
-<div id="goal3Block" style="display: none;">
-  <p> Goal #: <span id="goal3IDDisplay"></span></p>
-  <p> Goal Name: <span id="goal3IDDisplay2"></span></p>
-  <p> Goal Amount: <span id="goal3IDDisplay3"></span></p>
-  <p> Goal Progress <span id="goal3IDDisplay4"></span></p>
-  <p> Goal Priority: <span id="goal3IDDisplay5"></span></p>
+<%}%>
+<%if(gd[2]["has"]){%>
+<div id="goal3Block" >
+  <p> Goal #: <%=gd[2]["goalID"]%> <span id="goalIDDisplay"></span></p>
+  <p> Goal Name: <%=gd[2]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+  <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+  <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+  <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
   <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
+<%}%>
 </body>
 <script>
   class Goal{
@@ -139,6 +145,10 @@
    THIS IS THE ADDGOALS FUNCTION!
    I named it wrong!
    */
+
+  var add = false;
+  var del = false;
+
   function calculate(){
     // if (count <= 3){
     //   if (count == 1){
@@ -171,6 +181,13 @@
     let goalProgress = document.getElementById("goalProgress").value;
     let goalSlider = document.getElementById("goalSlider").value;
     let newGoal = new Goal(goalName,goalNum,goalAmount,goalProgress,goalSlider);
+
+    let form = document.getElementById('myForm');
+    form.action = '/TroveAccounting/add';
+    form.submit();
+    form.reset();
+
+    <!--
     clearID = document.getElementById("goalID")
     clearID.value = ""
     clearNum = document.getElementById("goalName")
@@ -181,6 +198,8 @@
     clearProgress.value = ""
     clearSlider = document.getElementById("goalSlider")
     clearSlider.value = 100
+     -->
+
     if (goalNum == "1"){
       var open = document.getElementById("goal1Block");
       open.style.display = "flex"
