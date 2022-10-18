@@ -8,28 +8,29 @@ router.get('*', function(req, res, next) {
 
 });
 router.post('*', async function(req, res, next) {
-    session = req.session
-    Userval = req.body["UsName"]
-    Passval = req.body["Psswd"]
+    session = req.session;
+
+    Userval = req.body["UsName"];
+    Passval = req.body["Psswd"];
+
     name = await accountModel.findAll({
         where: {
-            email: "UsName"
-        }
+            email: Userval
+        },
+        raw : true
     });
-    console.log(name)
+
     getUsers = JSON.parse(JSON.stringify(name,null,2))[0];
      if(getUsers["password"] == Passval)
     {
-
-        res.render('Trove_Login', {nmessage: "Welcome" + accountModel.getAttributes("firstName")})
+        session.userID = getUsers["id"];
+        //res.render('Trove_Login', {nmessage: "Welcome " + getUsers["firstName"]})
+        res.redirect('/');
     }
      else{
          res.render('Trove_Login', {nmessage: "Passwords Do NOT Match"})
     }
-
-
 });
-
 
 
 module.exports = router;

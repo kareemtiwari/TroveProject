@@ -1,3 +1,5 @@
+//INCLUDES
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -21,31 +23,30 @@ let eventsModel = require('./db/Objects/events.js').Events;
 //var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
 let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
 
-//var eventModel = require('./db/name.js');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SETUP
 
-var app = express();
+var app = express();    //include express
+sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
-sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
-
+accountModel.createModel(sequelize);                            //TODO : Create database models here
 DbGoalsModel.createModel(sequelize);                    //create database models
-accountModel.createModel(sequelize);
 eventsModel.createModel(sequelize);//create database models
 
 testUser = null;
 async function createTables(){
-  await sequelize.sync();
+  await sequelize.sync();   //create the tables of all the objects initialized
   console.log("created DB tables");
 
-  testUser = await accountModel.create({firstName: "John", lastName: "Doe",
-    email: "johndoe@gmail.com", password:"lolcleartext"});//create test user
+  let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
+    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false});//create test user
   console.log("filled with test data");
 
-  const users = await accountModel.findAll();
-  console.log(JSON.stringify(users,null,2));
+  //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
+  //console.log(JSON.stringify(users,null,2));
 }
-createTables();
+createTables();   //run the above function (asynchronously)
 
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
@@ -67,6 +68,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//DEFINE ROUTES
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -76,6 +78,9 @@ app.use('/Sign_Up', SignUpRouter);
 app.use('/Dashboard/', dashRouter);
 app.use('/TroveAccounting/',goalsRouter);
 app.use('/Weekly-Calendar', calendarRouter);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//HANDLE ERRORS
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
