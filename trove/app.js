@@ -1,3 +1,5 @@
+//INCLUDES
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,37 +12,41 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');
+var SignUpRouter = require('./routes/Sign_Up');
 var dashRouter = require('./routes/Dashboard');
+var goalsRouter = require('./routes/GoalsRoute');
 var calendarRouter = require('./routes/WeeklyCalendar');
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
 let eventsModel = require('./db/Objects/events.js').Events;
 //var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
-//var troveModel = require('./db/name.js');
-//var eventModel = require('./db/name.js');
+let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SETUP
 
-var app = express();
+var app = express();    //include express
+sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
-sequelize = new Sequelize('sqlite::memory:');                   //create a brand new empty database everyday
-
-accountModel.createModel(sequelize);
+accountModel.createModel(sequelize);                            //TODO : Create database models here
+DbGoalsModel.createModel(sequelize);                    //create database models
 eventsModel.createModel(sequelize);//create database models
+
 testUser = null;
 async function createTables(){
-  await sequelize.sync();
+  await sequelize.sync();   //create the tables of all the objects initialized
   console.log("created DB tables");
 
-  testUser = await accountModel.create({firstName: "John", lastName: "Doe",
-    email: "johndoe@gmail.com", password:"lolcleartext"});//create test user
+  let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
+    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false});//create test user
   console.log("filled with test data");
 
-  const users = await accountModel.findAll();
-  console.log(JSON.stringify(users,null,2));
+  //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
+  //console.log(JSON.stringify(users,null,2));
 }
-createTables();
+createTables();   //run the above function (asynchronously)
 
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
@@ -62,14 +68,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//DEFINE ROUTES
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/accSettings', accSetRouter);                      //TODO : tell app to use routes here
 app.use('/Trove_Login', LoginRouter);
+app.use('/Sign_Up', SignUpRouter);
 app.use('/Dashboard/', dashRouter);
+app.use('/TroveAccounting/',goalsRouter);
 app.use('/Weekly-Calendar', calendarRouter);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//HANDLE ERRORS
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
