@@ -1,6 +1,9 @@
 # Using the trove server in general
 ## Quick Note
 I am using the trove folder in the root of the repository to put all of the server code into, this means that in order to be used by the server, any code needs to be put in this (or a subfolder of this) directory 
+## Useful Documentation
+- https://expressjs.com/en/guide/routing.html - About the Router system
+- https://sequelize.org/docs/v6/core-concepts/model-querying-basics/ - About the ORM system
 ## Running the application
 - Using a terminal navigate to the "csc450fa22-project-group-4" directory where you have pulled the github repository. 
 - Navigate into the trove folder 

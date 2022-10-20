@@ -23,3 +23,17 @@ let db = new SQLite.Database('./db/trove.db',(err) =>{
   console.log('connected to trove database');
 });
  */
+ //END
+ //ACCOUNT SETTINGS
+
+ resp = atob(req.url.substring(1));  //substring to ignore the slash at the beggining
+   if(resp == 'error'){
+     res.render('AccountSettings', {remessage : 'error' ,path: req.originalUrl});
+   }else {
+     //render for intial
+   }
+
+  resp = "error";
+res.redirect('/accSettings/'+ Buffer.from(resp).toString('base64url'));
+
+ //END
