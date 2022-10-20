@@ -44,8 +44,13 @@ router.post('*', async function(req, res, next) {
     return;
   }
 
-  if(!/^([A-Za-z]{1,15})$/.test(fName)) {
+  if(!/^([A-Za-z]{1,10})$/.test(fName)) {
     res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
+    return;
+  }
+
+  if(!/^([A-Za-z]{1,10})$/.test(lName)) {
+    res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
     return;
   }
 
