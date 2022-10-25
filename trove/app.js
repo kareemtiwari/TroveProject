@@ -41,6 +41,10 @@ async function createTables(){
 
   let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
     email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false});//create test user
+  let testEvent1 = await eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:"Work Shift",
+    eventDay:1, eventStartTime:9.0, eventEndTime:17.0, eventWage:15.0});//create first test event
+  let testEvent2 = await eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:"Side Hustle",
+    eventDay:6, eventStartTime:10.5, eventEndTime:14.5, eventWage:15.0});//create first test event
   console.log("filled with test data");
 
   //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB

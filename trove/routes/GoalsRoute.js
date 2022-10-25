@@ -74,19 +74,22 @@ router.post('/add', async function(req, res, next) {
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
     //}
 });
-// router.post('/delete', async function(req, res, next) {
-//     console.log(req.url);
-//     console.log(req.body);
-//
-//     session = req.session;
-//     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-//     goalID = req.body["goalID"];  //get all variables out of the form
-//     goalAmount = req.body["goalAmount"];
-//     goalProgress = req.body["goalProgress"];
-//     goalName = req.body["goalName"];
-//     goalSlider = req.body["goalSlider"];
-//
-//
+router.post('/delete', async function(req, res, next) {
+    console.log(req.url);
+    console.log(req.body);
+
+    session = req.session;
+    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    let gID = req.body["goalID"];  //get all variables out of the form
+
+    removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+    let query = await goalModel.findAll({raw: true});
+    console.log(query);
+    console.log("***Goal***" + gID + " Deleted");
+    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+});
+
+
 //     correct = true;
 //     if(!/^([A-Za-z]{1,15})$/.test(goalName)) {
 //         res.render('Goals', {path: req.originalUrl});

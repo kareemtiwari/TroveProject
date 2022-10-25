@@ -8,6 +8,14 @@ class Events extends Model {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+            userID: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            calendarID: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
             eventName: {
                 type: DataTypes.STRING,
                 allowNull: false
