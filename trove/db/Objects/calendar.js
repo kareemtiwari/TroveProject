@@ -12,7 +12,11 @@ class Calendar extends Model {
         Calendar.init({
             // Model attributes are defined here
             CalendarID: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            UserID: {
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
             EventsList: {
@@ -22,7 +26,7 @@ class Calendar extends Model {
         }, {
             // Other model options go here
             sequelize, // We need to pass the connection instance
-            modelName: 'User' // We need to choose the model name
+            modelName: 'Calendar' // We need to choose the model name
         });
     }
 }
