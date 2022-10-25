@@ -43,8 +43,8 @@ router.post('/', async function(req, res, next) {
     }
 
 
-    newEvent = eventsModel.create({eventID:0, eventName:eName, eventDay:eDay, eventStartTime:eStart,
-        eventEndTime:eEnd, eventWage:eWage});
+    newEvent = eventsModel.create({eventID:0, userID:1, calendarID:0, eventName:eName, eventDay:eDay,
+        eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
     let query = await eventsModel.findAll({raw : true});
     console.log(query);
