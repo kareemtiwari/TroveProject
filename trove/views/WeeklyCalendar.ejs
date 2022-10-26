@@ -136,74 +136,19 @@
         <input id="eHourly" name="eHourly" type="text"><br><br>
         <p style="color:#FF0000;"> <%= wage %></p>
 
-        <button type="submit">Create Event</button> <!--onclick="addEvent()"-->
+        <button type="submit">Create Event</button>
     </fieldset>
 </form><br>
 
 <h4 style="color:#00FF00"> <%= saved %></h4>
 <div> <%= log %></div>
-<!--<p>Events List: <span id="test3"></span></p>-->
 </body>
 <script>
-class Calendar {
-
-    /**
-     * The Calendar Constructor - Empty calendar will be created for the user.
-     * @param UserID - type: int - Key to link the calendar to the user
-     * @param CalendarID - type: int - Unique key to identify the calendar
-     * @param EventsList - type: list - An initially empty list representing the user's weekly calendar
-     *
-     */
-    constructor(UserID, CalendarID, EventsList) {
-        this.UserID = UserID;
-        this.CalendarID = CalendarID;
-        this.EventsList = EventsList;
-    }
-}
-
-// Temp Events List
-let TempEventsList = [];
-
-/**
- * Function loops through the TempEventsList and displays each event to the id="test3" section  in the html.
- */
-function updateTest3() {
-    let text = "<ul>";
-    for (let i = 0; i < TempEventsList.length; i++) {
-        text += "<li>" + TempEventsList[i].printEvent() + "</li>";
-    }
-    text += "</ul>";
-    document.getElementById("test3").innerHTML = text;
-}
-
-/**
- * Function for when a user clicks the "Add Event" button. Instantiates a new Event with the user-entered data and
- * displays it on the page.
- */
-function addEvent() {
-    let newEvent = new Event();
-    let eventName = document.getElementById("eName").value;
-    let eventDay = document.getElementById("eDay").value;
-    let eventStart = document.getElementById("eStart").value;
-    let eventEnd = document.getElementById("eEnd").value;
-    let eventWage = document.getElementById("eHourly").value;
-    newEvent.setEventName(eventName);
-    eventDay = parseInt(eventDay);
-    newEvent.setDay(eventDay);
-    eventStart = parseFloat(eventStart.replace(",","."));
-    newEvent.setStartTime(eventStart);
-    eventEnd = parseFloat(eventEnd.replace(",","."));
-    newEvent.setEndTime(eventEnd);
-    eventWage = parseFloat(eventWage.replace(",","."));
-    newEvent.setHourlyWage(eventWage);
-    TempEventsList.push(newEvent);
-}
-
 /**
  * Function the runs on document load.
  */
 function main() {
-    updateTest3();
+
 }
 </script>
 </html>
