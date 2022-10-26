@@ -14,7 +14,8 @@ router.get('/', async function(req, res, next) {
     console.log(query);
     var eventsList = [];
     for(let i=0; i < query.length; i++) {
-        let newEvent = new Event(i.eventName, i.eventDay, i.eventStartTime, i.eventEndTime, i.eventWage);
+        let newEvent = new Event(query[i].eventName, query[i].eventDay, query[i].eventStartTime,
+            query[i].eventEndTime, query[i].eventWage);
         eventsList.push(newEvent);
     }
     let text = "<ul>";
