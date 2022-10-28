@@ -1,297 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Goals</title>
+    <meta charset="UTF-8">
+    <title>Goals</title>
 </head>
 <body>
 <h1><b>Trove Goals</b></h1>
-<<<<<<< HEAD
-<form  method="post" action='/TroveAccounting' name="myForm" id="myForm">
-=======
 <form  method="post" name="myForm" id="myForm">
->>>>>>> main
-  <fieldset>
+    <fieldset>
 
-    <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
-    <button type="submit" formaction="/TroveAccounting/delete">Delete Goal</button>
+        <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
+        <button type="submit" formaction="/TroveAccounting/delete">Delete Goal</button>
 
-<!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
+        <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
-  <div>
-    <p><b>Goal </b></p>
-    <label for="goalID">Goal Number:</label>
-    <select id="goalID" name="goalID">
-      <option id="option1" value="1" >Goal1</option>
-      <option id="option2"value="2" >Goal2</option>
-      <option id="option3"value="3" >Goal3</option>
-    </select>
-    </br>
-    <label for="goalAmount">Enter Goal Amount:</label>
-<<<<<<< HEAD
-    <input type="text" id="goalAmount" value="">
-    </br>
-    <label for="goalProgress">Enter Goal Progress:</label>
-    <input type="text" id="goalProgress"value="" >
-    </br>
-    <label for="goalName">Enter Goal Name:</label>
-    <input type="text" id="goalName" value="">
-=======
-    <input type="text" id="goalAmount" name="goalAmount">
-    </br>
-    <label for="goalProgress">Enter Goal Progress:</label>
-    <input type="text" id="goalProgress" name="goalProgress" >
-    </br>
-    <label for="goalName">Enter Goal Name:</label>
-    <input type="text" id="goalName" name="goalName">
->>>>>>> main
-    </br>
-    <label for="goalSlider">Enter Priority:</label>
-    <input type="range" id="goalSlider" name="goalSlider"
-           min="20" max="100" value="100" step="10">
-  </div>
-  </fieldset>
+        <div>
+            <p><b>Goal </b></p>
+            <label for="goalID">Goal Number:</label>
+            <select id="goalID" name="goalID">
+                <option id="option1" value="1" >Goal1</option>
+                <option id="option2"value="2" >Goal2</option>
+                <option id="option3"value="3" >Goal3</option>
+            </select>
+            </br>
+            <label for="goalAmount">Enter Goal Amount:</label>
+            <input type="text" id="goalAmount" name="goalAmount">
+            </br>
+            <label for="goalProgress">Enter Goal Progress:</label>
+            <input type="text" id="goalProgress" name="goalProgress" >
+            </br>
+            <label for="goalName">Enter Goal Name:</label>
+            <input type="text" id="goalName" name="goalName">
+            </br>
+            <label for="goalSlider">Enter Priority:</label>
+            <input type="range" id="goalSlider" name="goalSlider"
+                   min="20" max="100" value="100" step="10">
+        </div>
+    </fieldset>
 </form>
 
 <%if(gd[0]["has"]){%>
 <div id="goal1Block" >
-  <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
-  <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
-  <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
-  <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
-  <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-  <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
+    <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+    <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+    <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+    <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
 <%}%>
 <%if(gd[1]["has"]){%>
 <div id="goal2Block" >
-  <p> Goal #: <%=gd[1]["goalID"]%> <span id="goalIDDisplay"></span></p>
-  <p> Goal Name: <%=gd[1]["goalName"]%> <span id="goalIDDisplay2"></span></p>
-  <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
-  <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
-  <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-  <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <p> Goal #: <%=gd[1]["goalID"]%> <span id="goalIDDisplay"></span></p>
+    <p> Goal Name: <%=gd[1]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+    <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+    <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+    <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
 <%}%>
 <%if(gd[2]["has"]){%>
 <div id="goal3Block" >
-  <p> Goal #: <%=gd[2]["goalID"]%> <span id="goalIDDisplay"></span></p>
-  <p> Goal Name: <%=gd[2]["goalName"]%> <span id="goalIDDisplay2"></span></p>
-  <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
-  <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
-  <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-  <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <p> Goal #: <%=gd[2]["goalID"]%> <span id="goalIDDisplay"></span></p>
+    <p> Goal Name: <%=gd[2]["goalName"]%> <span id="goalIDDisplay2"></span></p>
+    <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
+    <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
+    <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
 </div>
 <%}%>
 </body>
 <script>
-  class Goal{
-    constructor(goalNum,goalName,goalAmount,goalProgress,sliderNum) {
-      this.goalNum = goalNum;
-      this.goalName = goalName;
-      this.goalAmount = goalAmount;
-      this.goalProgress = goalProgress;
-      this.sliderNum = sliderNum;
-    }
-    getGoalNum(){
-      return this.goalNum;
-    }
-    getGoalName(){
-      return this.goalName;
-    }
-    getGoalAmount(){
-      return this.goalAmount;
-    }
-    getGoalProgress(){
-      return this.goalProgress;
-    }
-    getGliderNum(){
-      return this.sliderNum;
-    }
+    class Goal{
+        constructor(goalNum,goalName,goalAmount,goalProgress,sliderNum) {
+            this.goalNum = goalNum;
+            this.goalName = goalName;
+            this.goalAmount = goalAmount;
+            this.goalProgress = goalProgress;
+            this.sliderNum = sliderNum;
+        }
+        getGoalNum(){
+            return this.goalNum;
+        }
+        getGoalName(){
+            return this.goalName;
+        }
+        getGoalAmount(){
+            return this.goalAmount;
+        }
+        getGoalProgress(){
+            return this.goalProgress;
+        }
+        getGliderNum(){
+            return this.sliderNum;
+        }
 
 
-    /* Needs setters*/
+        /* Needs setters*/
+        /**
+         *
+         * This function adds goals to the Accounting page.
+         * @param getTrove
+         * returns nothing currently
+         *
+         */
+
+
+
+        /**
+         * This function deletes goals to the Accounting page.
+         * @param getTrove
+         */
+        delGoal(getTrove){
+
+        }
+
+        /**
+         * This function adds funds to the Accounting page.
+         * @param workHours
+         * @param wage
+         * @param expenditures
+         */
+        addFunds(workHours, wage, expenditures){
+
+        }
+        /**
+         * This function deletes funds on a goal in the Accounting page.
+         * @param workHours
+         * @param wage
+         * @param expenditures
+         */
+        delFunds(workHours, wage, expenditures){
+
+        }
+        /**
+         * This function allows the user to prioritize their goals by a scalable amount.
+         * @param workHours
+         * @param wage
+         * @param expenditures
+         */
+        sliderBar(workHours, wage, expenditures){
+
+        }
+    }
+    /**
+     THIS IS THE ADDGOALS FUNCTION!
+     I named it wrong!
+     */
+
+    var add = false;
+    var del = false;
+
+    function calculate(){
+        // if (count <= 3){
+        //   if (count == 1){
+        //     var option1 = document.getElementById("option1");
+        //     option1.disabled = false
+        //     count++
+        //   }
+        //   else if (count == 2){
+        //     var option2 = document.getElementById("option2");
+        //     option2.disabled = false
+        //     count++
+        //   }
+        //   else if (count == 3){
+        //     var option3 = document.getElementById("option3");
+        //     option3.disabled = false
+        //   }
+        // }
+        // return int(count)
+
+    }
+
     /**
      *
-     * This function adds goals to the Accounting page.
-     * @param getTrove
-     * returns nothing currently
-     *
+     * @returns {*}
      */
+    function addGoal(){
+        let goalNum = document.getElementById("goalID").value;
+        let goalName = document.getElementById("goalName").value;
+        let goalAmount = document.getElementById("goalAmount").value;
+        let goalProgress = document.getElementById("goalProgress").value;
+        let goalSlider = document.getElementById("goalSlider").value;
+        let newGoal = new Goal(goalName,goalNum,goalAmount,goalProgress,goalSlider);
 
+        let form = document.getElementById('myForm');
+        form.action = '/TroveAccounting/add';
+        form.submit();
+        form.reset();
 
+        <!--
+        clearID = document.getElementById("goalID")
+        clearID.value = ""
+        clearNum = document.getElementById("goalName")
+        clearNum.value = ""
+        clearAmount = document.getElementById("goalAmount")
+        clearAmount.value = ""
+        clearProgress = document.getElementById("goalProgress")
+        clearProgress.value = ""
+        clearSlider = document.getElementById("goalSlider")
+        clearSlider.value = 100
+         -->
 
-    /**
-     * This function deletes goals to the Accounting page.
-     * @param getTrove
+        if (goalNum == "1"){
+            var open = document.getElementById("goal1Block");
+            open.style.display = "flex"
+            var open = document.getElementById("goal1Block");
+            open.style.flexDirection = "column"
+            document.getElementById("goalIDDisplay").innerHTML = goalNum;
+            document.getElementById("goalIDDisplay2").innerHTML = goalName;
+            document.getElementById("goalIDDisplay3").innerHTML = goalAmount;
+            document.getElementById("goalIDDisplay4").innerHTML = goalProgress;
+            document.getElementById("goalIDDisplay5").innerHTML = goalSlider;
+        }
+        else if (goalNum == "2"){
+            var open = document.getElementById("goal2Block");
+            open.style.display = "flex"
+            var open = document.getElementById("goal2Block");
+            open.style.flexDirection = "column"
+            document.getElementById("goal2IDDisplay").innerHTML = goalNum;
+            document.getElementById("goal2IDDisplay2").innerHTML = goalName;
+            document.getElementById("goal2IDDisplay3").innerHTML = goalAmount;
+            document.getElementById("goal2IDDisplay4").innerHTML = goalProgress;
+            document.getElementById("goal2IDDisplay5").innerHTML = goalSlider;
+        }
+        else if (goalNum == "3"){
+            var open = document.getElementById("goal3Block");
+            open.style.display = "flex"
+            var open = document.getElementById("goal3Block");
+            open.style.flexDirection = "column"
+            document.getElementById("goal3IDDisplay").innerHTML = goalNum;
+            document.getElementById("goal3IDDisplay2").innerHTML = goalName;
+            document.getElementById("goal3IDDisplay3").innerHTML = goalAmount;
+            document.getElementById("goal3IDDisplay4").innerHTML = goalProgress;
+            document.getElementById("goal3IDDisplay5").innerHTML = goalSlider;
+        }
+    }
+    function delGoal(){
+        goalID = document.getElementById("goalID").value
+        clearID = document.getElementById("goalID")
+        clearID.value = ""
+        clearNum = document.getElementById("goalName")
+        clearNum.value = ""
+        clearAmount = document.getElementById("goalAmount")
+        clearAmount.value = ""
+        clearProgress = document.getElementById("goalProgress")
+        clearProgress.value = ""
+        clearSlider = document.getElementById("goalSlider")
+        clearSlider.value = 100
+        if (goalID == "1"){
+            //var option1 = document.getElementById("option1");
+            hideBlock1 = document.getElementById("goal1Block")
+            hideBlock1.style.display = "None"
+        }
+        else if (goalID == "2"){
+            //var option2 = document.getElementById("option2");
+            hideBlock2 = document.getElementById("goal2Block")
+            hideBlock2.style.display = "None"
+
+        }
+        else if (goalID == "3"){
+            //var option3 = document.getElementById("option3");
+            hideBlock3 = document.getElementById("goal3Block")
+            hideBlock3.style.display = "None"
+
+        }
+    }
+    /*
+    Math Equations is meant to make the limit of what the user should give
      */
-    delGoal(getTrove){
+    function MathEquations(income,weekHours,expendAvg) {
 
+        monthyWage = ((((income * weekHours) - ((income * weekHours) - expendAvg) / 5)) * 2);
+        troveAllowance = monthlyWage / 10;
+
+        return troveAllowance;
     }
-
-    /**
-     * This function adds funds to the Accounting page.
-     * @param workHours
-     * @param wage
-     * @param expenditures
-     */
-    addFunds(workHours, wage, expenditures){
-
+    function AddFunds() {
+        limit = MathEquations(12, 40, 100);
     }
-    /**
-     * This function deletes funds on a goal in the Accounting page.
-     * @param workHours
-     * @param wage
-     * @param expenditures
-     */
-    delFunds(workHours, wage, expenditures){
-
-    }
-    /**
-     * This function allows the user to prioritize their goals by a scalable amount.
-     * @param workHours
-     * @param wage
-     * @param expenditures
-     */
-    sliderBar(workHours, wage, expenditures){
-
-    }
-  }
-  /**
-   THIS IS THE ADDGOALS FUNCTION!
-   I named it wrong!
-   */
-
-  var add = false;
-  var del = false;
-
-  function calculate(){
-    // if (count <= 3){
-    //   if (count == 1){
-    //     var option1 = document.getElementById("option1");
-    //     option1.disabled = false
-    //     count++
-    //   }
-    //   else if (count == 2){
-    //     var option2 = document.getElementById("option2");
-    //     option2.disabled = false
-    //     count++
-    //   }
-    //   else if (count == 3){
-    //     var option3 = document.getElementById("option3");
-    //     option3.disabled = false
-    //   }
-    // }
-    // return int(count)
-
-  }
-
-  /**
-   *
-   * @returns {*}
-   */
-  function addGoal(){
-    let goalNum = document.getElementById("goalID").value;
-    let goalName = document.getElementById("goalName").value;
-    let goalAmount = document.getElementById("goalAmount").value;
-    let goalProgress = document.getElementById("goalProgress").value;
-    let goalSlider = document.getElementById("goalSlider").value;
-    let newGoal = new Goal(goalName,goalNum,goalAmount,goalProgress,goalSlider);
-
-    let form = document.getElementById('myForm');
-    form.action = '/TroveAccounting/add';
-    form.submit();
-    form.reset();
-
-    <!--
-    clearID = document.getElementById("goalID")
-    clearID.value = ""
-    clearNum = document.getElementById("goalName")
-    clearNum.value = ""
-    clearAmount = document.getElementById("goalAmount")
-    clearAmount.value = ""
-    clearProgress = document.getElementById("goalProgress")
-    clearProgress.value = ""
-    clearSlider = document.getElementById("goalSlider")
-    clearSlider.value = 100
-     -->
-
-    if (goalNum == "1"){
-      var open = document.getElementById("goal1Block");
-      open.style.display = "flex"
-      var open = document.getElementById("goal1Block");
-      open.style.flexDirection = "column"
-      document.getElementById("goalIDDisplay").innerHTML = goalNum;
-      document.getElementById("goalIDDisplay2").innerHTML = goalName;
-      document.getElementById("goalIDDisplay3").innerHTML = goalAmount;
-      document.getElementById("goalIDDisplay4").innerHTML = goalProgress;
-      document.getElementById("goalIDDisplay5").innerHTML = goalSlider;
-    }
-    else if (goalNum == "2"){
-      var open = document.getElementById("goal2Block");
-      open.style.display = "flex"
-      var open = document.getElementById("goal2Block");
-      open.style.flexDirection = "column"
-      document.getElementById("goal2IDDisplay").innerHTML = goalNum;
-      document.getElementById("goal2IDDisplay2").innerHTML = goalName;
-      document.getElementById("goal2IDDisplay3").innerHTML = goalAmount;
-      document.getElementById("goal2IDDisplay4").innerHTML = goalProgress;
-      document.getElementById("goal2IDDisplay5").innerHTML = goalSlider;
-    }
-    else if (goalNum == "3"){
-      var open = document.getElementById("goal3Block");
-      open.style.display = "flex"
-      var open = document.getElementById("goal3Block");
-      open.style.flexDirection = "column"
-      document.getElementById("goal3IDDisplay").innerHTML = goalNum;
-      document.getElementById("goal3IDDisplay2").innerHTML = goalName;
-      document.getElementById("goal3IDDisplay3").innerHTML = goalAmount;
-      document.getElementById("goal3IDDisplay4").innerHTML = goalProgress;
-      document.getElementById("goal3IDDisplay5").innerHTML = goalSlider;
-    }
-  }
-  function delGoal(){
-    goalID = document.getElementById("goalID").value
-    clearID = document.getElementById("goalID")
-    clearID.value = ""
-    clearNum = document.getElementById("goalName")
-    clearNum.value = ""
-    clearAmount = document.getElementById("goalAmount")
-    clearAmount.value = ""
-    clearProgress = document.getElementById("goalProgress")
-    clearProgress.value = ""
-    clearSlider = document.getElementById("goalSlider")
-    clearSlider.value = 100
-    if (goalID == "1"){
-      //var option1 = document.getElementById("option1");
-      hideBlock1 = document.getElementById("goal1Block")
-      hideBlock1.style.display = "None"
-    }
-    else if (goalID == "2"){
-      //var option2 = document.getElementById("option2");
-      hideBlock2 = document.getElementById("goal2Block")
-      hideBlock2.style.display = "None"
-
-    }
-    else if (goalID == "3"){
-      //var option3 = document.getElementById("option3");
-      hideBlock3 = document.getElementById("goal3Block")
-      hideBlock3.style.display = "None"
-
-    }
-  }
-  /*
-  Math Equations is meant to make the limit of what the user should give
-   */
-  function MathEquations(income,weekHours,expendAvg) {
-
-    monthyWage = ((((income * weekHours) - ((income * weekHours) - expendAvg) / 5)) * 2);
-    troveAllowance = monthlyWage / 10;
-
-    return troveAllowance;
-  }
-  function AddFunds() {
-    limit = MathEquations(12, 40, 100);
-  }
 </script>
 </html>
