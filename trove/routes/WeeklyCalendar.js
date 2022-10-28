@@ -11,27 +11,36 @@ router.get('/', async function(req, res, next) {
         },
         raw : true
     });
+    console.log("*** Get all user Events ***");
     console.log(query);
-    var eventsList = [];
-    for(let i=0; i < query.length; i++) {
-        let newEvent = new Event(query[i].eventName, query[i].eventDay, query[i].eventStartTime,
-            query[i].eventEndTime, query[i].eventWage);
-        eventsList.push(newEvent);
+
+    let eventsList = getEventsList(query);
+    console.log(eventsList);
+    var dispList = ['','','','','','',''];
+    for(let i=0; i<eventsList.length;i++) {
+        if(eventsList[i].length===0) {
+            dispList[i] = "<ul><li>No Events On This Day</li></ul>";
+        }
+        else {
+            let text = "<ul>"
+            for(let j=0;j<eventsList[i].length;j++) {
+                text += "<li>" + eventsList[i][j].printEvent() + "</li>";
+            }
+            text += "</ul>";
+            dispList[i] = text;
+        }
     }
-    let text = "<ul>";
-    for(let i=0; i<eventsList.length; i++) {
-        text += "<li>" + eventsList[i].printEvent() + "</li>";
-    }
-    text += "</ul>";
-    res.render('WeeklyCalendar', { log:text, name:'', saved:'', end:'', wage:'', title: 'Express' ,
-        path: req.originalUrl});
+
+    res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], path: req.originalUrl});
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/addEvent', async function(req, res, next) {
     /* Get and Check the New Event Name */
     let eName = req.body["eName"];
     if(eName.length === 0){
-        res.render('WeeklyCalendar', {log:'', name: 'Event must be named.', saved:'', end:'', path: req.originalUrl});
+        res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:'', mon:'', tue:'',
+            wed:'', thu:'', fri:'', sat:'',path: req.originalUrl});
         return;
     }
 
@@ -47,8 +56,8 @@ router.post('/', async function(req, res, next) {
     let eEnd = req.body["eEnd"];
     eEnd = parseFloat(eEnd.replace(",","."));
     if(eEnd <= eStart){
-        res.render('WeeklyCalendar', {log:'', name: '', saved:'', end:'Event end time must be after the start time.',
-            wage:'', path: req.originalUrl});
+        res.render('WeeklyCalendar', {name: '', end:'Event end time must be after the start time.',
+            wage:'', sun:'', mon:'', tue:'', wed:'', thu:'', fri:'', sat:'', path: req.originalUrl});
         return;
     }
 
@@ -56,21 +65,31 @@ router.post('/', async function(req, res, next) {
     let eWage = req.body["eHourly"];
     eWage = parseFloat(eWage.replace(",","."));
     if(isNaN(eWage)) {
-        res.render('WeeklyCalendar', {log:'', name: '', saved:'', end:'',
-            wage:'Hourly Wage must be a valid number.', path: req.originalUrl});
+        res.render('WeeklyCalendar', {name: '', end:'', wage:'Hourly Wage must be a valid number.',
+            sun:'', mon:'', tue:'', wed:'', thu:'', fri:'', sat:'',path: req.originalUrl});
         return;
     }
 
 
-    newEvent = eventsModel.create({eventID:0, userID:1, calendarID:0, eventName:eName, eventDay:eDay,
+    newEvent = eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:eName, eventDay:eDay,
         eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
     let query = await eventsModel.findAll({raw : true});
     console.log(query);
     console.log("***New Event " + eName + " Created***");
-    res.render('WeeklyCalendar', {log:'', name: '', saved: 'Event "' + eName + '" Saved', end:'', wage:'',
-        path: req.originalUrl});
+    res.redirect("/Weekly-Calendar");
 });
+
+function getEventsList(query) {
+    var eventsList = [[],[],[],[],[],[],[]];
+    for(let i=0; i < query.length; i++) {
+        let newEvent = new Event(query[i].eventName, query[i].eventDay, query[i].eventStartTime,
+            query[i].eventEndTime, query[i].eventWage);
+        eventsList[newEvent.getDay()].push(newEvent);
+        }
+    return eventsList;
+}
+
 
 class Event {
 
