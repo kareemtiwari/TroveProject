@@ -27,7 +27,7 @@ router.get('/', async function(req, res, next) {
         path: req.originalUrl});
 });
 
-router.post('/', async function(req, res, next) {
+router.post('*', async function(req, res, next) {
     /* Get and Check the New Event Name */
     let eName = req.body["eName"];
     if(eName.length === 0){
@@ -65,12 +65,42 @@ router.post('/', async function(req, res, next) {
     newEvent = eventsModel.create({eventID:0, userID:1, calendarID:0, eventName:eName, eventDay:eDay,
         eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
-    let query = await eventsModel.findAll({raw : true});
+
+    let eventNames = [];
+    let query = await eventNames.update({},{
+        where:{
+            userID: 0
+        },
+        raw : true});
+    for(i=0;i<query.length;i++){
+        eventNames.push(query[i].eventName)
+
+    }
     console.log(query);
     console.log("***New Event " + eName + " Created***");
-    res.render('WeeklyCalendar', {log:'', name: '', saved: 'Event "' + eName + '" Saved', end:'', wage:'',
-        path: req.originalUrl});
+    res.redirect('/WeeklyCalendar');
+
 });
+
+// router.post('/deleteEvent', async function(req, res, next) {
+//
+//
+//
+//  });
+//
+// router.post('/editEvent', async function(req, res, next) {
+//     let query = await eventsModel.findAll({
+//         where: {
+//             userID: 0
+//         },
+//         raw : true
+//     });
+//     let eventNames = [];
+//     for(i=0;i<query.length;i++){
+//         eventNames.push(query[i].eventName)
+//
+//     }
+// });
 
 class Event {
 
