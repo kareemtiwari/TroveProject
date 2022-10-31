@@ -110,14 +110,24 @@ router.post('/addFunds', async function(req, res, next) {
         },
         raw: true
     });
+
     const goal = query[0];
+
     console.log(goal);
-///The remove and add destroy the values and add more
-    removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-    newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: goal.goalProgress += gProgress, goalName: gName,goalSlider: gSlider});
 
     console.log(query);
-    console.log("***Goal***" + gID + " Funds Added");
+///The remove and add destroy the values and add more values to update the progress
+    if (goal.goalProgress+gProgress >= goal.goalAmount){
+        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+        console.log("Goal number"+ gID +"COMPLETED!");
+    }
+    else{
+        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+        newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: goal.goalProgress += gProgress, goalName: gName,goalSlider: gSlider});
+        console.log("***Goal***" + gID + " Funds Added");
+    }
+
+
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
 
 });
