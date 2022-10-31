@@ -16,31 +16,31 @@ router.get('/', async function(req, res, next) {
 
     let eventsList = getEventsList(query);
     console.log(eventsList);
-    var dispList = ['','','','','','',''];
-    for(let i=0; i<eventsList.length;i++) {
-        if(eventsList[i].length===0) {
-            dispList[i] = "<ul><li>No Events On This Day</li></ul>";
-        }
-        else {
-            let text = "<ul>"
-            for(let j=0;j<eventsList[i].length;j++) {
-                text += "<li>" + eventsList[i][j].printEvent() + "</li>";
-            }
-            text += "</ul>";
-            dispList[i] = text;
-        }
-    }
+    let dispList = getDsiplayList(eventsList);
 
     res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
         tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], path: req.originalUrl});
 });
 
 router.post('/addEvent', async function(req, res, next) {
+    let query = await eventsModel.findAll({
+        where: {
+            userID: 0
+        },
+        raw : true
+    });
+    console.log("*** Get all user Events ***");
+    console.log(query);
+
+    let eventsList = getEventsList(query);
+    console.log(eventsList);
+    let dispList = getDsiplayList(eventsList);
     /* Get and Check the New Event Name */
     let eName = req.body["eName"];
     if(eName.length === 0){
-        res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:'', mon:'', tue:'',
-            wed:'', thu:'', fri:'', sat:'',path: req.originalUrl});
+        res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:dispList[0],
+            mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
+            sat:dispList[6], path: req.originalUrl});
         return;
     }
 
@@ -57,7 +57,8 @@ router.post('/addEvent', async function(req, res, next) {
     eEnd = parseFloat(eEnd.replace(",","."));
     if(eEnd <= eStart){
         res.render('WeeklyCalendar', {name: '', end:'Event end time must be after the start time.',
-            wage:'', sun:'', mon:'', tue:'', wed:'', thu:'', fri:'', sat:'', path: req.originalUrl});
+            wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+            fri:dispList[5], sat:dispList[6], path: req.originalUrl});
         return;
     }
 
@@ -66,7 +67,8 @@ router.post('/addEvent', async function(req, res, next) {
     eWage = parseFloat(eWage.replace(",","."));
     if(isNaN(eWage)) {
         res.render('WeeklyCalendar', {name: '', end:'', wage:'Hourly Wage must be a valid number.',
-            sun:'', mon:'', tue:'', wed:'', thu:'', fri:'', sat:'',path: req.originalUrl});
+            sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
+            sat:dispList[6],path: req.originalUrl});
         return;
     }
 
@@ -74,7 +76,6 @@ router.post('/addEvent', async function(req, res, next) {
     newEvent = eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:eName, eventDay:eDay,
         eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
-    let query = await eventsModel.findAll({raw : true});
     console.log(query);
     console.log("***New Event " + eName + " Created***");
     res.redirect("/Weekly-Calendar");
@@ -90,6 +91,23 @@ function getEventsList(query) {
     return eventsList;
 }
 
+function getDsiplayList(eventsList) {
+    var dispList = ['','','','','','',''];
+    for(let i=0; i<eventsList.length;i++) {
+        if(eventsList[i].length===0) {
+            dispList[i] = "<ul><li>No Events On This Day</li></ul>";
+        }
+        else {
+            let text = "<ul>"
+            for(let j=0;j<eventsList[i].length;j++) {
+                text += "<li>" + eventsList[i][j].printEvent() + "</li>";
+            }
+            text += "</ul>";
+            dispList[i] = text;
+        }
+    }
+    return dispList;
+}
 
 class Event {
 
@@ -263,31 +281,7 @@ class Event {
     printEvent() {
         let s = "";
         s += this.EventName + ", ";
-        switch(this.Day) {
-            case 0:
-                s += "Sunday, ";
-                break;
-            case 1:
-                s += "Monday, ";
-                break;
-            case 2:
-                s += "Tuesday, ";
-                break;
-            case 3:
-                s += "Wednesday, ";
-                break;
-            case 4:
-                s += "Thursday, ";
-                break;
-            case 5:
-                s += "Friday, ";
-                break;
-            case 6:
-                s += "Saturday, ";
-                break;
-        }
-        s += "Start: " + this.getStartTime() + ", ";
-        s += "End: " + this.getEndTime() + ", ";
+        s += this.getStartTime() + " - " + this.getEndTime() + ", ";
         s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
         s += "Event Length: " + this.calculateNumHours().toString() + " hours, ";
         s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
