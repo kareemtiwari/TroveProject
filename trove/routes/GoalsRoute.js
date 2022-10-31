@@ -55,11 +55,7 @@ router.post('/add', async function(req, res, next) {
     let gSlider = req.body["goalSlider"];
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
-    // correct = true;
-    // if(!/^([A-Za-z]{1,15})$/.test(goalName)) {
-    //     res.render('Goals', {remessage: 'Goal Name must be 1-15 Letters only', path: req.originalUrl});
-    //     return;
-    // }
+
     newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: gProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
     console.log(query);
@@ -88,21 +84,35 @@ router.post('/delete', async function(req, res, next) {
     console.log("***Goal***" + gID + " Deleted");
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
 });
+router.post('/addFunds', async function(req, res, next) {
+    console.log(req.url);
+    console.log(req.body);
+
+    session = req.session;
+    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    let gID = req.body["tempID"];  //get all variables out of the form
+    let gProgress = req.body["goalAddFunds"];
+    gProgress = parseInt(gProgress);
+    console.log(gID, gProgress);
 
 
-//     correct = true;
-//     if(!/^([A-Za-z]{1,15})$/.test(goalName)) {
-//         res.render('Goals', {path: req.originalUrl});
-//         return;
-//     }
-//
-//     if(correct){
-//         //update records
-//         await accountModel.destroy({goalID: fName, lastName: lName, dob:dateb},{where:{userID:uid}});
-//         res.redirect('/Dashboard');
-//     }else{
-//         res.render('Goals', {path: req.originalUrl});
-//     }
-// });
+    // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
+    // let query = await goalModel.findAll({raw:true});
+    let query = await goalModel.findAll({
+        where: {
+            userID: uid,
+            goalID: gID,
+        },
+        raw: true
+    });
+    let goal = query[0];
+    console.log(goal);
+    goal.goalProgress += gProgress
+    await goal.save;
+    console.log(query);
+    console.log("***Goal***" + gID + " Funds Added");
+    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+
+});
 
 module.exports = router;  //This allows your router to be used in the main app file

@@ -8,10 +8,8 @@
 <h1><b>Trove Goals</b></h1>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
-
         <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
         <button type="submit" formaction="/TroveAccounting/delete">Delete Goal</button>
-
         <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
         <div>
@@ -38,7 +36,6 @@
         </div>
     </fieldset>
 </form>
-
 <%if(gd[0]["has"]){%>
 <div id="goal1Block" >
     <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
@@ -46,7 +43,10 @@
     <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <form  method="post" name="myForm" id="myForm">
+    <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <input type="hidden" value="<%=gd[0]["goalID"]%>" name="tempID" >
+    </form>
 </div>
 <%}%>
 <%if(gd[1]["has"]){%>
@@ -56,7 +56,8 @@
     <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <label for="goalAddFunds"><button>Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+
 </div>
 <%}%>
 <%if(gd[2]["has"]){%>
@@ -66,11 +67,14 @@
     <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-    <button type="button" onclick="addFunds()">Add Funds Toward Goal</button>
+    <label for="goalAddFunds"><button>Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+
+
 </div>
 <%}%>
 </body>
 <script>
+
     class Goal{
         constructor(goalNum,goalName,goalAmount,goalProgress,sliderNum) {
             this.goalNum = goalNum;
@@ -151,26 +155,6 @@
     var add = false;
     var del = false;
 
-    function calculate(){
-        // if (count <= 3){
-        //   if (count == 1){
-        //     var option1 = document.getElementById("option1");
-        //     option1.disabled = false
-        //     count++
-        //   }
-        //   else if (count == 2){
-        //     var option2 = document.getElementById("option2");
-        //     option2.disabled = false
-        //     count++
-        //   }
-        //   else if (count == 3){
-        //     var option3 = document.getElementById("option3");
-        //     option3.disabled = false
-        //   }
-        // }
-        // return int(count)
-
-    }
 
     /**
      *
