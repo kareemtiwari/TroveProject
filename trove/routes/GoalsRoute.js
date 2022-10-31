@@ -92,8 +92,13 @@ router.post('/addFunds', async function(req, res, next) {
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
     let gID = req.body["tempID"];  //get all variables out of the form
     let gProgress = req.body["goalAddFunds"];
+    let goalProgress = req.body["goalProgress"];
+    let gName = req.body["tempName"];
+    let gAmount = req.body["tempAmount"];
+    let gSlider = req.body["tempSlider"];
     gProgress = parseInt(gProgress);
     console.log(gID, gProgress);
+
 
 
     // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
@@ -105,10 +110,12 @@ router.post('/addFunds', async function(req, res, next) {
         },
         raw: true
     });
-    let goal = query[0];
+    const goal = query[0];
     console.log(goal);
-    goal.goalProgress += gProgress
-    await goal.save;
+///The remove and add destroy the values and add more
+    removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+    newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: goal.goalProgress += gProgress, goalName: gName,goalSlider: gSlider});
+
     console.log(query);
     console.log("***Goal***" + gID + " Funds Added");
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all

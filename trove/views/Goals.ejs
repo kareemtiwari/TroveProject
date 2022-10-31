@@ -37,7 +37,7 @@
     </fieldset>
 </form>
 <%if(gd[0]["has"]){%>
-<div id="goal1Block" >
+<div id="goal1Block">
     <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
     <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
     <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
@@ -46,6 +46,10 @@
     <form  method="post" name="myForm" id="myForm">
     <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
         <input type="hidden" value="<%=gd[0]["goalID"]%>" name="tempID" >
+        <input type="hidden" value="<%=gd[0]["goalName"]%>" name="tempName" >
+        <input type="hidden" value="<%=gd[0]["goalAmount"]%>" name="tempAmount" >
+        <input type="hidden" value="<%=gd[0]["goalProgress"]%>" name="tempProgress" >
+        <input type="hidden" value="<%=gd[0]["goalSlider"]%>" name="tempSlider" >
     </form>
 </div>
 <%}%>
@@ -56,8 +60,14 @@
     <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-    <label for="goalAddFunds"><button>Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
-
+    <form  method="post" name="myForm" id="myForm">
+        <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <input type="hidden" value="<%=gd[1]["goalID"]%>" name="tempID" >
+        <input type="hidden" value="<%=gd[1]["goalName"]%>" name="tempName" >
+        <input type="hidden" value="<%=gd[1]["goalAmount"]%>" name="tempAmount" >
+        <input type="hidden" value="<%=gd[1]["goalProgress"]%>" name="tempProgress" >
+        <input type="hidden" value="<%=gd[1]["goalSlider"]%>" name="tempSlider" >
+    </form>
 </div>
 <%}%>
 <%if(gd[2]["has"]){%>
@@ -67,8 +77,14 @@
     <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
-    <label for="goalAddFunds"><button>Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
-
+    <form  method="post" name="myForm" id="myForm">
+        <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <input type="hidden" value="<%=gd[2]["goalID"]%>" name="tempID" >
+        <input type="hidden" value="<%=gd[2]["goalName"]%>" name="tempName" >
+        <input type="hidden" value="<%=gd[2]["goalAmount"]%>" name="tempAmount" >
+        <input type="hidden" value="<%=gd[2]["goalProgress"]%>" name="tempProgress" >
+        <input type="hidden" value="<%=gd[2]["goalSlider"]%>" name="tempSlider" >
+    </form>
 
 </div>
 <%}%>
