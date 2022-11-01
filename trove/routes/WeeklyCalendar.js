@@ -1,41 +1,49 @@
 var express = require('express');
 const {Account: accountModel} = require("../db/Objects/account");
+const {DbGoals: goalModel} = require("../db/Objects/dbGoals");
 var router = express.Router();
 let eventsModel = require('../db/Objects/events.js').Events;
 
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
+    // Get session user ID
+    let uid = 0;
+
+    /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
-            userID: 0
+            userID: uid
         },
         raw : true
     });
-    console.log("*** Get all user Events ***");
-    console.log(query);
 
     let eventsList = getEventsList(query);
-    console.log(eventsList);
     let dispList = getDsiplayList(eventsList);
+    let events = getEventsOptions(eventsList);
 
     res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
-        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], path: req.originalUrl});
+        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+        path: req.originalUrl});
 });
 
 router.post('*', async function(req, res, next) {
+    // Get session user ID
+    let uid = 0;
+
+    /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
-            userID: 0
+            userID: uid
         },
         raw : true
     });
-    console.log("*** Get all user Events ***");
-    console.log(query);
 
     let eventsList = getEventsList(query);
-    console.log(eventsList);
+    let newID = query[query.length - 1].eventID + 1;
     let dispList = getDsiplayList(eventsList);
-    
+    let events = getEventsOptions(eventsList);
+
+    /* Begin switch cases for different Post types */
     let type = req.body["type"];
     switch (type) {
         case 'addEvent':
@@ -44,7 +52,7 @@ router.post('*', async function(req, res, next) {
             if(eName.length === 0){
                 res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:dispList[0],
                     mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6], path: req.originalUrl});
+                    sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
@@ -62,7 +70,7 @@ router.post('*', async function(req, res, next) {
             if(eEnd <= eStart){
                 res.render('WeeklyCalendar', {name: '', end:'Event end time must be after the start time.',
                     wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                    fri:dispList[5], sat:dispList[6], path: req.originalUrl});
+                    fri:dispList[5], sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
@@ -72,28 +80,57 @@ router.post('*', async function(req, res, next) {
             if(isNaN(eWage)) {
                 res.render('WeeklyCalendar', {name: '', end:'', wage:'Hourly Wage must be a valid number.',
                     sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6],path: req.originalUrl});
+                    sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
 
-            newEvent = eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:eName, eventDay:eDay,
+            newEvent = eventsModel.create({userID:uid, eventName:eName, eventDay:eDay,
                 eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
             console.log(query);
             console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
+
+        case 'selectEvent':
+            // hide add event button
+            // add save changes button in the same place
+            // get information from selected event and fill the current form fields
+            //
+            break;
+
         case 'editEvent':
-            // CODEEEEE
+            // typecheck the form(Is stated above in create event)
+            // update database with new information
+            //
+            break;
+
+        case 'deleteEvent':
+            let selectedID = req.body["eventSelector"] // This is the eventID
+            deleteEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});// Find the event id to delete where the user id = the current user and the event id = the one selected
+            console.log("***Event"+ selectedID +"Deleted***" )
+            res.redirect("/Weekly-Calendar");
+            break;
+
     }
 
 });
 
+function getEventsOptions(eventsList) {
+    let events = "";
+    for(let i=0;i<eventsList.length;i++) {
+        for(let j=0;j<eventsList[i].length;j++) {
+            events += "<option value='" + eventsList[i][j].getEventID() + "'>" + eventsList[i][j].printEvent() + "</option>";
+        }
+    }
+    return events
+}
+
 function getEventsList(query) {
     var eventsList = [[],[],[],[],[],[],[]];
     for(let i=0; i < query.length; i++) {
-        let newEvent = new Event(query[i].eventName, query[i].eventDay, query[i].eventStartTime,
+        let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
             query[i].eventEndTime, query[i].eventWage);
         eventsList[newEvent.getDay()].push(newEvent);
         }
@@ -129,7 +166,8 @@ class Event {
      * @param HourlyWage - type: float - User's hourly pay for this event (cannot be less than 0)
      *
      */
-    constructor(EventName, Day, StartTime, EndTime, HourlyWage) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, HourlyWage) {
+        this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
@@ -137,6 +175,12 @@ class Event {
         this.HourlyWage = HourlyWage;
     }
     // Class Setter Methods
+    /**
+     * Event ID setter method.
+     * @param EventID - type: string - User-given name for their event
+     */
+    setEventID(EventID) {this.EventID = EventID;}
+
     /**
      * Event Name setter method.
      * @param EventName - type: string - User-given name for their event
@@ -168,6 +212,11 @@ class Event {
     setHourlyWage(HourlyWage) {this.HourlyWage = HourlyWage;}
 
     // Class Getter Methods
+    /**
+     * Event ID getter method.
+     * @returns {int}
+     */
+    getEventID() {return this.EventID;}
 
     /**
      * Event Name getter method.

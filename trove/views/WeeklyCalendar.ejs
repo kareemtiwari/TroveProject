@@ -11,7 +11,6 @@
 <body onload="main()">
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p><br>
-
 <table style="width:100%">
     <tr id="tableHead">
         <td>Sunday</td>
@@ -31,7 +30,15 @@
         <td><%- fri %></td>
         <td><%- sat %></td>
     </tr>
-</table><br><br>
+</table>
+<form action = "/Weekly-Calendar" method="post" id="deleteEvent">
+        <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
+        <select id="eventSelector" name="eventSelector">
+        <%- events %>
+        </select><br>
+        <input type="hidden" id="type" name="type" value="deleteEvent">
+        <button type="submit">Delete Event</button>
+</form><br><br>
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
@@ -162,15 +169,11 @@
 
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>
+
+<!--        <input type="hidden" id="type" name="type" value="editEvent">-->
+<!--        <button type="submit">Save Changes</button>-->
+
     </fieldset>
 </form>
 </body>
-<script>
-/**
- * Function that runs on document load.
- */
-function main() {
-
-}
-</script>
 </html>
