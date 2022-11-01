@@ -6,6 +6,8 @@ let eventsModel = require('../db/Objects/events.js').Events;
 
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
+    // Get session user ID
+
     /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
@@ -24,6 +26,8 @@ router.get('/', async function(req, res, next) {
 });
 
 router.post('*', async function(req, res, next) {
+    // Get session user ID
+
     /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
@@ -33,7 +37,7 @@ router.post('*', async function(req, res, next) {
     });
 
     let eventsList = getEventsList(query);
-    let numEvents = query.length;
+    let newID = query[query.length - 1].eventID + 1;
     let dispList = getDsiplayList(eventsList);
     let events = getEventsOptions(eventsList);
 
@@ -79,7 +83,7 @@ router.post('*', async function(req, res, next) {
             }
 
 
-            newEvent = eventsModel.create({eventID:numEvents, userID:0, eventName:eName, eventDay:eDay,
+            newEvent = eventsModel.create({userID:0, eventName:eName, eventDay:eDay,
                 eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
             console.log(query);
@@ -101,8 +105,6 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'deleteEvent':
-            session = req.session;
-            uid = req.session.userID;
             let selectedID = req.body["eventSelector"] // This is the eventID
             if(eventsModel.eventID === selectedID && eventsModel.userID === uid){
                 await eventsModel.destroy({eventID,eventName,eventDay,eventStartTime,eventEndTime,eventWage});// Find the event id to delete where the user id = the current user and the event id = the one selected
