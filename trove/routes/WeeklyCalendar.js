@@ -33,6 +33,7 @@ router.post('*', async function(req, res, next) {
     });
 
     let eventsList = getEventsList(query);
+    let numEvents = query.length;
     let dispList = getDsiplayList(eventsList);
     let events = getEventsOptions(eventsList);
 
@@ -78,7 +79,7 @@ router.post('*', async function(req, res, next) {
             }
 
 
-            newEvent = eventsModel.create({eventID:0, userID:0, calendarID:0, eventName:eName, eventDay:eDay,
+            newEvent = eventsModel.create({eventID:numEvents, userID:0, eventName:eName, eventDay:eDay,
                 eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
 
             console.log(query);
@@ -116,7 +117,7 @@ function getEventsOptions(eventsList) {
     let events = "";
     for(let i=0;i<eventsList.length;i++) {
         for(let j=0;j<eventsList[i].length;j++) {
-            events += "<option>" + eventsList[i][j].printEvent() + "</option>";
+            events += "<option value='" + eventsList[i][j].getEventID() + "'>" + eventsList[i][j].printEvent() + "</option>";
         }
     }
     return events
