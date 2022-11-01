@@ -119,7 +119,7 @@ router.post('/addFunds', async function(req, res, next) {
 ///The remove and add destroy the values and add more values to update the progress
     if (goal.goalProgress+gProgress >= goal.goalAmount){
         removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-        console.log("Goal number"+ gID +"COMPLETED!");
+        console.log("Goal number "+ gID +" COMPLETED!");
     }
     else{
         removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
