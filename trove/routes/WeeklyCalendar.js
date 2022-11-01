@@ -1,5 +1,6 @@
 var express = require('express');
 const {Account: accountModel} = require("../db/Objects/account");
+const {DbGoals: goalModel} = require("../db/Objects/dbGoals");
 var router = express.Router();
 let eventsModel = require('../db/Objects/events.js').Events;
 
@@ -84,8 +85,36 @@ router.post('*', async function(req, res, next) {
             console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
-        case 'editEvent':
+        case 'selectEvent':
+
+            // hide add event button
+            // add save changes button in the same place
+            // get information from selected event and fill the current form fields
+            //
             // CODEEEEE
+            break;
+
+        case 'editEvent':
+            // typecheck the form(Is stated above in create event)
+            break;
+
+        case 'deleteEvent':
+            session = req.session;
+            uid = req.session.userID;
+            let eWages = req.body["eHourly"];
+            let eEnds = req.body["eEnd"];
+            let eStarts = req.body["eStart"];
+            var eDays = req.body["eDay"];
+            let eNames = req.body["eName"];
+            for(let checked=0;){
+            removeEvent = await eventsModel.destroy({eventID, userID: uid, calendarID, eventName:eNames ,eventDay:eDays ,eventStartTime:eStarts , eventEndTime:eEnds, eventWage:eWages }
+
+    );
+            }
+            console.log("***Event"+ eName +"Deleted***" )
+            res.redirect("/Weekly-Calendar");
+            break;
+
     }
 
 });
@@ -109,7 +138,8 @@ function getDsiplayList(eventsList) {
         else {
             let text = "<ul>"
             for(let j=0;j<eventsList[i].length;j++) {
-                text += "<li>" + eventsList[i][j].printEvent() + "</li>";
+                let str = ([i][j]).toString();
+                text += "<li><input type='checkbox' id=" + str + ">" + eventsList[i][j].printEvent() + "</li>";
             }
             text += "</ul>";
             dispList[i] = text;
