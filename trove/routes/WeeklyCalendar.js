@@ -101,12 +101,15 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'deleteEvent':
-            // session = req.session;
-            // uid = req.session.userID;
-            // let selectedID = req.body["eventSelector"] // This is the eventID
-            // // Find the event id to delete where the user id = the current user and the event id = the one selected
-            // console.log("***Event"+ selectedID +"Deleted***" )
-            // res.redirect("/Weekly-Calendar");
+            session = req.session;
+            uid = req.session.userID;
+            let selectedID = req.body["eventSelector"] // This is the eventID
+            if(eventsModel.eventID === selectedID && eventsModel.userID === uid){
+                await eventsModel.destroy({eventID,eventName,eventDay,eventStartTime,eventEndTime,eventWage});// Find the event id to delete where the user id = the current user and the event id = the one selected
+                console.log("***Event"+ selectedID +"Deleted***" )
+
+            }
+            res.redirect("/Weekly-Calendar");
             break;
 
     }
