@@ -11,28 +11,32 @@
 <body onload="main()">
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p><br>
-
-<table style="width:100%">
-    <tr id="tableHead">
-        <td>Sunday</td>
-        <td>Monday</td>
-        <td>Tuesday</td>
-        <td>Wednesday</td>
-        <td>Thursday</td>
-        <td>Friday</td>
-        <td>Saturday</td>
-    </tr>
-    <tr>
-        <td><%- sun %></td>
-        <td><%- mon %></td>
-        <td><%- tue %></td>
-        <td><%- wed %></td>
-        <td><%- thu %></td>
-        <td><%- fri %></td>
-        <td><%- sat %></td>
-    </tr>
-</table><br><br>
-
+<form>
+    <table style="width:100%">
+        <tr id="tableHead">
+            <td>Sunday</td>
+            <td>Monday</td>
+            <td>Tuesday</td>
+            <td>Wednesday</td>
+            <td>Thursday</td>
+            <td>Friday</td>
+            <td>Saturday</td>
+        </tr>
+        <tr>
+            <td><%- sun %></td>
+            <td><%- mon %></td>
+            <td><%- tue %></td>
+            <td><%- wed %></td>
+            <td><%- thu %></td>
+            <td><%- fri %></td>
+            <td><%- sat %></td>
+        </tr>
+    </table>
+</form><br><br>
+<input type="hidden" id="type" name="type" value="selectEvent">
+<button type = "submit">Edit Event:</button>
+<input type="hidden" id="type" name="type" value="deleteEvent">
+<button type="submit">Delete Event</button>
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
         <legend>Add Event</legend>
@@ -162,6 +166,10 @@
 
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>
+
+        <input type="hidden" id="type" name="type" value="editEvent">
+        <button type="submit">Save Changes</button>
+
     </fieldset>
 </form>
 </body>
