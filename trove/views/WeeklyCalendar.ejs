@@ -32,11 +32,15 @@
             <td><%- sat %></td>
         </tr>
     </table>
+    <input type="hidden" id="type" name="type" value="selectEvent">
+    <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
+    <select id="eventSelector" name="eventSelector">
+        <%- events %>
+    </select><br>
+    <input type="hidden" id="type" name="type" value="deleteEvent">
+    <button type="submit">Delete Event</button>
 </form><br><br>
-<input type="hidden" id="type" name="type" value="selectEvent">
-<button type = "submit">Edit Event:</button>
-<input type="hidden" id="type" name="type" value="deleteEvent">
-<button type="submit">Delete Event</button>
+
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
         <legend>Add Event</legend>
@@ -167,18 +171,10 @@
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>
 
-        <input type="hidden" id="type" name="type" value="editEvent">
-        <button type="submit">Save Changes</button>
+<!--        <input type="hidden" id="type" name="type" value="editEvent">-->
+<!--        <button type="submit">Save Changes</button>-->
 
     </fieldset>
 </form>
 </body>
-<script>
-/**
- * Function that runs on document load.
- */
-function main() {
-
-}
-</script>
 </html>

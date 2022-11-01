@@ -6,37 +6,37 @@ let eventsModel = require('../db/Objects/events.js').Events;
 
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
+    /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
             userID: 0
         },
         raw : true
     });
-    console.log("*** Get all user Events ***");
-    console.log(query);
 
     let eventsList = getEventsList(query);
-    console.log(eventsList);
     let dispList = getDsiplayList(eventsList);
+    let events = getEventsOptions(eventsList);
 
     res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
-        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], path: req.originalUrl});
+        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+        path: req.originalUrl});
 });
 
 router.post('*', async function(req, res, next) {
+    /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
         where: {
             userID: 0
         },
         raw : true
     });
-    console.log("*** Get all user Events ***");
-    console.log(query);
 
     let eventsList = getEventsList(query);
-    console.log(eventsList);
     let dispList = getDsiplayList(eventsList);
-    
+    let events = getEventsOptions(eventsList);
+
+    /* Begin switch cases for different Post types */
     let type = req.body["type"];
     switch (type) {
         case 'addEvent':
@@ -45,7 +45,7 @@ router.post('*', async function(req, res, next) {
             if(eName.length === 0){
                 res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:dispList[0],
                     mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6], path: req.originalUrl});
+                    sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
@@ -63,7 +63,7 @@ router.post('*', async function(req, res, next) {
             if(eEnd <= eStart){
                 res.render('WeeklyCalendar', {name: '', end:'Event end time must be after the start time.',
                     wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                    fri:dispList[5], sat:dispList[6], path: req.originalUrl});
+                    fri:dispList[5], sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
@@ -73,7 +73,7 @@ router.post('*', async function(req, res, next) {
             if(isNaN(eWage)) {
                 res.render('WeeklyCalendar', {name: '', end:'', wage:'Hourly Wage must be a valid number.',
                     sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6],path: req.originalUrl});
+                    sat:dispList[6], events:events, path: req.originalUrl});
                 return;
             }
 
@@ -85,39 +85,42 @@ router.post('*', async function(req, res, next) {
             console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
-        case 'selectEvent':
 
+        case 'selectEvent':
             // hide add event button
             // add save changes button in the same place
             // get information from selected event and fill the current form fields
             //
-            // CODEEEEE
             break;
 
         case 'editEvent':
             // typecheck the form(Is stated above in create event)
+            // update database with new information
+            //
             break;
 
         case 'deleteEvent':
-            session = req.session;
-            uid = req.session.userID;
-            let eWages = req.body["eHourly"];
-            let eEnds = req.body["eEnd"];
-            let eStarts = req.body["eStart"];
-            var eDays = req.body["eDay"];
-            let eNames = req.body["eName"];
-            for(let checked=0;){
-            removeEvent = await eventsModel.destroy({eventID, userID: uid, calendarID, eventName:eNames ,eventDay:eDays ,eventStartTime:eStarts , eventEndTime:eEnds, eventWage:eWages }
-
-    );
-            }
-            console.log("***Event"+ eName +"Deleted***" )
-            res.redirect("/Weekly-Calendar");
+            // session = req.session;
+            // uid = req.session.userID;
+            // let selectedID = req.body["eventSelector"] // This is the eventID
+            // // Find the event id to delete where the user id = the current user and the event id = the one selected
+            // console.log("***Event"+ selectedID +"Deleted***" )
+            // res.redirect("/Weekly-Calendar");
             break;
 
     }
 
 });
+
+function getEventsOptions(eventsList) {
+    let events = "";
+    for(let i=0;i<eventsList.length;i++) {
+        for(let j=0;j<eventsList[i].length;j++) {
+            events += "<option>" + eventsList[i][j].printEvent() + "</option>";
+        }
+    }
+    return events
+}
 
 function getEventsList(query) {
     var eventsList = [[],[],[],[],[],[],[]];
@@ -138,8 +141,7 @@ function getDsiplayList(eventsList) {
         else {
             let text = "<ul>"
             for(let j=0;j<eventsList[i].length;j++) {
-                let str = ([i][j]).toString();
-                text += "<li><input type='checkbox' id=" + str + ">" + eventsList[i][j].printEvent() + "</li>";
+                text += "<li>" + eventsList[i][j].printEvent() + "</li>";
             }
             text += "</ul>";
             dispList[i] = text;
