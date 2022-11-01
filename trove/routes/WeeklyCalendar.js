@@ -122,7 +122,7 @@ router.post('*', async function(req, res, next) {
 function getEventsList(query) {
     var eventsList = [[],[],[],[],[],[],[]];
     for(let i=0; i < query.length; i++) {
-        let newEvent = new Event(query[i].eventName, query[i].eventDay, query[i].eventStartTime,
+        let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
             query[i].eventEndTime, query[i].eventWage);
         eventsList[newEvent.getDay()].push(newEvent);
         }
@@ -159,7 +159,8 @@ class Event {
      * @param HourlyWage - type: float - User's hourly pay for this event (cannot be less than 0)
      *
      */
-    constructor(EventName, Day, StartTime, EndTime, HourlyWage) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, HourlyWage) {
+        this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
@@ -167,6 +168,12 @@ class Event {
         this.HourlyWage = HourlyWage;
     }
     // Class Setter Methods
+    /**
+     * Event ID setter method.
+     * @param EventID - type: string - User-given name for their event
+     */
+    setEventID(EventID) {this.EventID = EventID;}
+
     /**
      * Event Name setter method.
      * @param EventName - type: string - User-given name for their event
@@ -198,6 +205,11 @@ class Event {
     setHourlyWage(HourlyWage) {this.HourlyWage = HourlyWage;}
 
     // Class Getter Methods
+    /**
+     * Event ID getter method.
+     * @returns {int}
+     */
+    getEventID() {return this.EventID;}
 
     /**
      * Event Name getter method.
