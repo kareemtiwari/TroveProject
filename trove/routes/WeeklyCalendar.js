@@ -39,7 +39,6 @@ router.post('*', async function(req, res, next) {
     });
 
     let eventsList = getEventsList(query);
-    let newID = query[query.length - 1].eventID + 1;
     let dispList = getDsiplayList(eventsList);
     let events = getEventsOptions(eventsList);
 
