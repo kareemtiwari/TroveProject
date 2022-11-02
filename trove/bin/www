@@ -6,7 +6,13 @@
 
 var app = require('../app');
 var debug = require('debug')('trove:server');
-var http = require('http');
+var https = require('https'); //literally just adding an s to the requirement [bye bye https]
+var fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('key.pem','utf8'),
+  cert: fs.readFileSync('cert.pem','utf8')
+};
 
 /**
  * Get port from environment and store in Express.
@@ -19,7 +25,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer(options, app);
 
 /**
  * Listen on provided port, on all network interfaces.
