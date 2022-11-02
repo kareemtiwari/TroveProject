@@ -4,7 +4,8 @@ var router = express.Router();
 
 /* GET Login page. */
 router.get('*', async function(req, res, next) {
-        session = req.session;
+        if(req.session.userID != null) {
+                session = req.session;
         uid = session.userID;
         let query = await accountModel.findAll({
                 where: {
@@ -14,6 +15,9 @@ router.get('*', async function(req, res, next) {
         });
         let user = query[0];
         res.render('Dashboard', {userid: user.firstName});
+        }else{
+                res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+        }
 });
 
 module.exports = router;

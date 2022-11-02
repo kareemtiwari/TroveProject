@@ -8,6 +8,7 @@ let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE D
  * This usually happens when a user navigated to your page, or refreshes the page
  */
 router.get('/',  async function(req, res, next) {
+    if(req.session.userID != null) {
     let uid = req.session.userID;
     //TODO : have to check if there is a userID in the session
     //get the currently logged in user
@@ -33,6 +34,10 @@ router.get('/',  async function(req, res, next) {
 
     res.render('Goals', {display: gd}); //TODO : model doesn't have all
     // console.log(user.id);
+
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 
 /**
@@ -40,6 +45,7 @@ router.get('/',  async function(req, res, next) {
  * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
  */
 router.post('/add', async function(req, res, next) {
+    if(req.session.userID != null) {
     console.log(req.url);
     console.log(req.body);
 
@@ -69,8 +75,13 @@ router.post('/add', async function(req, res, next) {
 
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
     //}
+
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 router.post('/delete', async function(req, res, next) {
+    if(req.session.userID != null) {
     console.log(req.url);
     console.log(req.body);
 
@@ -83,8 +94,13 @@ router.post('/delete', async function(req, res, next) {
     console.log(query);
     console.log("***Goal***" + gID + " Deleted");
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 router.post('/addFunds', async function(req, res, next) {
+    if(req.session.userID != null) {
     console.log(req.url);
     console.log(req.body);
 
@@ -130,9 +146,13 @@ router.post('/addFunds', async function(req, res, next) {
 
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
 
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 
 router.post('/deleteFunds', async function(req, res, next) {
+    if(req.session.userID != null) {
     console.log(req.url);
     console.log(req.body);
 
@@ -177,6 +197,9 @@ router.post('/deleteFunds', async function(req, res, next) {
 
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
 
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 
 module.exports = router;  //This allows your router to be used in the main app file

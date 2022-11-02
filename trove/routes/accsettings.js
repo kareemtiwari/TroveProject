@@ -7,6 +7,7 @@ let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO US
  * This usually happens when a user navigated to your page, or refreshes the page
  */
 router.get('*', async function(req, res, next) {
+  if(req.session.userID != null) {
   let uid = req.session.userID;
   //TODO : have to check if there is a userID in the session
   //get the currently logged in user
@@ -20,6 +21,9 @@ router.get('*', async function(req, res, next) {
   //TODO : have to check if there is a user
   res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:user.dob}); //TODO : model doesn't have all
   console.log(user.id);
+  }else{
+    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+  }
 });
 
 /**
@@ -27,6 +31,7 @@ router.get('*', async function(req, res, next) {
  * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
  */
 router.post('*', async function(req, res, next) {
+  if(req.session.userID != null) {
   console.log(req.url);
   console.log(req.body);
 
@@ -60,6 +65,9 @@ router.post('*', async function(req, res, next) {
     res.redirect('/Dashboard');
   }else{
     res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:"0",salary_sel:"checked",hourly_sel:"",dob:dateb});
+  }
+  }else{
+    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
   }
 });
 
