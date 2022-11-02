@@ -14,7 +14,7 @@ class DbGoals extends Model {
             },
             goalAmount: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             goalProgress: {
                 type: DataTypes.INTEGER,
