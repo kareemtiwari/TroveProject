@@ -9,6 +9,9 @@ let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE D
  */
 router.get('/',  async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     let uid = req.session.userID;
     //TODO : have to check if there is a userID in the session
     //get the currently logged in user
@@ -46,6 +49,9 @@ router.get('/',  async function(req, res, next) {
  */
 router.post('/add', async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     console.log(req.url);
     console.log(req.body);
 
@@ -82,6 +88,9 @@ router.post('/add', async function(req, res, next) {
 });
 router.post('/delete', async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     console.log(req.url);
     console.log(req.body);
 
@@ -101,6 +110,9 @@ router.post('/delete', async function(req, res, next) {
 });
 router.post('/addFunds', async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     console.log(req.url);
     console.log(req.body);
 
@@ -153,6 +165,9 @@ router.post('/addFunds', async function(req, res, next) {
 
 router.post('/deleteFunds', async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     console.log(req.url);
     console.log(req.body);
 

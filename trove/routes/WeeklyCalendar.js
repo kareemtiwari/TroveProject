@@ -8,6 +8,9 @@ let eventsModel = require('../db/Objects/events.js').Events;
 router.get('/', async function(req, res, next) {
     // Get session user ID
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     let uid = 0;
 
     /* Get all the current user's events to build the calendar */
@@ -32,6 +35,9 @@ router.get('/', async function(req, res, next) {
 
 router.post('*', async function(req, res, next) {
     if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     // Get session user ID
     let uid = 0;
 

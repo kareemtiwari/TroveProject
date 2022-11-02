@@ -3,8 +3,11 @@ const {Account: accountModel} = require("../db/Objects/account");
 var router = express.Router();
 
 /* GET Login page. */
-router.get('*', async function(req, res, next) {
+router.get('/', async function(req, res, next) {
         if(req.session.userID != null) {
+                if(!req.session.accComplete){
+                        res.redirect('/accSettings'); //you need to complete your account before being here
+                }
                 session = req.session;
         uid = session.userID;
         let query = await accountModel.findAll({
