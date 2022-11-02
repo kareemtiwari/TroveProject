@@ -23,14 +23,43 @@
 
     /* Add a color to the active/current link */
     .topnav a.active {
-        background-color: #04AA6D;
+        background-color: #087ab1;
         color: white;
     }
 </style>
 <div class="topnav">
-    <a class="active" href="/Dashboard">Trove</a>
-    <a href="Weekly-Calendar">Calendar</a>
-    <a href="TroveAccounting">Accounting</a>
-    <a style="float:right" href="accSettings/logout">Logout</a>
-    <a style="float:right" href="/accSettings">Settings</a>
+    <a id="dash" class="inactive" href="/Dashboard">Trove</a>
+    <a id="calendar" class="inactive" href="Weekly-Calendar">Calendar</a>
+    <a id="accounting" class="inactive" href="TroveAccounting">Accounting</a>
+    <a style="float:right" class="inactive" href="accSettings/logout">Logout</a>
+    <a id="accountset" class="inactive" style="float:right" href="/accSettings">Settings</a>
 </div>
+<script>
+    let loc = window.location.href;
+    let url = new URL(loc);
+    let path = url.pathname;
+    console.log(path);
+    switch(path){
+        case '/':
+            var dbb = document.getElementById("dash");
+            console.log('dash');
+            break;
+        case '/Dashboard':
+            var dbb = document.getElementById("dash");
+            console.log('dash');
+            break;
+        case '/Weekly-Calendar':
+            var dbb = document.getElementById("calendar");
+            console.log('calendar');
+            break;
+        case '/accSettings':
+            var dbb = document.getElementById("accountset");
+            console.log('accountset');
+            break;
+        case '/TroveAccounting':
+            var dbb = document.getElementById("accounting");
+            console.log("accounting");
+            break;
+    }
+    dbb.className = "active";
+</script>
