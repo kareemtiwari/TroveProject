@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html>
 <body>
-
+<%- include('fragments/header'); %>
+<style>
+    table, th, td {border:1px solid black;}
+</style>
 <h1>Dashboard</h1>
 <p> Welcome! <%= userid%></p>
-<nobr><p>The dashboard doesn't exist yet! Head over to </p><a href ='/'>Index</a><p> while we are getting things ready.</p></nobr>
+<nobr><p>The dashboard doesn't exist yet!</p></nobr>
+<table>
+    <tr>
+        <td>
+            <a href="/TroveAccounting"> Goals Will Go Here</a>
+        </td>
+        <td>
+            <a>Tips will go here</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="/Weekly-Calendar">Calendar Will Go Here</a>
+        </td>
+        <td>
+            <a href="/accSettings">Expenditures will go here</a>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

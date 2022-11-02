@@ -8,7 +8,7 @@ var logger = require('morgan');
 var sessions = require('express-session');
 var {Sequelize, DataTypes, Model} = require('sequelize');
 
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes/Dashboard');
 var usersRouter = require('./routes/users');                    //TODO : Include router objects here
 var accSetRouter = require('./routes/accSettings');
 var LoginRouter = require('./routes/Trove_Login');

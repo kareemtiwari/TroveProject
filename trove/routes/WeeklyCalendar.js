@@ -7,6 +7,10 @@ let eventsModel = require('../db/Objects/events.js').Events;
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
     // Get session user ID
+    if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     let uid = 0;
 
     /* Get all the current user's events to build the calendar */
@@ -24,9 +28,16 @@ router.get('/', async function(req, res, next) {
     res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
         tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
         path: req.originalUrl});
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 
 router.post('*', async function(req, res, next) {
+    if(req.session.userID != null) {
+        if(!req.session.accComplete){
+            res.redirect('/accSettings'); //you need to complete your account before being here
+        }
     // Get session user ID
     let uid = 0;
 
@@ -114,7 +125,9 @@ router.post('*', async function(req, res, next) {
             break;
 
     }
-
+    }else{
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    }
 });
 
 function getEventsOptions(eventsList) {
