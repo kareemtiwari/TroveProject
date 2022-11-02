@@ -6,13 +6,10 @@ class Events extends Model {
             // Model attributes are defined here
             eventID: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                autoIncrement: true,
+                primaryKey: true
             },
             userID: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            calendarID: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
