@@ -132,4 +132,51 @@ router.post('/addFunds', async function(req, res, next) {
 
 });
 
+router.post('/deleteFunds', async function(req, res, next) {
+    console.log(req.url);
+    console.log(req.body);
+
+    session = req.session;
+    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    let gID = req.body["tempID"];  //get all variables out of the form
+    let gProgress = req.body["goalDeleteFunds"];
+    let goalProgress = req.body["goalProgress"];
+    let gName = req.body["tempName"];
+    let gAmount = req.body["tempAmount"];
+    let gSlider = req.body["tempSlider"];
+    gProgress = parseInt(gProgress);
+    console.log(gID, gProgress);
+
+
+
+    // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
+    // let query = await goalModel.findAll({raw:true});
+    let query = await goalModel.findAll({
+        where: {
+            userID: uid,
+            goalID: gID,
+        },
+        raw: true
+    });
+
+    const goal = query[0];
+
+    console.log(goal);
+
+    console.log(query);
+///The remove and add destroy the values and add more values to update the progress
+    if (goal.goalProgress-gProgress < 0){
+        console.log("Goal number "+ gID +" is empty :( !");
+    }
+    else{
+        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+        newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: goal.goalProgress -= gProgress, goalName: gName,goalSlider: gSlider});
+        console.log("***Goal***" + gID + " Funds Deleted");
+    }
+
+
+    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+
+});
+
 module.exports = router;  //This allows your router to be used in the main app file

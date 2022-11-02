@@ -44,7 +44,8 @@
     <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
     <form  method="post" name="myForm" id="myForm">
-    <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">
         <input type="hidden" value="<%=gd[0]["goalID"]%>" name="tempID" >
         <input type="hidden" value="<%=gd[0]["goalName"]%>" name="tempName" >
         <input type="hidden" value="<%=gd[0]["goalAmount"]%>" name="tempAmount" >
@@ -62,6 +63,7 @@
     <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
     <form  method="post" name="myForm" id="myForm">
         <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">
         <input type="hidden" value="<%=gd[1]["goalID"]%>" name="tempID" >
         <input type="hidden" value="<%=gd[1]["goalName"]%>" name="tempName" >
         <input type="hidden" value="<%=gd[1]["goalAmount"]%>" name="tempAmount" >
@@ -79,6 +81,7 @@
     <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
     <form  method="post" name="myForm" id="myForm">
         <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
+        <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">
         <input type="hidden" value="<%=gd[2]["goalID"]%>" name="tempID" >
         <input type="hidden" value="<%=gd[2]["goalName"]%>" name="tempName" >
         <input type="hidden" value="<%=gd[2]["goalAmount"]%>" name="tempAmount" >
