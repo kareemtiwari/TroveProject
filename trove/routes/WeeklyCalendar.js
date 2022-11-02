@@ -39,7 +39,7 @@ router.post('*', async function(req, res, next) {
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
     // Get session user ID
-    let uid = 0;
+    let uid = req.session.userID;
 
     /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({
@@ -129,6 +129,11 @@ router.post('*', async function(req, res, next) {
     }
 });
 
+/**
+ * Function generates html code to display the options in the Edit/Delete dropdown selector.
+ * @param eventsList
+ * @returns {string}
+ */
 function getEventsOptions(eventsList) {
     let events = "";
     for(let i=0;i<eventsList.length;i++) {
@@ -139,6 +144,11 @@ function getEventsOptions(eventsList) {
     return events
 }
 
+/**
+ * Function creates a list of Event types from a given list of database object events.
+ * @param query - query from the database containing all user events
+ * @returns {*[][]} - nested list containing a list of events for each day
+ */
 function getEventsList(query) {
     var eventsList = [[],[],[],[],[],[],[]];
     for(let i=0; i < query.length; i++) {
@@ -149,6 +159,11 @@ function getEventsList(query) {
     return eventsList;
 }
 
+/**
+ * Function generates a list of html code to be displayed to the calendar.
+ * @param eventsList - eventsList from the getEventsList function
+ * @returns {string[]} - a string list of html code for each day on the calendar
+ */
 function getDsiplayList(eventsList) {
     var dispList = ['','','','','','',''];
     for(let i=0; i<eventsList.length;i++) {
