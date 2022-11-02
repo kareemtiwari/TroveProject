@@ -167,10 +167,21 @@ function getDsiplayList(eventsList) {
     return dispList;
 }
 
+/**
+ * A custom data type for Events.
+ * Methods-
+ * 1. Getters and Setters for every variable.
+ * 2. calculateNumHours() - return type: float - Calculates the duration of the event by subtracting the start time
+ *      from the end time.
+ * 3. calculateEventIncome() - return type: float - Calculates the income earned from the event by multiplying the
+ *      duration of the event by the hourly wage.
+ * 4. printEvent() - return type: string - returns a string representation of the event and it's data.
+ */
 class Event {
 
     /**
      * The Event Constructor - Creates an event and adds it to the User's calendar.
+     * @param EventID - type: int - Unique ID for the event
      * @param EventName - type: string - User-given name for their event
      * @param Day - type: int - Integer representing the day of the week (0=Sunday, 6=Saturday)
      * @param StartTime - type: float - Float representation of the event's start time (ex: 9:00am=9.0, 9:30pm=21.5)
