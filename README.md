@@ -8,7 +8,7 @@ I am using the trove folder in the root of the repository to put all of the serv
 - Using a terminal navigate to the "csc450fa22-project-group-4" directory where you have pulled the github repository. 
 - Navigate into the trove folder 
 - To run the application type "npm start" - you should get the output "Trove server is now running!"
-- To vist the page goto http://localhost:3000/ and you should see the homepage
+- To vist the page goto https://localhost:3000/ and you should see the homepage [MUST BE HTTPS:// otherwise you will get an empty response]
 # Understanding the Express folder structure
 - **bin** - This is where the main executable is stored [dont edit]
 - **node_modules** - included packages and dependencies for express [dont edit]
