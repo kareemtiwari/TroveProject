@@ -71,14 +71,14 @@ router.post('*', async function(req, res, next) {
             let eName = req.body["eName"];
             if(eName.length === 0){
                 if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'', sun:dispList[0], mon:dispList[1],
-                        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                        dEvent:"none;", path: req.originalUrl});
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
                 }
                 else {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'', sun:dispList[0], mon:dispList[1],
-                        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                        dEvent:"block;", path: req.originalUrl});
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
                 }
                 return;
             }
@@ -137,18 +137,27 @@ router.post('*', async function(req, res, next) {
 
         case 'editEvent':
             // load the selected event into the form
-            // change submit button to "Save Changes"
+            // change "Create Event" button text to "Save Changes"
             // delete the old event and save the new event
             //
             break;
 
         case 'deleteEvent':
             let selectedID = req.body["eventSelector"] // This is the eventID
-            let deleteEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});// Find the event id to delete where the user id = the current user and the event id = the one selected
+            let deletedEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
             console.log("***Event"+ selectedID +"Deleted***" )
             res.redirect("/Weekly-Calendar");
             break;
 
+        case 'deleteAll':
+            // ask the user to confirm
+            break;
+
+        case 'confirmDeleteAll':
+            // loop through the eventsList (which is a list of lists)
+            // delete all events
+            // reload the page (res.redirect)
+            break;
     }
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
