@@ -32,7 +32,7 @@
         <td><%- sat %></td>
     </tr>
 </table>
-<form action = "/Weekly-Calendar" method="post" id="deleteEvent">
+<form action = "/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
         <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
         <select id="eventSelector" name="eventSelector">
         <%- events %>

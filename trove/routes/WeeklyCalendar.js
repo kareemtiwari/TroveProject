@@ -6,28 +6,38 @@ let eventsModel = require('../db/Objects/events.js').Events;
 
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
-    // Get session user ID
+
     if(req.session.userID != null) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    let uid = 0;
+        // Get session user ID
+        let uid = req.session.userID;
 
-    /* Get all the current user's events to build the calendar */
-    let query = await eventsModel.findAll({
-        where: {
-            userID: uid
-        },
-        raw : true
-    });
+        /* Get all the current user's events to build the calendar */
+        let query = await eventsModel.findAll({
+            where: {
+                userID: uid
+            },
+            raw : true
+        });
 
-    let eventsList = getEventsList(query);
-    let dispList = getDsiplayList(eventsList);
-    let events = getEventsOptions(eventsList);
+        let eventsList = getEventsList(query);
+        let dispList = getDsiplayList(eventsList);
+        let events = getEventsOptions(eventsList);
 
-    res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
-        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-        path: req.originalUrl});
+        if(query.length === 0) {
+            res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+                dEvent:"none;", path: req.originalUrl});
+        }
+        else {
+            res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+                dEvent:"block;", path: req.originalUrl});
+        }
+
+
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -94,31 +104,26 @@ router.post('*', async function(req, res, next) {
                 return;
             }
 
-
-            newEvent = eventsModel.create({userID:uid, eventName:eName, eventDay:eDay,
-                eventStartTime:eStart, eventEndTime:eEnd, eventWage:eWage});
+            let newEvent = eventsModel.create({
+                userID: uid, eventName: eName, eventDay: eDay,
+                eventStartTime: eStart, eventEndTime: eEnd, eventWage: eWage
+            });
 
             console.log(query);
             console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
 
-        case 'selectEvent':
-            // hide add event button
-            // add save changes button in the same place
-            // get information from selected event and fill the current form fields
-            //
-            break;
-
         case 'editEvent':
-            // typecheck the form(Is stated above in create event)
-            // update database with new information
+            // load the selected event into the form
+            // change submit button to "Save Changes"
+            // delete the old event and save the new event
             //
             break;
 
         case 'deleteEvent':
             let selectedID = req.body["eventSelector"] // This is the eventID
-            deleteEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});// Find the event id to delete where the user id = the current user and the event id = the one selected
+            let deleteEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});// Find the event id to delete where the user id = the current user and the event id = the one selected
             console.log("***Event"+ selectedID +"Deleted***" )
             res.redirect("/Weekly-Calendar");
             break;
@@ -138,7 +143,7 @@ function getEventsOptions(eventsList) {
     let events = "";
     for(let i=0;i<eventsList.length;i++) {
         for(let j=0;j<eventsList[i].length;j++) {
-            events += "<option value='" + eventsList[i][j].getEventID() + "'>" + eventsList[i][j].printEvent() + "</option>";
+            events += "<option value='" + eventsList[i][j].getEventID() + "'>" + eventsList[i][j].shortEvent() + "</option>";
         }
     }
     return events
@@ -150,7 +155,7 @@ function getEventsOptions(eventsList) {
  * @returns {*[][]} - nested list containing a list of events for each day
  */
 function getEventsList(query) {
-    var eventsList = [[],[],[],[],[],[],[]];
+    let eventsList = [[],[],[],[],[],[],[]];
     for(let i=0; i < query.length; i++) {
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
             query[i].eventEndTime, query[i].eventWage);
@@ -165,7 +170,7 @@ function getEventsList(query) {
  * @returns {string[]} - a string list of html code for each day on the calendar
  */
 function getDsiplayList(eventsList) {
-    var dispList = ['','','','','','',''];
+    let dispList = ['','','','','','',''];
     for(let i=0; i<eventsList.length;i++) {
         if(eventsList[i].length===0) {
             dispList[i] = "<ul><li>No Events On This Day</li></ul>";
@@ -191,6 +196,7 @@ function getDsiplayList(eventsList) {
  * 3. calculateEventIncome() - return type: float - Calculates the income earned from the event by multiplying the
  *      duration of the event by the hourly wage.
  * 4. printEvent() - return type: string - returns a string representation of the event and it's data.
+ * 5. shortEvent() - return type: string - returns a string containing the event name and day.
  */
 class Event {
 
@@ -381,6 +387,35 @@ class Event {
         s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
         s += "Event Length: " + this.calculateNumHours().toString() + " hours, ";
         s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
+        return s;
+    }
+
+    shortEvent() {
+        let s = "";
+        s += this.EventName + " - ";
+        switch (this.Day) {
+            case 0:
+                s += "Sunday";
+                break;
+            case 1:
+                s += "Monday";
+                break;
+            case 2:
+                s += "Tuesday";
+                break;
+            case 3:
+                s += "Wednesday";
+                break;
+            case 4:
+                s += "Thursday";
+                break;
+            case 5:
+                s += "Friday";
+                break;
+            case 6:
+                s += "Saturday";
+                break;
+        }
         return s;
     }
 }
