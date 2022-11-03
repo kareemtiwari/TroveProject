@@ -128,7 +128,6 @@ router.post('/addFunds', async function(req, res, next) {
     console.log(gID, gProgress);
 
 
-
     // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
     // let query = await goalModel.findAll({raw:true});
     let query = await goalModel.findAll({
