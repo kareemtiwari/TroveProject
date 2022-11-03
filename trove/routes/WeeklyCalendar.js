@@ -70,9 +70,16 @@ router.post('*', async function(req, res, next) {
             /* Get and Check the New Event Name */
             let eName = req.body["eName"];
             if(eName.length === 0){
-                res.render('WeeklyCalendar', {name: 'Event must be named.', end:'', wage:'', sun:dispList[0],
-                    mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6], events:events, path: req.originalUrl});
+                if(query.length === 0) {
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+                        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+                        dEvent:"none;", path: req.originalUrl});
+                }
+                else {
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+                        tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+                        dEvent:"block;", path: req.originalUrl});
+                }
                 return;
             }
 
@@ -88,9 +95,16 @@ router.post('*', async function(req, res, next) {
             let eEnd = req.body["eEnd"];
             eEnd = parseFloat(eEnd.replace(",","."));
             if(eEnd <= eStart){
-                res.render('WeeklyCalendar', {name: '', end:'Event end time must be after the start time.',
-                    wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                    fri:dispList[5], sat:dispList[6], events:events, path: req.originalUrl});
+                if(query.length === 0) {
+                    res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
+                        wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
+                }
+                else {
+                    res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
+                        wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
+                }
                 return;
             }
 
@@ -98,9 +112,16 @@ router.post('*', async function(req, res, next) {
             let eWage = req.body["eHourly"];
             eWage = parseFloat(eWage.replace(",","."));
             if(isNaN(eWage)) {
-                res.render('WeeklyCalendar', {name: '', end:'', wage:'Hourly Wage must be a valid number.',
-                    sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5],
-                    sat:dispList[6], events:events, path: req.originalUrl});
+                if(query.length === 0) {
+                    res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
+                }
+                else {
+                    res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
+                }
                 return;
             }
 
