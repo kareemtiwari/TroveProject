@@ -29,12 +29,12 @@ router.get('/', async function(req, res, next) {
         if(query.length === 0) {
             res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"none;", path: req.originalUrl});
+                dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
         }
         else {
             res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"block;", path: req.originalUrl});
+                dEvent:"block;", dAll:'block', conf:'none', path: req.originalUrl});
         }
 
 
@@ -73,12 +73,14 @@ router.post('*', async function(req, res, next) {
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
+                        path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                        path: req.originalUrl});
                 }
                 return;
             }
@@ -98,12 +100,14 @@ router.post('*', async function(req, res, next) {
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
                         wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
+                        path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
                         wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                        path: req.originalUrl});
                 }
                 return;
             }
@@ -115,12 +119,14 @@ router.post('*', async function(req, res, next) {
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
+                        path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", path: req.originalUrl});
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                        path: req.originalUrl});
                 }
                 return;
             }
@@ -150,13 +156,20 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'deleteAll':
-            // ask the user to confirm
+            res.render('WeeklyCalendar', {name:'',end:'', wage:'',
+                sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'block',
+                path: req.originalUrl});
             break;
 
         case 'confirmDeleteAll':
-            // loop through the eventsList (which is a list of lists)
-            // delete all events
-            // reload the page (res.redirect)
+            for(let i=0; i < query.length; i++) {
+                let eID = query[i].eventID;
+                console.log('*** Deleted Event ' + eID.toString() + ' ***');
+                let deletedEvent = await goalModel.destroy({where: {userID: uid, eventID: eID}});
+            }
+            console.log('*** All user events deleted ***')
+            res.redirect("/Weekly-Calendar");
             break;
     }
     }else{

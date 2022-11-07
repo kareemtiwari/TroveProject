@@ -32,18 +32,29 @@
         <td><%- sat %></td>
     </tr>
 </table>
-<form action = "/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
-        <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
-        <select id="eventSelector" name="eventSelector">
-        <%- events %>
-        </select><br>
-        <input type="hidden" id="type" name="type" value="deleteEvent">
-        <button type="submit">Delete Event</button>
+<form action="/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
+    <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
+    <select id="eventSelector" name="eventSelector">
+    <%- events %>
+    </select><br>
+    <input type="hidden" id="type" name="type" value="deleteEvent">
+    <button type="submit">Delete Event</button>
 </form><br><br>
+
+<form action="/Weekly-Calendar" method="post" id="deleteAll" style="display:<%= dAll %>">
+    <input type="hidden" id="type" name="type" value="deleteAll">
+    <button type="submit">Delete All</button>
+</form><br>
+
+<form action="/Weekly-Calendar" method="post" id="confirmDelete" style="display:<%= conf %>">
+    <input type="hidden" id="type" name="type" value="confirmDelete">
+    <button type="submit">Confirm Deletion</button>
+<!--    <input type="hidden" id="type" name="type" value="cancelDelete">-->
+<!--    <button type="submit">Cancel</button>-->
+</form><br>
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
-        <legend>Add Event</legend>
         <label for="eName">Event Name:</label>
         <input id="eName" name="eName" type="text"><br>
         <p style="color:#FF0000;"> <%= name %></p>
@@ -170,10 +181,6 @@
 
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>
-
-<!--        <input type="hidden" id="type" name="type" value="editEvent">-->
-<!--        <button type="submit">Save Changes</button>-->
-
     </fieldset>
 </form>
 </body>
