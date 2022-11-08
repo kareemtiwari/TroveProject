@@ -8,7 +8,7 @@ I am using the trove folder in the root of the repository to put all of the serv
 - Using a terminal navigate to the "csc450fa22-project-group-4" directory where you have pulled the github repository. 
 - Navigate into the trove folder 
 - To run the application type "npm start" - you should get the output "Trove server is now running!"
-- If you get an error on code from main, the SQLITE version is not correct for your OS (mac vs windows) and you must run 2 commands to fix it {npm remove sqlite3}{npm install sqlite3}
+- node modules have been removed from github - that means no more switching out the sqlite3 module
 - To vist the page goto https://localhost:3000/ and you should see the homepage [MUST BE HTTPS:// otherwise you will get an empty response]
 # Understanding the Express folder structure
 - **bin** - This is where the main executable is stored [dont edit]
