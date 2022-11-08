@@ -46,12 +46,19 @@
     <button type="submit">Delete All</button>
 </form><br>
 
-<form action="/Weekly-Calendar" method="post" id="confirmDelete" style="display:<%= conf %>">
-    <input type="hidden" id="type" name="type" value="confirmDelete">
-    <button type="submit">Confirm Deletion</button>
-<!--    <input type="hidden" id="type" name="type" value="cancelDelete">-->
-<!--    <button type="submit">Cancel</button>-->
-</form><br>
+<div id="deleteAllContainer" style="display:<%= conf %>">
+    <p style="color:#FF0000;">Are you sure you want to delete all events?</p>
+    <div id="deleteAllButtonsContainer" style="display: flex; flex-direction: row;">
+        <form action="/Weekly-Calendar" method="post" id="confirmDeleteAll">
+            <input type="hidden" id="type" name="type" value="confirmDeleteAll">
+            <button type="submit">Confirm Deletion</button>
+        </form>
+        <form action="/Weekly-Calendar" method="post" id="cancelDeleteAll">
+            <input type="hidden" id="type" name="type" value="cancelDeleteAll">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+</div><br>
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>

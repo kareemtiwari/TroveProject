@@ -163,13 +163,20 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'confirmDeleteAll':
+            console.log('*** Confirm Delete All ***');
             for(let i=0; i < query.length; i++) {
                 let eID = query[i].eventID;
                 console.log('*** Deleted Event ' + eID.toString() + ' ***');
-                let deletedEvent = await goalModel.destroy({where: {userID: uid, eventID: eID}});
+                let deletedEvent = await eventsModel.destroy({where: {userID: uid, eventID: eID}});
             }
             console.log('*** All user events deleted ***')
             res.redirect("/Weekly-Calendar");
+            break;
+        case 'cancelDeleteAll':
+            res.render('WeeklyCalendar', {name:'',end:'', wage:'',
+                sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                path: req.originalUrl});
             break;
     }
     }else{
