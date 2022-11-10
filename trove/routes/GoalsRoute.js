@@ -72,7 +72,6 @@ router.post('/add', async function(req, res, next) {
     let query = await goalModel.findAll({raw:true});
     console.log(query);
     console.log("***Goal***"+gID+" Created");
-    let goalCounter = 0;
     //,{where:{userID:uid}}
     //res.redirect('/Dashboard');
     //}else{
@@ -80,18 +79,32 @@ router.post('/add', async function(req, res, next) {
     //    path: req.originalUrl});    //TODO goals visible
 
     //set the goal priority on goal creation
-    //if the goal counter is 1 then set the ammount of .10
-    //if the goal counter is 2 then set the ammount to .10/2(.)
-    // if the goal counter is 3 then set the ammout to .10/3(.)
+    //if the goal counter is 1 then set the ammount of .10 * net ammoount.
+    //if the goal counter is 2 then set the ammount to .05 * net ammount
+    // if the goal counter is 3 then set the ammount allowed to give to .33*netAmmount
     // increment the sliders so that the total comes out to .10(.)
     //If the goalID and or Goals list is greater than 1 run this for loop
-    for(i=0,goalCounter <= 3,i ++){
-        goalCounter = 1;
-        gSlider = gAmount *.10;
-    }
 
 
 
+    switch(goalID){
+        case 0:
+            goalID = 1;
+            gSlider = netAmmount *.10;
+            break;
+        case 1:
+            goalID = 2;
+            gSlider = netAmmount * .05;
+            goalID(1).goalSlider = netAmmount * .05;
+            break;
+        case 2:
+            goalID = 3;
+            gSlider = netAmmount * .033;
+            goalID(2).goalSlider = netAmmount * .033;
+            goalID(1).goalSlider = netAmmount * .033;
+
+            break;
+}
 
     //set the goal priority on goal creation
         //if the goal counter is 1 then set the ammount of .10
