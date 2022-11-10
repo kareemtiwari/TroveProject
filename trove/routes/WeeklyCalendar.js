@@ -42,6 +42,11 @@ router.get('/', async function(req, res, next) {
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
                 dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
         }
+        if(jobQuery.length === 0) {
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
+                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
+                dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
+        }
         else {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
@@ -134,16 +139,16 @@ router.post('*', async function(req, res, next) {
             }
 
             /* Get and the event's job */
-            let eWage = req.body["eHourly"];
+            let selectedJob = req.body["jobSelector"]
+            console.log(selectedJob);
 
+            // let newEvent = eventsModel.create({
+            //     userID: uid, eventName: eName, eventDay: eDay,
+            //     eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
+            // });
 
-            let newEvent = eventsModel.create({
-                userID: uid, eventName: eName, eventDay: eDay,
-                eventStartTime: eStart, eventEndTime: eEnd, eventWage: eWage
-            });
-
-            console.log(query);
-            console.log("***New Event " + eName + " Created***");
+            // console.log(query);
+            // console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
 
@@ -275,13 +280,12 @@ class Event {
      * @param HourlyWage - type: float - User's hourly pay for this event (cannot be less than 0)
      *
      */
-    constructor(EventID, EventName, Day, StartTime, EndTime, HourlyWage) {
+    constructor(EventID, EventName, Day, StartTime, EndTime) {
         this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
         this.EndTime = EndTime;
-        this.HourlyWage = HourlyWage;
     }
     // Class Setter Methods
     /**
@@ -313,12 +317,6 @@ class Event {
      * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
      */
     setEndTime(EndTime) {this.EndTime = EndTime;}
-
-    /**
-     * Event Hourly Wage setter method.
-     * @param HourlyWage - type: float - User's hourly pay for this event (cannot be less than 0)
-     */
-    setHourlyWage(HourlyWage) {this.HourlyWage = HourlyWage;}
 
     // Class Getter Methods
     /**
@@ -420,12 +418,6 @@ class Event {
     }
 
     /**
-     * Hourly Wage getter method.
-     * @returns {number}
-     */
-    getHourlyWage() {return this.HourlyWage;}
-
-    /**
      * Method calculates the number of hours the event spans (EndTime - StartTime).
      * @returns {number}
      */
@@ -449,9 +441,9 @@ class Event {
         let s = "";
         s += this.EventName + ", ";
         s += this.getStartTime() + " - " + this.getEndTime() + ", ";
-        s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
+        // s += "Hourly Wage: $" + this.HourlyWage.toFixed(2).toString() + "/hr, ";
         s += "Event Length: " + this.calculateNumHours().toString() + " hours, ";
-        s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
+        // s += "Event Income: $" + this.calculateEventIncome().toFixed(2).toString();
         return s;
     }
 
