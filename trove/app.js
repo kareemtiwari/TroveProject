@@ -20,8 +20,8 @@ var calendarRouter = require('./routes/WeeklyCalendar');
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
 let eventsModel = require('./db/Objects/events.js').Events;
-//var calendarModel = require('./db/name.js');                  //TODO : Add database objects here
 let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
+let jobsModel = require('./db/Objects/jobs.js').Jobs;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,8 @@ sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database e
 
 accountModel.createModel(sequelize);                            //TODO : Create database models here
 DbGoalsModel.createModel(sequelize);                    //create database models
-eventsModel.createModel(sequelize);//create database models
+eventsModel.createModel(sequelize);
+jobsModel.createModel(sequelize);                       //create database models
 
 testUser = null;
 async function createTables(){
@@ -45,6 +46,8 @@ async function createTables(){
     eventDay:1, eventStartTime:9.0, eventEndTime:17.0, eventWage:15.0});//create first test event
   let testEvent2 = await eventsModel.create({eventID:1, userID:testUser.id, eventName:"Side Hustle",
     eventDay:6, eventStartTime:10.5, eventEndTime:14.5, eventWage:23.5});//create second test event
+  let testJob1 = await jobsModel.create({jobID:0, userID:0, jobName:"Salary Job", jobType:true, jobPay:23.50});//create first test job
+  let testJob2 = await jobsModel.create({jobID:1, userID:0, jobName:"Hourly Job", jobType:false, jobPay:14.25});//create second test job
   console.log("filled with test data");
 
   //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
