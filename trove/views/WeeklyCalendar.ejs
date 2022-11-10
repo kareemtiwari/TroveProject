@@ -182,9 +182,10 @@
         </select><br>
         <p style="color:#FF0000;"> <%= end %></p>
 
-        <label for="eHourly">Hourly Wage:</label>
-        <input id="eHourly" name="eHourly" type="text"><br><br>
-        <p style="color:#FF0000;"> <%= wage %></p>
+        <label for="jobSelector">Select Job:</label>
+        <select id="jobSelector" name="jobSelector">
+            <%- jobs %>
+        </select><br><br>
 
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>

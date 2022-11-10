@@ -3,6 +3,7 @@ const {Account: accountModel} = require("../db/Objects/account");
 const {DbGoals: goalModel} = require("../db/Objects/dbGoals");
 var router = express.Router();
 let eventsModel = require('../db/Objects/events.js').Events;
+let jobsModel = require('../db/Objects/jobs.js').Jobs;
 
 /* GET Weekly Calendar page. */
 router.get('/', async function(req, res, next) {
@@ -22,17 +23,27 @@ router.get('/', async function(req, res, next) {
             raw : true
         });
 
+        /* Get all the current user's jobs */
+        let jobQuery = await jobsModel.findAll({
+            where: {
+                userID: uid
+            },
+            raw: true
+        })
+
+        let jobs = getJobOptions(jobQuery);
+        console.log(jobs);
         let eventsList = getEventsList(query);
         let dispList = getDsiplayList(eventsList);
         let events = getEventsOptions(eventsList);
 
         if(query.length === 0) {
-            res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
                 dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
         }
         else {
-            res.render('WeeklyCalendar', {name:'',end:'', wage:'', sun:dispList[0], mon:dispList[1],
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
                 dEvent:"block;", dAll:'block', conf:'none', path: req.originalUrl});
         }
@@ -59,6 +70,16 @@ router.post('*', async function(req, res, next) {
         raw : true
     });
 
+    /* Get all the current user's jobs */
+    let jobQuery = await jobsModel.findAll({
+        where: {
+            userID: uid
+        },
+        raw: true
+    })
+
+    let jobs = getJobOptions(jobQuery);
+    console.log(jobs);
     let eventsList = getEventsList(query);
     let dispList = getDsiplayList(eventsList);
     let events = getEventsOptions(eventsList);
@@ -71,13 +92,13 @@ router.post('*', async function(req, res, next) {
             let eName = req.body["eName"];
             if(eName.length === 0){
                 if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs,
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
                         path: req.originalUrl});
                 }
                 else {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', wage:'',
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs,
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         path: req.originalUrl});
@@ -99,37 +120,22 @@ router.post('*', async function(req, res, next) {
             if(eEnd <= eStart){
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
-                        wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        jobs:jobs, sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
                         path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
-                        wage:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        jobs:jobs, sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         path: req.originalUrl});
                 }
                 return;
             }
 
-            /* Get and Check the New Event Hourly Wage */
+            /* Get and the event's job */
             let eWage = req.body["eHourly"];
-            eWage = parseFloat(eWage.replace(",","."));
-            if(isNaN(eWage)) {
-                if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        path: req.originalUrl});
-                }
-                else {
-                    res.render('WeeklyCalendar', {name:'',end:'', wage:'Hourly Wage must be a valid number.',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        path: req.originalUrl});
-                }
-                return;
-            }
+
 
             let newEvent = eventsModel.create({
                 userID: uid, eventName: eName, eventDay: eDay,
@@ -156,7 +162,7 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'deleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', wage:'',
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'block',
                 path: req.originalUrl});
@@ -173,7 +179,7 @@ router.post('*', async function(req, res, next) {
             res.redirect("/Weekly-Calendar");
             break;
         case 'cancelDeleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', wage:'',
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                 path: req.originalUrl});
@@ -183,6 +189,14 @@ router.post('*', async function(req, res, next) {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
+
+function getJobOptions(jobsQuery) {
+    let jobs = "";
+    for(let i=0;i<jobsQuery.length;i++) {
+        jobs += "<option value='" + jobsQuery[i].jobID + "'>" + jobsQuery[i].jobName + "</option>";
+    }
+    return jobs
+}
 
 /**
  * Function generates html code to display the options in the Edit/Delete dropdown selector.
@@ -236,6 +250,7 @@ function getDsiplayList(eventsList) {
     }
     return dispList;
 }
+
 
 /**
  * A custom data type for Events.
