@@ -72,13 +72,32 @@ router.post('/add', async function(req, res, next) {
     let query = await goalModel.findAll({raw:true});
     console.log(query);
     console.log("***Goal***"+gID+" Created");
+    let goalCounter = 0;
     //,{where:{userID:uid}}
     //res.redirect('/Dashboard');
     //}else{
     // res.render('Goals', {
     //    path: req.originalUrl});    //TODO goals visible
 
+    //set the goal priority on goal creation
+    //if the goal counter is 1 then set the ammount of .10
+    //if the goal counter is 2 then set the ammount to .10/2(.)
+    // if the goal counter is 3 then set the ammout to .10/3(.)
+    // increment the sliders so that the total comes out to .10(.)
+    //If the goalID and or Goals list is greater than 1 run this for loop
+    for(i=0,goalCounter <= 3,i ++){
+        goalCounter = 1;
+        gSlider = gAmount *.10;
+    }
 
+
+
+
+    //set the goal priority on goal creation
+        //if the goal counter is 1 then set the ammount of .10
+        //if the goal counter is 2 then set the ammount to .10/2(.)
+        // if the goal counter is 3 then set the ammout to .10/3(.)
+    // increment the sliders so that the total comes out to .10(.)
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
     //}
 
