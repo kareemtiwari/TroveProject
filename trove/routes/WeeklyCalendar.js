@@ -38,17 +38,12 @@ router.get('/', async function(req, res, next) {
         let events = getEventsOptions(eventsList);
 
         if(query.length === 0) {
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
-                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
-        }
-        if(jobQuery.length === 0) {
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
                 dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
         }
         else {
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, sun:dispList[0], mon:dispList[1],
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
                 dEvent:"block;", dAll:'block', conf:'none', path: req.originalUrl});
         }
@@ -97,13 +92,13 @@ router.post('*', async function(req, res, next) {
             let eName = req.body["eName"];
             if(eName.length === 0){
                 if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs,
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
                         path: req.originalUrl});
                 }
                 else {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs,
+                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         path: req.originalUrl});
@@ -125,13 +120,13 @@ router.post('*', async function(req, res, next) {
             if(eEnd <= eStart){
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
-                        jobs:jobs, sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
                         path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
-                        jobs:jobs, sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         path: req.originalUrl});
                 }
@@ -141,14 +136,31 @@ router.post('*', async function(req, res, next) {
             /* Get and the event's job */
             let selectedJob = req.body["jobSelector"]
             console.log(selectedJob);
+            if(selectedJob === undefined) {
+                if(query.length === 0) {
+                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+                        noJob:'You must have a job in Account Settings to create an event.',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
+                        path: req.originalUrl});
+                }
+                else {
+                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+                        noJob:'You must have a job in Account Settings to create an event.', sun:dispList[0],
+                        mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                        path: req.originalUrl});
+                }
+                return;
+            }
 
-            // let newEvent = eventsModel.create({
-            //     userID: uid, eventName: eName, eventDay: eDay,
-            //     eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
-            // });
+            let newEvent = eventsModel.create({
+                userID: uid, eventName: eName, eventDay: eDay,
+                eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
+            });
 
-            // console.log(query);
-            // console.log("***New Event " + eName + " Created***");
+            console.log(query);
+            console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
 
@@ -167,7 +179,7 @@ router.post('*', async function(req, res, next) {
             break;
 
         case 'deleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'block',
                 path: req.originalUrl});
@@ -184,7 +196,7 @@ router.post('*', async function(req, res, next) {
             res.redirect("/Weekly-Calendar");
             break;
         case 'cancelDeleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                 path: req.originalUrl});
