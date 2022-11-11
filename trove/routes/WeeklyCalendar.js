@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+let accountModel = require('../db/Objects/account.js').Account;
 let eventsModel = require('../db/Objects/events.js').Events;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 
@@ -183,6 +184,16 @@ router.post('*', async function(req, res) {
     }
 });
 
+function getTotalWorkHours(eventsList) {
+    let total = 0;
+    for(let i = 0; i < eventsList.length; i++) {
+        for(let j = 0; j < eventsList[i].length; j++) {
+            total += eventsList[i][j].calculateNumHours();
+        }
+    }
+    return total;
+}
+
 /**
  * Function genetates html code to display the job options in the Create Event job selector dropdown.
  * @param jobsQuery
@@ -227,7 +238,7 @@ function getEventsList(query, jobQuery) {
             }
         }
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
-            query[i].eventEndTime, job.jobName);
+            query[i].eventEndTime, job.jobName, job.jobType);
         eventsList[newEvent.getDay()].push(newEvent);
         }
     return eventsList;
@@ -278,14 +289,16 @@ class Event {
      * @param StartTime - type: float - Float representation of the event's start time (ex: 9:00am=9.0, 9:30pm=21.5)
      * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
      * @param JobName - type: string - Name of the event's job
+     * @param JobType - type: boolean - Reference to the job's type (true = salary, false = hourly)
      */
-    constructor(EventID, EventName, Day, StartTime, EndTime, JobName) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, JobName, JobType) {
         this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
         this.EndTime = EndTime;
         this.JobName = JobName;
+        this.JobType = JobType;
     }
 
     // Class Getter Methods
@@ -378,6 +391,17 @@ class Event {
         else {
             let time = Math.floor(this.EndTime);
             return time.toString() + min + "am";
+        }
+    }
+
+    getJobType() {return this.JobType;}
+
+    calculateNumHours() {
+        if(this.JobType) {
+            return 0;
+        }
+        else {
+            return this.getEndTime() - this.getStartTime();
         }
     }
 
