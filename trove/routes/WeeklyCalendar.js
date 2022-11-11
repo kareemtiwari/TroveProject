@@ -1,7 +1,5 @@
-var express = require('express');
-const {Account: accountModel} = require("../db/Objects/account");
-const {DbGoals: goalModel} = require("../db/Objects/dbGoals");
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 let eventsModel = require('../db/Objects/events.js').Events;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 
@@ -16,24 +14,14 @@ router.get('/', async function(req, res, next) {
         let uid = req.session.userID;
 
         /* Get all the current user's events to build the calendar */
-        let query = await eventsModel.findAll({
-            where: {
-                userID: uid
-            },
-            raw : true
-        });
+        /* Get all the current user's events to build the calendar */
+        let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
 
         /* Get all the current user's jobs */
-        let jobQuery = await jobsModel.findAll({
-            where: {
-                userID: uid
-            },
-            raw: true
-        });
+        let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
 
         let jobs = getJobOptions(jobQuery);
-        console.log(jobs);
-        let eventsList = getEventsList(query);
+        let eventsList = getEventsList(query, jobQuery);
         let dispList = getDsiplayList(eventsList);
         let events = getEventsOptions(eventsList);
 
@@ -63,24 +51,13 @@ router.post('*', async function(req, res, next) {
     let uid = req.session.userID;
 
     /* Get all the current user's events to build the calendar */
-    let query = await eventsModel.findAll({
-        where: {
-            userID: uid
-        },
-        raw : true
-    });
+    let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
 
     /* Get all the current user's jobs */
-    let jobQuery = await jobsModel.findAll({
-        where: {
-            userID: uid
-        },
-        raw: true
-    });
+    let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
 
     let jobs = getJobOptions(jobQuery);
-    console.log(jobs);
-    let eventsList = getEventsList(query);
+    let eventsList = getEventsList(query, jobQuery);
     let dispList = getDsiplayList(eventsList);
     let events = getEventsOptions(eventsList);
 
@@ -107,7 +84,7 @@ router.post('*', async function(req, res, next) {
             }
 
             /* Get the New Event Day */
-            var eDay = req.body["eDay"];
+            let eDay = req.body["eDay"];
             eDay = parseInt(eDay);
 
             /* Get the New Event Start Time */
@@ -233,13 +210,20 @@ function getEventsOptions(eventsList) {
 /**
  * Function creates a list of Event types from a given list of database object events.
  * @param query - query from the database containing all user events
+ * @param jobQuery - query from the database containing all user jobs
  * @returns {*[][]} - nested list containing a list of events for each day
  */
-function getEventsList(query) {
+function getEventsList(query, jobQuery) {
     let eventsList = [[],[],[],[],[],[],[]];
     for(let i=0; i < query.length; i++) {
+        let job = null;
+        for(let j = 0; j < jobQuery.length; j++) {
+            if (query[i].eventJob === jobQuery[j].jobID) {
+                job = jobQuery[j];
+            }
+        }
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
-            query[i].eventEndTime, query[i].eventJob);
+            query[i].eventEndTime, query[i].eventJob, job.jobName);
         eventsList[newEvent.getDay()].push(newEvent);
         }
     return eventsList;
@@ -289,16 +273,17 @@ class Event {
      * @param Day - type: int - Integer representing the day of the week (0=Sunday, 6=Saturday)
      * @param StartTime - type: float - Float representation of the event's start time (ex: 9:00am=9.0, 9:30pm=21.5)
      * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
-     * @param Job - type:  int - Id refering to the job for the event
-     *
+     * @param JobID - type:  int - Id referring to the job for the event
+     * @param JobName - type: string - Name of the event's job
      */
-    constructor(EventID, EventName, Day, StartTime, EndTime, Job) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, JobID, JobName) {
         this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
         this.EndTime = EndTime;
-        this.Job = Job;
+        this.JobID = JobID;
+        this.JobName = JobName;
     }
     // Class Setter Methods
     /**
@@ -335,7 +320,7 @@ class Event {
      * Event Job setter method.
      * @param JobID - type: string - Refers to the name of the job the user linked to this event
      */
-    setJob(JobID) {this.Job = JobID;}
+    setJobID(JobID) {this.Job = JobID;}
 
     // Class Getter Methods
     /**
@@ -436,7 +421,7 @@ class Event {
         }
     }
 
-    getJob() {return this.Job;}
+    getJobID() {return this.JobID;}
 
     /**
      * Method calculates the number of hours the event spans (EndTime - StartTime).
@@ -446,23 +431,14 @@ class Event {
         return this.EndTime - this.StartTime;
     }
 
-    // /**
-    //  * Method calculates the income earned from an event (NumHours * HourlyWage).
-    //  * @returns {number}
-    //  */
-    // calculateEventIncome() {
-    //     return this.calculateNumHours() * this.Wage;
-    // }
-
     /**
      * Returns a String representation of an event.
      * @returns {string}
      */
     printEvent() {
         let s = "";
-        s += this.EventName + " for Job " + this.Job.toString() + ", ";
-        s += this.getStartTime() + " - " + this.getEndTime() + ", ";
-        s += "Event Length: " + this.calculateNumHours().toString() + " hours ";
+        s += this.EventName + " for " + this.JobName + ", ";
+        s += this.getStartTime() + " - " + this.getEndTime();
         return s;
     }
 
@@ -492,7 +468,7 @@ class Event {
                 s += "Saturday";
                 break;
         }
-        s += " for Job " + this.Job.toString();
+        s += " for " + this.JobName;
         return s;
     }
 }
