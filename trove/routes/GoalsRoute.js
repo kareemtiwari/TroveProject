@@ -85,23 +85,23 @@ router.post('/add', async function(req, res, next) {
     // increment the sliders so that the total comes out to .10(.)
     //If the goalID and or Goals list is greater than 1 run this for loop
     let sliderVal = 100;
-    switch(goalID){
+    switch(gID){
         case 0:
-            goalID = 1;
+            gID = 1;
             glSlider = sliderVal;
             break;
         case 1:
             sliderVal = sliderVal - 50;
-            goalID = 2;
+            gID = 2;
             glSlider = sliderVal;
-            goalID(1).goalSlider = sliderVal ;
+            gID(1).goalSlider = sliderVal ;
             break;
         case 2:
             sliderVal = sliderVal - 33;
-            goalID = 3;
+            gID = 3;
             glSlider = sliderVal ;
-            goalID(2).goalSlider = sliderVal;
-            goalID(1).goalSlider = sliderVal;
+            gID(2).goalSlider = sliderVal;
+            gID(1).goalSlider = sliderVal;
             break;
 
 }
@@ -146,49 +146,66 @@ router.post('/addFunds', async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    console.log(req.url);
-    console.log(req.body);
+        console.log(req.url);
+        console.log(req.body);
 
-    session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    let gID = req.body["tempID"];  //get all variables out of the form
-    let gProgress = req.body["goalAddFunds"];
-    let goalProgress = req.body["goalProgress"];
-    let gName = req.body["tempName"];
-    let gAmount = req.body["tempAmount"];
-    let gSlider = req.body["tempSlider"];
-    gProgress = parseInt(gProgress);
-    console.log(gID, gProgress);
-
-
-    // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
-    // let query = await goalModel.findAll({raw:true});
-    let query = await goalModel.findAll({
-        where: {
-            userID: uid,
-            goalID: gID,
-        },
-        raw: true
-    });
-
-    const goal = query[0];
-
-    console.log(goal);
-
-    console.log(query);
-///The remove and add destroy the values and add more values to update the progress
-    if (goal.goalProgress+gProgress >= goal.goalAmount){
-        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-        console.log("Goal number "+ gID +" COMPLETED!");
-    }
-    else{
-        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-        newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: goal.goalProgress += gProgress, goalName: gName,goalSlider: gSlider});
-        console.log("***Goal***" + gID + " Funds Added");
-    }
+        session = req.session;
+        uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+        let gID = req.body["tempID"];  //get all variables out of the form
+        let gProgress = req.body["goalAddFunds"];
+        let goalProgress = req.body["goalProgress"];
+        let gName = req.body["tempName"];
+        let gAmount = req.body["tempAmount"];
+        let gSlider = req.body["tempSlider"];
+        priorityMultiplier = gSlider/100;
+        wage = 200;
+        gProgress = parseInt(gProgress);
+        let troveLimit = wage * priorityMultiplier;
+        console.log(gID, gProgress);
 
 
-    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
+        // let query = await goalModel.findAll({raw:true});
+        let query = await goalModel.findAll({
+            where: {
+                userID: uid,
+                goalID: gID,
+            },
+            raw: true
+        });
+
+        const goal = query[0];
+
+        console.log(goal);
+
+        console.log(query);
+
+        if (goal.goalAmount > troveLimit){
+            displayAmount = await goalModel.findAll({where: {userID: uid, goalID: gID}});
+            console.log("Goal number " + gID + " ENTER A VALUE LOWER THAN "+troveLimit);
+        }
+        else {
+            ///The remove and add destroy the values and add more values to update the progress
+            if (goal.goalProgress + gProgress >= goal.goalAmount) {
+                removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+                console.log("Goal number " + gID + " COMPLETED!");
+            }
+            else {
+                removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+                newGoal = await goalModel.create({
+                    userID: uid,
+                    goalID: gID,
+                    goalAmount: gAmount,
+                    goalProgress: goal.goalProgress += gProgress,
+                    goalName: gName,
+                    goalSlider: gSlider
+                });
+                console.log("***Goal***" + gID + " Funds Added");
+            }
+        }
+
+
+        res.redirect('/TroveAccounting'); //TODO : model doesn't have all
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
