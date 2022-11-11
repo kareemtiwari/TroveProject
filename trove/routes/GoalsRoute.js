@@ -84,27 +84,28 @@ router.post('/add', async function(req, res, next) {
     // if the goal counter is 3 then set the ammount allowed to give to .33*netAmmount
     // increment the sliders so that the total comes out to .10(.)
     //If the goalID and or Goals list is greater than 1 run this for loop
-
-
-
+    let netValue = 1;
     switch(goalID){
         case 0:
             goalID = 1;
-            gSlider = netAmmount *.10;
+            glSlider = netValue;
             break;
         case 1:
+            netValue = netValue /2;
             goalID = 2;
-            gSlider = netAmmount * .05;
-            goalID(1).goalSlider = netAmmount * .05;
+            glSlider = netValue;
+            goalID(1).goalSlider = netValue;
             break;
         case 2:
+            netValue = netValue/3;
             goalID = 3;
-            gSlider = netAmmount * .033;
-            goalID(2).goalSlider = netAmmount * .033;
-            goalID(1).goalSlider = netAmmount * .033;
-
+            glSlider = netValue ;
+            goalID(2).goalSlider = netValue;
+            goalID(1).goalSlider = netValue;
             break;
+
 }
+        console.log(netValue);
 
     //set the goal priority on goal creation
         //if the goal counter is 1 then set the ammount of .10
