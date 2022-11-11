@@ -4,8 +4,7 @@ let eventsModel = require('../db/Objects/events.js').Events;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 
 /* GET Weekly Calendar page. */
-router.get('/', async function(req, res, next) {
-
+router.get('/', async function(req, res) {
     if(req.session.userID != null) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
@@ -22,27 +21,27 @@ router.get('/', async function(req, res, next) {
 
         let jobs = getJobOptions(jobQuery);
         let eventsList = getEventsList(query, jobQuery);
-        let dispList = getDsiplayList(eventsList);
+        let dispList = getDisplayList(eventsList);
         let events = getEventsOptions(eventsList);
 
         if(query.length === 0) {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"none;", dAll:'none', conf:'none', path: req.originalUrl});
+                dEvent:"none;", dAll:'none', conf:'none', sName:'', path: req.originalUrl});
         }
         else {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
                 tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"block;", dAll:'block', conf:'none', path: req.originalUrl});
+                dEvent:"block;", dAll:'block', conf:'none', sName:'', path: req.originalUrl});
         }
 
 
     }else{
-        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to log in
     }
 });
 
-router.post('*', async function(req, res, next) {
+router.post('*', async function(req, res) {
     if(req.session.userID != null) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
@@ -58,7 +57,7 @@ router.post('*', async function(req, res, next) {
 
     let jobs = getJobOptions(jobQuery);
     let eventsList = getEventsList(query, jobQuery);
-    let dispList = getDsiplayList(eventsList);
+    let dispList = getDisplayList(eventsList);
     let events = getEventsOptions(eventsList);
 
     /* Begin switch cases for different Post types */
@@ -72,13 +71,13 @@ router.post('*', async function(req, res, next) {
                     res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 return;
             }
@@ -99,13 +98,13 @@ router.post('*', async function(req, res, next) {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
                         jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
                         jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 return;
             }
@@ -119,19 +118,19 @@ router.post('*', async function(req, res, next) {
                         noJob:'You must have a job in Account Settings to create an event.',
                         sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
                         noJob:'You must have a job in Account Settings to create an event.', sun:dispList[0],
                         mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        path: req.originalUrl});
+                        sName:eName, path: req.originalUrl});
                 }
                 return;
             }
 
-            let newEvent = eventsModel.create({
+            await eventsModel.create({
                 userID: uid, eventName: eName, eventDay: eDay,
                 eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
             });
@@ -150,7 +149,7 @@ router.post('*', async function(req, res, next) {
 
         case 'deleteEvent':
             let selectedID = req.body["eventSelector"] // This is the eventID
-            let deletedEvent = await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
+            await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
             console.log("***Event"+ selectedID +"Deleted***" )
             res.redirect("/Weekly-Calendar");
             break;
@@ -159,7 +158,7 @@ router.post('*', async function(req, res, next) {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'block',
-                path: req.originalUrl});
+                sName:'', path: req.originalUrl});
             break;
 
         case 'confirmDeleteAll':
@@ -167,7 +166,7 @@ router.post('*', async function(req, res, next) {
             for(let i=0; i < query.length; i++) {
                 let eID = query[i].eventID;
                 console.log('*** Deleted Event ' + eID.toString() + ' ***');
-                let deletedEvent = await eventsModel.destroy({where: {userID: uid, eventID: eID}});
+                await eventsModel.destroy({where: {userID: uid, eventID: eID}});
             }
             console.log('*** All user events deleted ***')
             res.redirect("/Weekly-Calendar");
@@ -176,14 +175,19 @@ router.post('*', async function(req, res, next) {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
                 sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                 fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                path: req.originalUrl});
+                sName:'',path: req.originalUrl});
             break;
     }
     }else{
-        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+        res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to log in
     }
 });
 
+/**
+ * Function genetates html code to display the job options in the Create Event job selector dropdown.
+ * @param jobsQuery
+ * @return {string}
+ */
 function getJobOptions(jobsQuery) {
     let jobs = "";
     for(let i=0;i<jobsQuery.length;i++) {
@@ -223,7 +227,7 @@ function getEventsList(query, jobQuery) {
             }
         }
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
-            query[i].eventEndTime, query[i].eventJob, job.jobName);
+            query[i].eventEndTime, job.jobName);
         eventsList[newEvent.getDay()].push(newEvent);
         }
     return eventsList;
@@ -234,7 +238,7 @@ function getEventsList(query, jobQuery) {
  * @param eventsList - eventsList from the getEventsList function
  * @returns {string[]} - a string list of html code for each day on the calendar
  */
-function getDsiplayList(eventsList) {
+function getDisplayList(eventsList) {
     let dispList = ['','','','','','',''];
     for(let i=0; i<eventsList.length;i++) {
         if(eventsList[i].length===0) {
@@ -273,54 +277,16 @@ class Event {
      * @param Day - type: int - Integer representing the day of the week (0=Sunday, 6=Saturday)
      * @param StartTime - type: float - Float representation of the event's start time (ex: 9:00am=9.0, 9:30pm=21.5)
      * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
-     * @param JobID - type:  int - Id referring to the job for the event
      * @param JobName - type: string - Name of the event's job
      */
-    constructor(EventID, EventName, Day, StartTime, EndTime, JobID, JobName) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, JobName) {
         this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
         this.StartTime = StartTime;
         this.EndTime = EndTime;
-        this.JobID = JobID;
         this.JobName = JobName;
     }
-    // Class Setter Methods
-    /**
-     * Event ID setter method.
-     * @param EventID - type: string - User-given name for their event
-     */
-    setEventID(EventID) {this.EventID = EventID;}
-
-    /**
-     * Event Name setter method.
-     * @param EventName - type: string - User-given name for their event
-     */
-    setEventName(EventName) {this.EventName = EventName;}
-
-    /**
-     * Day setter method.
-     * @param Day - type: int - Integer representing the day of the week (0=Sunday, 6=Saturday)
-     */
-    setDay(Day) {this.Day = Day;}
-
-    /**
-     * Event Start Time setter method.
-     * @param StartTime - type: float - Float representation of the event's start time (ex: 9:00am=9.0, 9:30pm=21.5)
-     */
-    setStartTime(StartTime) {this.StartTime = StartTime;}
-
-    /**
-     * Event End Time setter method.
-     * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
-     */
-    setEndTime(EndTime) {this.EndTime = EndTime;}
-
-    /**
-     * Event Job setter method.
-     * @param JobID - type: string - Refers to the name of the job the user linked to this event
-     */
-    setJobID(JobID) {this.Job = JobID;}
 
     // Class Getter Methods
     /**
@@ -328,12 +294,6 @@ class Event {
      * @returns {int}
      */
     getEventID() {return this.EventID;}
-
-    /**
-     * Event Name getter method.
-     * @returns {string}
-     */
-    getEventName() {return this.EventName;}
 
     /**
      * Day getter method.
@@ -419,16 +379,6 @@ class Event {
             let time = Math.floor(this.EndTime);
             return time.toString() + min + "am";
         }
-    }
-
-    getJobID() {return this.JobID;}
-
-    /**
-     * Method calculates the number of hours the event spans (EndTime - StartTime).
-     * @returns {number}
-     */
-    calculateNumHours() {
-        return this.EndTime - this.StartTime;
     }
 
     /**
