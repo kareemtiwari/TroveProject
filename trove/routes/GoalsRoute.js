@@ -94,14 +94,23 @@ router.post('/add', async function(req, res, next) {
             sliderVal = sliderVal - 50;
             gID = 2;
             glSlider = sliderVal;
+<<<<<<< Updated upstream
             gID(1).goalSlider = sliderVal ;
+=======
+            gID(1).glSlider = sliderVal ;
+>>>>>>> Stashed changes
             break;
         case 2:
             sliderVal = sliderVal - 33;
             gID = 3;
             glSlider = sliderVal ;
-            gID(2).goalSlider = sliderVal;
-            gID(1).goalSlider = sliderVal;
+<<<<<<< Updated upstream
+            gID(2).glSlider = sliderVal;
+            gID(1).glSlider = sliderVal;
+=======
+            gID(2).glSlider = sliderVal;
+            gID(1).glSlider = sliderVal;
+>>>>>>> Stashed changes
             break;
 
 }
