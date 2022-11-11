@@ -25,7 +25,7 @@ router.get('/', async function(req, res, next) {
     if(workingDob != null) {
       date = workingDob.split(" ");
     }
-  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:user.payMode,hourly_sel:!user.payMode,dob:date[0]}); //TODO : model doesn't have all
+  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0]}); //TODO : model doesn't have all
   console.log(user.id);
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -52,37 +52,36 @@ router.post('*', async function(req, res, next) {
   lName = req.body["lname"];
   sal = req.body["salary"];
   mode = req.body["salhour"];
-    console.log("salhour =============== " + mode);
   dateb = req.body["dob"];
 
   correct = true;
   if(fName == ""||lName == ""||sal== ""){
-    res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(!/^([A-Za-z]{1,10})$/.test(fName)) {
-    res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(!/^([A-Za-z]{1,10})$/.test(lName)) {
-    res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(dateb == '' || dateb == null){
-    res.render('AccountSettings', {remessage: 'Date is empty', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'Date is empty', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(sal <= 0){
-    res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
-  if(mode == null){
-    res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+  if(mode == null || mode == ''){
+    res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
@@ -92,12 +91,26 @@ router.post('*', async function(req, res, next) {
     session.accComplete = true;
     res.redirect('/Dashboard');
   }else{
-    res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:sal,salary_sel:mode,hourly_sel:!mode,dob:dateb});
+    res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
   }
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
   }
 });
+
+function isSalarySelected(mode){
+  if(mode == "Salary"){
+    return "checked";
+  }
+  return "";
+}
+
+function isHourlySelected(mode){
+  if(mode == "Hourly"){
+    return "checked";
+  }
+  return "";
+}
 
 class AccountSettings {
 
