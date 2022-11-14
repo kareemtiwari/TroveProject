@@ -1,5 +1,6 @@
 var express = require('express');
 const {Account: accountModel} = require('../db/Objects/account');
+const {or, INTEGER} = require("sequelize");
 var router = express.Router(); //NEEDED TO USE DATABASE OBJECT
 let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE DATABASE OBJECT
 
@@ -58,16 +59,37 @@ router.post('/add', async function(req, res, next) {
     session = req.session;
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
     let gID = req.body["goalID"];  //get all variables out of the form
-
     let gAmount = req.body["goalAmount"];
-    gAmount = parseInt(gAmount);
     let gProgress = req.body["goalProgress"];
-    gProgress = parseInt(gProgress);
     let gName = req.body["goalName"];
     let gSlider = req.body["goalSlider"];
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
+    if (gAmount == ""){
+        res.redirect('/TroveAccounting');
+        console.log("null amount catch");
+    }
+    else if(typeof gAmount != 'number'){
+        res.redirect('/TroveAccounting');
+        console.log("null amount 2 catch");
+    }
 
+    else if(gProgress == ""){
+        res.redirect('/TroveAccounting');
+        console.log("null progress catch");
+    }
+    else if(typeof gProgress != 'number'){
+        res.redirect('/TroveAccounting');
+        console.log("null progress 2 catch");
+    }
+    else if (gName == ""){
+        res.redirect('/TroveAccounting');
+        console.log("null name catch");
+    }
+
+    else {
+        gAmount = parseInt(gAmount);
+        gProgress = parseInt(gProgress);
     newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: gProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
     console.log(query);
@@ -84,8 +106,9 @@ router.post('/add', async function(req, res, next) {
     // if the goal counter is 3 then set the ammount allowed to give to .33*netAmmount
     // increment the sliders so that the total comes out to .10(.)
     //If the goalID and or Goals list is greater than 1 run this for loop
-    let sliderVal = 100;
+    var sliderVal = 100;
     switch(gID){
+
         case 0:
             gID = 1;
             glSlider = sliderVal;
@@ -94,23 +117,14 @@ router.post('/add', async function(req, res, next) {
             sliderVal = sliderVal - 50;
             gID = 2;
             glSlider = sliderVal;
-<<<<<<< Updated upstream
             gID(1).goalSlider = sliderVal ;
-=======
-            gID(1).glSlider = sliderVal ;
->>>>>>> Stashed changes
             break;
         case 2:
             sliderVal = sliderVal - 33;
             gID = 3;
             glSlider = sliderVal ;
-<<<<<<< Updated upstream
-            gID(2).glSlider = sliderVal;
-            gID(1).glSlider = sliderVal;
-=======
-            gID(2).glSlider = sliderVal;
-            gID(1).glSlider = sliderVal;
->>>>>>> Stashed changes
+            gID(2).goalSlider = sliderVal;
+            gID(1).goalSlider = sliderVal;
             break;
 
 }
@@ -124,7 +138,10 @@ router.post('/add', async function(req, res, next) {
     res.redirect('/TroveAccounting'); //TODO : model doesn't have all
     //}
 
-    }else{
+    }//Goes to if statement with null catches
+    }
+
+    else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
@@ -171,7 +188,7 @@ router.post('/addFunds', async function(req, res, next) {
         gProgress = parseInt(gProgress);
         let troveLimit = wage * priorityMultiplier;
         console.log(gID, gProgress);
-
+        console.log(troveLimit+" is the number you cant pass!");
 
         // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
         // let query = await goalModel.findAll({raw:true});
@@ -189,8 +206,7 @@ router.post('/addFunds', async function(req, res, next) {
 
         console.log(query);
 
-        if (goal.goalAmount > troveLimit){
-            displayAmount = await goalModel.findAll({where: {userID: uid, goalID: gID}});
+        if (gProgress > troveLimit){
             console.log("Goal number " + gID + " ENTER A VALUE LOWER THAN "+troveLimit);
         }
         else {
