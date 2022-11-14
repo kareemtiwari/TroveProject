@@ -25,15 +25,69 @@
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
     <br>
-<inline>
-    <input type="submit" value="Save for Later">
-    <input type="submit" value="Submit">
-    <input type="submit" value="Save">
-</inline>
+    <h3>Expenditures</h3>
+    <div class="tableView">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+            <% for(var i =0;i<expend.length;i++){%>
+            <tr onclick="edit(this);">
+                <td><%=expend[i][0];%></td>
+                <td><%=expend[i][1];%></td>
+                <td><%=expend[i][2];%></td>
+                <td><%=expend[i][3];%></td>
+            </tr>
+            <%}%>
+        </table>
+    </div>
+    <br>
+
+    <inline>
+        <input type="submit" value="Save for Later">
+        <input type="submit" value="Submit">
+        <input type="submit" value="Save">
+    </inline>
 </form>
 <%// if(remessage == "error") { %>
-    <h3 style="color:#FF0000"> <%= remessage%> </h3>
+<h3 style="color:#FF0000"> <%= remessage%> </h3>
 <% //} %>
 
 </body>
+<script>
+    function edit(el){
+        console.log(el.cells.length);
+        for(let i = 0;i<el.cells.length;i++){
+            el.cells[i].innerHTML = "<input type='text' id='edittable' name='edittable' value='" + el.cells[i].innerHTML + "'>";
+        }
+        el.className = "active";
+        el.setAttribute('onclick','');
+        hideOnClickOutside(el);
+    }
+    function commit(el){
+        for(let i = 0;i<el.cells.length;i++){
+            el.cells[i].innerHTML = "saved";
+        }
+        el.className = "";
+        el.setAttribute('onclick','edit(this);');
+    }
+
+    function hideOnClickOutside(element) {
+        const outsideClickListener = event => {
+            if (!element.contains(event.target)) { // or use: event.target.closest(selector) === null
+                commit(element);
+                removeClickListener();
+            }
+        }
+
+        const removeClickListener = () => {
+            document.removeEventListener('click', outsideClickListener);
+        }
+
+        document.addEventListener('click', outsideClickListener);
+    }
+</script>
 </html>
