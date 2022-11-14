@@ -18,6 +18,18 @@ router.get('/', async function(req, res, next) {
     },
     raw : true
   });
+
+    jd = [...Array(3)].map(e => Array(6).fill(""));
+    for(let i =0; i<3;i++){
+      jd[i]["has"] = query[i] != null;
+      if(jd[i]["has"]) {
+        jd[i]["jobID"] = query[i].jobID
+        jd[i]["jobName"] = query[i].jobName;
+        jd[i]["jobType"] = query[i].jobType;
+        jd[i]["jobPay"] = query[i].jobPay;
+      }
+    }
+
   let user = query[0];  //the first user in query - there should really only ever be 1
   //TODO : have to check if there is a user
     var workingDob = user.dob;
