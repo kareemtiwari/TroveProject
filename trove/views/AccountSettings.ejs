@@ -5,9 +5,7 @@
     <title>Account Settings</title>
 </head>
 <style>
-    input {
-        width: wrap;
-    }
+
 </style>
 <body>
 <%- include('fragments/header'); %>
@@ -48,6 +46,7 @@
             </tr>
             <%}%>
         </table>
+        <button type="button" onclick="addE();">Add Expenditure</button>
     </div>
     <br>
 
@@ -115,6 +114,9 @@
         el.setAttribute('onclick','edit(this);');
     }
 
+    function addE(){
+
+    }
 
     function hideOnClickOutside(element) {
         const outsideClickListener = event => {
