@@ -165,17 +165,29 @@ router.post('*', async function(req, res) {
             res.redirect("/Weekly-Calendar");
             break;
 
-        case 'editEvent':
-            // load the selected event into the form
-            // change "Create Event" button text to "Save Changes"
-            // delete the old event and save the new event
-            //
-            break;
-
         case 'deleteEvent':
-            let selectedID = req.body["eventSelector"] // This is the eventID
+            let selectedID = req.body["eventSelector"]
+            let selectedEvent = await eventsModel.findAll ({where: {eventID: selectedID, userID: uid}, raw : true});
+            let jobID = selectedEvent[0].eventJob;
+            let selectedJobs = await jobsModel.findAll ({where: {jobID: jobID, userID: uid}, raw : true});
+            let selectedType = selectedJobs[0].jobType;
+            if(selectedType) {
+                console.log('*** Deleted Salary Event - No Change to Hourly Income ***');
+            }
+            else {
+                let hourlyPay = selectedJobs[0].jobPay;
+                let jobHours = selectedEvent[0].eventEndTime - selectedEvent[0].eventStartTime;
+                let eventPay = jobHours * hourlyPay;
+                let prevIncome = accountQuery[0].hourlyIncome;
+                let newIncome = prevIncome - eventPay;
+                await accountModel.update(
+                    {hourlyIncome: newIncome},
+                    {where:{id: uid}}
+                );
+                console.log('*** Deleted ' + eventPay.toString() + ' from Hourly Income ***')
+            }
             await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
-            console.log("***Event "+ selectedID +" Deleted***" );
+            console.log("***Event "+ selectedEvent[0].eventName +" Deleted***" );
             res.redirect("/Weekly-Calendar");
             break;
 
