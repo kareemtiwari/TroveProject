@@ -14,8 +14,10 @@ router.get('/', async function(req, res) {
         let uid = req.session.userID;
 
         /* Get all the current user's events to build the calendar */
-        /* Get all the current user's events to build the calendar */
         let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
+
+        /* Get user's account information */
+        let accountQuery = await accountModel.findAll ({where: {id: uid}, raw : true});
 
         /* Get all the current user's jobs */
         let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
@@ -24,6 +26,10 @@ router.get('/', async function(req, res) {
         let eventsList = getEventsList(query, jobQuery);
         let dispList = getDisplayList(eventsList);
         let events = getEventsOptions(eventsList);
+
+        // Debugging Log Code
+        let inc = accountQuery[0].hourlyIncome;
+        console.log('*** hourlyIncome = ' + inc.toString() + ' ***');
 
         if(query.length === 0) {
             res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
@@ -52,6 +58,9 @@ router.post('*', async function(req, res) {
 
     /* Get all the current user's events to build the calendar */
     let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
+
+    /* Get user's account information */
+    let accountQuery = await accountModel.findAll ({where: {id: uid}, raw : true});
 
     /* Get all the current user's jobs */
     let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
@@ -123,20 +132,35 @@ router.post('*', async function(req, res) {
                 }
                 else {
                     res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
-                        noJob:'You must have a job in Account Settings to create an event.', sun:dispList[0],
+                        noJob:'You must have a Job in Account Settings to create an event.', sun:dispList[0],
                         mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         sName:eName, path: req.originalUrl});
                 }
                 return;
             }
-
             await eventsModel.create({
                 userID: uid, eventName: eName, eventDay: eDay,
                 eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
             });
 
-            console.log(query);
+            let selectedJobQuery = await jobsModel.findAll ({where: {jobID: selectedJob, userID: uid}, raw : true});
+            let jobType = selectedJobQuery[0].jobType;
+            if(jobType) {
+                console.log('*** Added Salary Event - No Change to Hourly Income ***');
+            }
+            else {
+                let hourlyPay = selectedJobQuery[0].jobPay;
+                let jobHours = eEnd - eStart;
+                let eventPay = jobHours * hourlyPay;
+                let prevIncome = accountQuery[0].hourlyIncome;
+                let newIncome = prevIncome + eventPay;
+                await accountModel.update(
+                    {hourlyIncome: newIncome},
+                    {where:{id: uid}}
+                );
+                console.log('*** Added ' + eventPay.toString() + ' to Hourly Income ***')
+            }
             console.log("***New Event " + eName + " Created***");
             res.redirect("/Weekly-Calendar");
             break;
@@ -151,7 +175,7 @@ router.post('*', async function(req, res) {
         case 'deleteEvent':
             let selectedID = req.body["eventSelector"] // This is the eventID
             await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
-            console.log("***Event"+ selectedID +"Deleted***" )
+            console.log("***Event "+ selectedID +" Deleted***" );
             res.redirect("/Weekly-Calendar");
             break;
 
@@ -169,6 +193,10 @@ router.post('*', async function(req, res) {
                 console.log('*** Deleted Event ' + eID.toString() + ' ***');
                 await eventsModel.destroy({where: {userID: uid, eventID: eID}});
             }
+            await accountModel.update(
+                {hourlyIncome: 0.0},
+                {where:{id: uid}}
+            );
             console.log('*** All user events deleted ***')
             res.redirect("/Weekly-Calendar");
             break;
@@ -183,16 +211,6 @@ router.post('*', async function(req, res) {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to log in
     }
 });
-
-function getTotalWorkHours(eventsList) {
-    let total = 0;
-    for(let i = 0; i < eventsList.length; i++) {
-        for(let j = 0; j < eventsList[i].length; j++) {
-            total += eventsList[i][j].calculateNumHours();
-        }
-    }
-    return total;
-}
 
 /**
  * Function genetates html code to display the job options in the Create Event job selector dropdown.
@@ -238,7 +256,7 @@ function getEventsList(query, jobQuery) {
             }
         }
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
-            query[i].eventEndTime, job.jobName, job.jobType);
+            query[i].eventEndTime, job.jobName, job.jobType, job.jobPay);
         eventsList[newEvent.getDay()].push(newEvent);
         }
     return eventsList;
@@ -290,8 +308,9 @@ class Event {
      * @param EndTime - type: float - Float representation of the event's end time (ex: 9:00am=9.0, 9:30pm=21.5)
      * @param JobName - type: string - Name of the event's job
      * @param JobType - type: boolean - Reference to the job's type (true = salary, false = hourly)
+     * @param Wage - type: float - hourly pay for the job linked to the event
      */
-    constructor(EventID, EventName, Day, StartTime, EndTime, JobName, JobType) {
+    constructor(EventID, EventName, Day, StartTime, EndTime, JobName, JobType, Wage) {
         this.EventID = EventID;
         this.EventName = EventName;
         this.Day = Day;
@@ -299,6 +318,7 @@ class Event {
         this.EndTime = EndTime;
         this.JobName = JobName;
         this.JobType = JobType;
+        this.Wage = Wage;
     }
 
     // Class Getter Methods
@@ -395,6 +415,17 @@ class Event {
     }
 
     getJobType() {return this.JobType;}
+
+    getWage() {return this.Wage;}
+
+    calculateEventPay() {
+        if (this.JobType) {
+            return 0.0;
+        }
+        else {
+            return this.calculateNumHours() * this.Wage;
+        }
+    }
 
     calculateNumHours() {
         if(this.JobType) {

@@ -41,7 +41,7 @@ async function createTables(){
   console.log("created DB tables");
 
   let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
-    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false, hoursWorked:4.0},);//create test user
+    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false, hourlyIncome:57.00},);//create test user
   let testEvent1 = await eventsModel.create({eventID:0, userID:testUser.id, eventName:"Work Shift",
     eventDay:1, eventStartTime:9.0, eventEndTime:17.0, eventJob:0});//create first test event
   let testEvent2 = await eventsModel.create({eventID:1, userID:testUser.id, eventName:"Side Hustle",

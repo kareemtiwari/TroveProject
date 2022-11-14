@@ -49,8 +49,9 @@ class Account extends Model {
                 type: DataTypes.BOOLEAN,
                 allowNull: false
             },
-            hoursWorked: {
+            hourlyIncome: {
                 type: DataTypes.FLOAT,
+                defaultValue: 0.0
             }
         }, {
             // Other model options go here
