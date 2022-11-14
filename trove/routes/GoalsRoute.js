@@ -65,32 +65,44 @@ router.post('/add', async function(req, res, next) {
     let gSlider = req.body["goalSlider"];
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
+        nGAmount = parseInt(gAmount);
+        nGProgress = parseInt(gProgress);
+        if(isNaN(gAmount) || isNaN(gProgress) || nGAmount == null || nGProgress == null){
+            res.redirect('/TroveAccounting');
+            console.log("NaN catch");
+            return;
+        }
+
     if (gAmount == ""){
         res.redirect('/TroveAccounting');
         console.log("null amount catch");
+        return;
     }
-    else if(typeof gAmount != 'number'){
+    else if(nGAmount <0){
         res.redirect('/TroveAccounting');
         console.log("null amount 2 catch");
+        return;
     }
 
-    else if(gProgress == ""){
+    else if(nGProgress == ""){
         res.redirect('/TroveAccounting');
         console.log("null progress catch");
+        return;
     }
-    else if(typeof gProgress != 'number'){
+    else if(nGProgress <0){
         res.redirect('/TroveAccounting');
         console.log("null progress 2 catch");
+        return;
     }
     else if (gName == ""){
         res.redirect('/TroveAccounting');
         console.log("null name catch");
+        return;
     }
 
     else {
-        gAmount = parseInt(gAmount);
-        gProgress = parseInt(gProgress);
-    newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: gAmount, goalProgress: gProgress, goalName: gName,goalSlider: gSlider});
+
+    newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
     console.log(query);
     console.log("***Goal***"+gID+" Created");
