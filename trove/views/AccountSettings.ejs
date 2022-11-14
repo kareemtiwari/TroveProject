@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Account Settings</title>
 </head>
+<style>
+    input {
+        width: wrap;
+    }
+</style>
 <body>
 <%- include('fragments/header'); %>
 <h1>Account settings</h1>
@@ -59,21 +64,57 @@
 </body>
 <script>
     function edit(el){
-        console.log(el.cells.length);
-        for(let i = 0;i<el.cells.length;i++){
-            el.cells[i].innerHTML = "<input type='text' id='edittable' name='edittable' value='" + el.cells[i].innerHTML + "'>";
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = el.cells[0].innerHTML;
+            el.cells[0].innerHTML = "";
+            el.cells[0].append(input);
+
+        const input2 = document.createElement("input");
+        input2.type = "text";
+        input2.value = el.cells[3].innerHTML;
+        el.cells[3].innerHTML = "";
+        el.cells[3].append(input2);
+
+        const input3 = document.createElement("select");
+        let optlist1 = ["Fixed","Variable"];
+        for (var i = 0; i<=optlist1.length; i++){
+            var opt = document.createElement('option');
+            opt.value = optlist1[i];
+            opt.innerHTML = optlist1[i];
+            input3.appendChild(opt);
         }
+        input3.value = el.cells[1].innerHTML;
+        el.cells[1].innerHTML = "";
+        el.cells[1].append(input3);
+
+        const input4 = document.createElement("select");
+        let optlist = ["Housing","Transportation","Food","Education","Entertainment","Miscellaneous"];
+        for (var i = 0; i<=optlist.length; i++){
+            var opt = document.createElement('option');
+            opt.value = optlist[i];
+            opt.innerHTML = optlist[i];
+            input4.appendChild(opt);
+        }
+        input4.value = el.cells[2].innerHTML;
+        el.cells[2].innerHTML = "";
+        el.cells[2].append(input4);
+
         el.className = "active";
         el.setAttribute('onclick','');
         hideOnClickOutside(el);
     }
     function commit(el){
         for(let i = 0;i<el.cells.length;i++){
-            el.cells[i].innerHTML = "saved";
+            const save = el.cells[i].children[0].value;
+            el.cells[i].innerHTML = save;
+
         }
         el.className = "";
+        console.log(el.innerHTML);
         el.setAttribute('onclick','edit(this);');
     }
+
 
     function hideOnClickOutside(element) {
         const outsideClickListener = event => {
@@ -84,10 +125,10 @@
         }
 
         const removeClickListener = () => {
-            document.removeEventListener('click', outsideClickListener);
+            document.removeEventListener('mousedown', outsideClickListener);
         }
 
-        document.addEventListener('click', outsideClickListener);
+        document.addEventListener('mousedown', outsideClickListener);
     }
 </script>
 </html>
