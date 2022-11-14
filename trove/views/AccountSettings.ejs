@@ -30,7 +30,8 @@
     <br>
     <h3>Expenditures</h3>
     <div class="tableView">
-        <table>
+        <p>Click on a row to edit, Rows are saved when you click off</p>
+        <table id="expTable">
             <tr>
                 <th>Name</th>
                 <th>Type</th>
@@ -46,7 +47,8 @@
             </tr>
             <%}%>
         </table>
-        <button type="button" onclick="addE();">Add Expenditure</button>
+        <button type="button" onclick="addE();">Add New Expenditure</button>
+        <button type="button" id="del" onclick="deleteE();">Delete Selected Expenditure</button>
     </div>
     <br>
 
@@ -99,7 +101,7 @@
         el.cells[2].innerHTML = "";
         el.cells[2].append(input4);
 
-        el.className = "active";
+        el.className = "selrow";
         el.setAttribute('onclick','');
         hideOnClickOutside(el);
     }
@@ -115,12 +117,32 @@
     }
 
     function addE(){
+        const table = document.getElementById("expTable");
+        const newRow = table.insertRow();
+        newRow.setAttribute("onclick","edit(this);");
+        const c1 = newRow.insertCell();
+        c1.innerHTML = "New Expenditure";
+        const c2 = newRow.insertCell();
+        c2.innerHTML = "Variable";
+        const c3 = newRow.insertCell();
+        c3.innerHTML = "Miscellaneous";
+        const c4 = newRow.insertCell();
+        c4.innerHTML = "0";
+
+    }
+
+    function deleteE(){
+        const selrow = document.getElementsByClassName("selrow");
+        const table = document.getElementById("expTable");
+        console.log(selrow.rowIndex);
+        table.deleteRow(selrow.rowIndex);
+        //row.remove();
 
     }
 
     function hideOnClickOutside(element) {
         const outsideClickListener = event => {
-            if (!element.contains(event.target)) { // or use: event.target.closest(selector) === null
+            if (!element.contains(event.target)&&!element.contains(document.getElementById("del"))) { // or use: event.target.closest(selector) === null
                 commit(element);
                 removeClickListener();
             }
