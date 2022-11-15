@@ -116,9 +116,7 @@ router.post('/submit', async function(req, res, next) {
 
 router.post('/addJob', async function(req, res, next) {
   if(req.session.userID != null) {
-    if(!req.session.accComplete){
-      res.redirect('/accSettings'); //you need to complete your account before being here
-    }
+    
     console.log(req.url);
     console.log(req.body);
 
@@ -137,10 +135,12 @@ router.post('/addJob', async function(req, res, next) {
     console.log("***Job***"+jID+" Created");
 
     res.redirect('/accSettings'); //TODO : model doesn't have all
+    return
     //}
 
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    return
   }
 });
 
