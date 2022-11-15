@@ -8,32 +8,17 @@ let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE D
  * GET router - this is what is called when this routers path is hit with an HTTP get request
  * This usually happens when a user navigated to your page, or refreshes the page
  */
-router.get('/',  async function(req, res, next) {
+router.get('*',  async function(req, res, next) {
     if(req.session.userID != null) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
     let uid = req.session.userID;
+        gd = await queryData(uid);
     //TODO : have to check if there is a userID in the session
     //get the currently logged in user
-    let query = await goalModel.findAll({
-        where: {
-            userID: uid
-        },
-        raw : true
-    });
 
-    gd = [...Array(3)].map(e => Array(6).fill(""));
-    for(let i =0; i<3;i++){
-        gd[i]["has"] = query[i] != null;
-        if(gd[i]["has"]) {
-            gd[i]["goalID"] = query[i].goalID;
-            gd[i]["goalAmount"] = query[i].goalAmount;
-            gd[i]["goalProgress"] = query[i].goalProgress;
-            gd[i]["goalName"] = query[i].goalName;
-            gd[i]["goalSlider"] = query[i].goalSlider;
-        }
-    }
+
     // //TODO : have to check if there is a user
 
     res.render('Goals', {display: gd}); //TODO : model doesn't have all
@@ -57,7 +42,8 @@ router.post('/add', async function(req, res, next) {
     console.log(req.body);
 
     session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    uid = req.session.userID;
+    gd = await queryData(uid);//need to check if there is one - [also eventually need to check if they are being brute forced??]
     let gID = req.body["goalID"];  //get all variables out of the form
     let gAmount = req.body["goalAmount"];
     let gProgress = req.body["goalProgress"];
@@ -71,41 +57,48 @@ router.post('/add', async function(req, res, next) {
         nGAmount = parseInt(gAmount);
         nGProgress = parseInt(gProgress);
         if(isNaN(gAmount) || isNaN(gProgress) || nGAmount == null || nGProgress == null){
-            res.redirect('/TroveAccounting');
+            //res.redirect('/TroveAccounting');
+            res.render('Goals', {display: gd});
             console.log("NaN catch");
             return;
         }
 
     if (gAmount < 0){
-        res.redirect('/TroveAccounting');
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {display: gd});
         console.log("null amount catch");
         return;
     }
     else if(nGAmount < 0){
-        res.redirect('/TroveAccounting');
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {display: gd});
         console.log("null amount 2 catch");
         return;
     }
 
     else if(nGProgress < 0){
-        res.redirect('/TroveAccounting');
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
     else if(nGProgress < 0){
-        res.redirect('/TroveAccounting');
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {display: gd});
         console.log("null progress 2 catch");
         return;
     }
     else if (gName == ""){
-        res.redirect('/TroveAccounting');
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {display: gd});
         console.log("null name catch");
         return;
     }
     else if (gSlider > session.totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
-            res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+            //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        res.render('Goals', {display: gd});
             return;
 
         }
@@ -164,7 +157,9 @@ router.post('/add', async function(req, res, next) {
         //if the goal counter is 2 then set the ammount to .10/2(.)
         // if the goal counter is 3 then set the ammout to .10/3(.)
     // increment the sliders so that the total comes out to .10(.)
-    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+    //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        res.render('Goals', {display: gd});
     //}
 
     }//Goes to if statement with null catches
@@ -184,13 +179,16 @@ router.post('/delete', async function(req, res, next) {
 
     session = req.session;
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    gd = await queryData(uid);
     let gID = req.body["goalID"];  //get all variables out of the form
 
     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
     let query = await goalModel.findAll({raw: true});
     console.log(query);
     console.log("***Goal***" + gID + " Deleted");
-    res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+    //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        res.render('Goals', {display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -206,6 +204,7 @@ router.post('/addFunds', async function(req, res, next) {
 
         session = req.session;
         uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+        gd = await queryData(uid);
         let gID = req.body["tempID"];  //get all variables out of the form
         let gProgress = req.body["goalAddFunds"];
         let goalProgress = req.body["goalProgress"];
@@ -238,7 +237,8 @@ router.post('/addFunds', async function(req, res, next) {
 
         nGProgress = parseInt(gProgress);
         if(isNaN(gProgress) || nGProgress == null){
-            res.redirect('/TroveAccounting');
+            //res.redirect('/TroveAccounting');
+            res.render('Goals', {display: gd});
             console.log("NaN catch");
             return;
         }
@@ -266,7 +266,9 @@ router.post('/addFunds', async function(req, res, next) {
             }
         }
 
-        res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        res.render('Goals', {display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -283,6 +285,8 @@ router.post('/deleteFunds', async function(req, res, next) {
 
         session = req.session;
         uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+        gd = queryData(uid);
+
         let gID = req.body["tempID"];  //get all variables out of the form
         let gProgress = req.body["goalDeleteFunds"];
         let goalProgress = req.body["goalProgress"];
@@ -310,7 +314,8 @@ router.post('/deleteFunds', async function(req, res, next) {
         console.log(query);
         nGProgress = parseInt(gProgress);
         if (isNaN(gProgress) || nGProgress == null) {
-            res.redirect('/TroveAccounting');
+            //res.redirect('/TroveAccounting');
+            res.render('Goals', {display: gd});
             console.log("NaN catch");
             return;
         } else {
@@ -341,7 +346,9 @@ router.post('/deleteFunds', async function(req, res, next) {
             }
 
 
-            res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+            //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+            gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+            res.render('Goals', {display: gd});
 
         }
     }
@@ -349,5 +356,27 @@ router.post('/deleteFunds', async function(req, res, next) {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
+
+async function queryData(uid){
+    let query = await goalModel.findAll({
+        where: {
+            userID: uid
+        },
+        raw : true
+    });
+
+    gd = [...Array(3)].map(e => Array(6).fill(""));
+    for(let i =0; i<3;i++){
+        gd[i]["has"] = query[i] != null;
+        if(gd[i]["has"]) {
+            gd[i]["goalID"] = query[i].goalID;
+            gd[i]["goalAmount"] = query[i].goalAmount;
+            gd[i]["goalProgress"] = query[i].goalProgress;
+            gd[i]["goalName"] = query[i].goalName;
+            gd[i]["goalSlider"] = query[i].goalSlider;
+        }
+    }
+    return gd;
+}
 
 module.exports = router;  //This allows your router to be used in the main app file
