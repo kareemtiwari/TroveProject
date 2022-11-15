@@ -156,7 +156,7 @@ router.post('/deleteJob', async function(req, res, next) {
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
     let jID = req.body["jobID"];  //get all variables out of the form
 
-    removeJob = await jobModel.destroy({where: {userID: uid, jobID: gID}});
+    removeJob = await jobModel.destroy({where: {userID: uid, jobID: jID}});
     let query = await jobModel.findAll({raw: true});
     console.log(query);
     console.log("***Job***" + gID + " Deleted");
