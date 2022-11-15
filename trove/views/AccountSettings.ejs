@@ -29,8 +29,8 @@
 <h1><b>Jobs</b></h1>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
-        <button type="submit" formaction="/TroveAccounting/add">Add Job</button>
-        <button type="submit" formaction="/TroveAccounting/delete">Delete Job</button>
+        <button type="submit" formaction="/accSettings/addJob">Add Job</button>
+        <button type="submit" formaction="/accSettings/delete">Delete Job</button>
         <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
         <div>
@@ -48,8 +48,7 @@
             <label for="jobName">Enter Job Name:</label>
             <input type="text" id="jobName" name="jobName">
             </br>
-            <label for="lname">Salary/ Hourly:</label>-->
-            <input type="text" id="salary" name="salary" value="<%=salary%>"><br><br>
+            <br>
             <input type="radio" id="salary" name="salhour" value="Salary" <%=salary_sel%>>
             <label for="html">Salary</label><br>
             <input type="radio" id="hourly" name="salhour" value="Hourly" <%=hourly_sel%>>
@@ -76,9 +75,9 @@
     <br>
     <br>
     <inline>
-        <input type="submit" value="Save for Later">
-        <input type="submit" value="Submit">
-        <input type="submit" value="Save">
+        <input type="submit" formaction="/submit" value="Save for Later">
+        <input type="submit" formaction="/submit" value="Submit">
+        <input type="submit" formaction="/submit" value="Save">
     </inline>
 </form>
 

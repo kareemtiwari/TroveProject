@@ -1,6 +1,8 @@
 var express = require('express');
+const {DbGoals: goalModel} = require("../db/Objects/dbGoals");
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO USE DATABASE OBJECT
+let jobModel = require('../db/Objects/jobs.js').Jobs;   //NEEDED TO USE DATABASE OBJECT
 
 
 /**
@@ -53,7 +55,7 @@ router.get('/logout', async function(req, res, next) {
  * POST router - this is what is called when this routers path is hit with an HTTP post request
  * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
  */
-router.post('*', async function(req, res, next) {
+router.post('/submit', async function(req, res, next) {
   if(req.session.userID != null) {
   console.log(req.url);
   console.log(req.body);
@@ -62,12 +64,13 @@ router.post('*', async function(req, res, next) {
   uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
   fName = req.body["fname"];  //get all variables out of the form
   lName = req.body["lname"];
-  sal = req.body["salary"];
+  jPay = req.body["jobPay"];
   mode = req.body["salhour"];
   dateb = req.body["dob"];
+  jName = req.body["jobName"];
 
   correct = true;
-  if(fName == ""||lName == ""||sal== ""){
+  if(fName == ""||lName == ""||jPay== ""||jName == ""){
     res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
@@ -87,24 +90,55 @@ router.post('*', async function(req, res, next) {
     return;
   }
 
-  if(sal <= 0){
-    res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+  if(jPay <= 0){
+    res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(mode == null || mode == ''){
-    res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+    res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(correct){
     //update records
-    await accountModel.update({firstName: fName, lastName: lName, salary:sal, payMode:mode, dob:dateb, accComplete:true},{where:{id:uid}});
+    await accountModel.update({firstName: fName, lastName: lName, dob:dateb, accComplete:true},{where:{id:uid}});
+    await jobModel.update({jobName: jName, jobPay: jPay, jobType: mode},{where:{id:uid}});
     session.accComplete = true;
     res.redirect('/Dashboard');
   }else{
     res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
   }
+  }else{
+    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+  }
+});
+
+router.post('/addJob', async function(req, res, next) {
+  if(req.session.userID != null) {
+    if(!req.session.accComplete){
+      res.redirect('/accSettings'); //you need to complete your account before being here
+    }
+    console.log(req.url);
+    console.log(req.body);
+
+    session = req.session;
+    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    let jID = req.body["jobID"];  //get all variables out of the form
+    let jName = req.body["jobName"];
+    let jType = req.body["salhour"];
+    let jPay = req.body["jobPay"];
+    console.log(jID, jName, jType, jPay);
+
+
+    newGoal = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: jPay});
+    let query = await jobModel.findAll({raw:true});
+    console.log(query);
+    console.log("***Job***"+jID+" Created");
+
+    res.redirect('/accSettings'); //TODO : model doesn't have all
+    //}
+
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
   }
