@@ -24,55 +24,16 @@
     <input type="date" id="dob" name="dob"
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
-
+    <br>
+<inline>
+    <input type="submit" value="Save for Later">
     <input type="submit" value="Submit">
+    <input type="submit" value="Save">
+</inline>
 </form>
 <%// if(remessage == "error") { %>
     <h3 style="color:#FF0000"> <%= remessage%> </h3>
 <% //} %>
 
 </body>
-<script>
-    class AccountSettings {
-
-        /**
-         * The constructor - Database will instantiate
-         * @param login object
-         */
-        constructor(login) {
-            this.userID = login.userID;
-            this.sessionID = login.sessionID;
-            this.firstName = "from db";
-            this.lastName = "from db";
-            this.email = "from db";
-            //password and secuirty question not instantiated
-            this.expenditures = 0; //get from database or user input later (should be a table)
-            this.wageInfo = 0; //get from database or user input later
-        }
-
-        /**
-         * Getter for userID
-         * @returns {*}
-         */
-        get userID() {              //example function
-            return this.userID;
-        }
-
-        /**
-         * Getter for expenditures
-         * @returns {*}
-         */
-        get Expenditures() {            //example getter
-            return this.expenditures;
-        }
-
-        /**
-         * Getter for wage info
-         * @returns {*}
-         */
-        get WageInfo() {
-            return this.wageInfo;
-        }
-    }
-</script>
 </html>
