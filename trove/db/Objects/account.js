@@ -41,7 +41,6 @@ class Account extends Model {
             },
             salary: {       //TODO - were required but not in model
                 type: DataTypes.NUMBER
-
             },
             payMode: {
                 type: DataTypes.BOOLEAN
@@ -49,6 +48,10 @@ class Account extends Model {
             accComplete: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false
+            },
+            hourlyIncome: {
+                type: DataTypes.FLOAT,
+                defaultValue: 0.0
             }
         }, {
             // Other model options go here

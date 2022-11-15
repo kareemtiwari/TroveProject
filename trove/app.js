@@ -41,13 +41,13 @@ async function createTables(){
   console.log("created DB tables");
 
   let testUser = await accountModel.create({firstName: "John", lastName: "Doe",
-    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false});//create test user
-  let testEvent1 = await eventsModel.create({eventID:0, userID:0, eventName:"Work Shift",
-    eventDay:1, eventStartTime:9.0, eventEndTime:17.0, eventWage:15.0});//create first test event
-  let testEvent2 = await eventsModel.create({eventID:1, userID:0, eventName:"Side Hustle",
-    eventDay:6, eventStartTime:10.5, eventEndTime:14.5, eventWage:23.5});//create second test event
-  let testJob1 = await jobsModel.create({jobID:0, userID:0, jobName:"Salary Job", jobType:true, jobPay:23.50});//create first test job
-  let testJob2 = await jobsModel.create({jobID:1, userID:0, jobName:"Hourly Job", jobType:false, jobPay:14.25});//create second test job
+    email: "johndoe@gmail.com", password:"lolcleartext", accComplete:false, hourlyIncome:57.00},);//create test user
+  let testEvent1 = await eventsModel.create({eventID:0, userID:testUser.id, eventName:"Work Shift",
+    eventDay:1, eventStartTime:9.0, eventEndTime:17.0, eventJob:0});//create first test event
+  let testEvent2 = await eventsModel.create({eventID:1, userID:testUser.id, eventName:"Side Hustle",
+    eventDay:6, eventStartTime:10.5, eventEndTime:14.5, eventJob:1});//create second test event
+  let testJob1 = await jobsModel.create({jobID:0, userID:testUser.id, jobName:"Salary Job", jobType:true, jobPay:42500.00});//create first test job
+  let testJob2 = await jobsModel.create({jobID:1, userID:testUser.id, jobName:"Hourly Job", jobType:false, jobPay:14.25});//create second test job
   console.log("filled with test data");
 
   //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB

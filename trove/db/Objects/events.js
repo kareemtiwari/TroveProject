@@ -29,8 +29,8 @@ class Events extends Model {
                 type: DataTypes.FLOAT,
                 allowNull: false
             },
-            eventWage: {
-                type: DataTypes.FLOAT,
+            eventJob: {
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
         }, {
