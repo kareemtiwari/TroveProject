@@ -40,11 +40,8 @@ router.get('/logout', async function(req, res, next) {
   res.redirect('/Trove_Login');
 });
 
-router.get('/jobsUpdate',  async function(req, res, next) {
+router.get('/job',  async function(req, res, next) {
   if(req.session.userID != null) {
-    if(!req.session.accComplete){
-      res.redirect('/accSettings'); //you need to complete your account before being here
-    }
     let uid = req.session.userID;
     //TODO : have to check if there is a userID in the session
     //get the currently logged in user

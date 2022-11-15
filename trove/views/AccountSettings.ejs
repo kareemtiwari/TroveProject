@@ -25,7 +25,7 @@
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
     <br>
-
+</form>
 <h1><b>Jobs</b></h1>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
@@ -53,11 +53,12 @@
             <label for="html">Salary</label><br>
             <input type="radio" id="hourly" name="jobType" value="Hourly" <%=hourly_sel%>>
             <label for="css">Hourly</label><br>
+
         </div>
     </fieldset>
 </form>
-
-<% if(jd[0]["has"]){%>
+<%}%>
+<%if(jd[0]["has"]){%>
 <div id="job1Block">
     <p> Job #: <%=jd[0]["jobID"]%> <span id="jobIDDisplay1"></span></p>
     <p> Job Name: <%=jd[0]["jobName"]%> <span id="jobIDDisplay2"></span></p>
@@ -71,7 +72,7 @@
     </form>
 </div>
 <%}%>
-    <% if(jd[1]["has"]){%>
+<%if(jd[1]["has"]){%>
     <div id="job2Block">
         <p> Job #: <%=jd[1]["jobID"]%> <span id="jobIDDisplay1"></span></p>
         <p> Job Name: <%=jd[1]["jobName"]%> <span id="jobIDDisplay2"></span></p>
@@ -85,7 +86,7 @@
         </form>
     </div>
     <%}%>
-    <% if(jd[2]["has"]){%>
+<%if(jd[2]["has"]){%>
     <div id="job3Block">
         <p> Job #: <%=jd[2]["jobID"]%> <span id="jobIDDisplay1"></span></p>
         <p> Job Name: <%=jd[2]["jobName"]%> <span id="jobIDDisplay2"></span></p>
