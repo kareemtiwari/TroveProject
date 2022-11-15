@@ -102,6 +102,7 @@
         el.cells[2].append(input4);
 
         el.className = "selrow";
+        el.id = "selrow";
         el.setAttribute('onclick','');
         hideOnClickOutside(el);
     }
@@ -112,6 +113,7 @@
 
         }
         el.className = "";
+        el.id = "";
         console.log(el.innerHTML);
         el.setAttribute('onclick','edit(this);');
     }
@@ -132,9 +134,9 @@
     }
 
     function deleteE(){
-        const selrow = document.getElementsByClassName("selrow");
-        const table = document.getElementById("expTable");
-        console.log(selrow.rowIndex);
+        const selrow = document.getElementsByClassName('selrow')[0];
+        const table = document.getElementById('expTable');
+        console.log(selrow);
         table.deleteRow(selrow.rowIndex);
         //row.remove();
 
@@ -142,9 +144,11 @@
 
     function hideOnClickOutside(element) {
         const outsideClickListener = event => {
-            if (!element.contains(event.target)&&!element.contains(document.getElementById("del"))) { // or use: event.target.closest(selector) === null
-                commit(element);
-                removeClickListener();
+            if (!element.contains(event.target)) { // or use: event.target.closest(selector) === null
+                if(!document.getElementById("del").contains(event.target)) {
+                    commit(element);
+                    removeClickListener();
+                }
             }
         }
 
