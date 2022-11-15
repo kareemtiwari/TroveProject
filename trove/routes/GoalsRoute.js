@@ -63,6 +63,9 @@ router.post('/add', async function(req, res, next) {
     let gProgress = req.body["goalProgress"];
     let gName = req.body["goalName"];
     let gSlider = req.body["goalSlider"];
+    session.totalSlider = 100;
+    session.gSliderSum += session.gSliderSum;
+    console.log(session.gSliderSum);
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
         nGAmount = parseInt(gAmount);
@@ -73,23 +76,24 @@ router.post('/add', async function(req, res, next) {
             return;
         }
 
-    if (gAmount == ""){
+    if (gAmount < 0){
         res.redirect('/TroveAccounting');
         console.log("null amount catch");
         return;
     }
-    else if(nGAmount <0){
+    else if(nGAmount < 0){
         res.redirect('/TroveAccounting');
         console.log("null amount 2 catch");
         return;
     }
 
-    else if(nGProgress == ""){
+    else if(nGProgress < 0){
         res.redirect('/TroveAccounting');
+        console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
-    else if(nGProgress <0){
+    else if(nGProgress < 0){
         res.redirect('/TroveAccounting');
         console.log("null progress 2 catch");
         return;
@@ -99,8 +103,16 @@ router.post('/add', async function(req, res, next) {
         console.log("null name catch");
         return;
     }
+    else if (gSlider > session.totalSlider){
+            console.log("Your priority is full you cannot make anymore goals");
+            res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+            return;
 
+        }
     else {
+        session.gSliderSum = session.gSliderSum + gSlider;
+        session.totalSlider = session.totalSlider - session.gSliderSum;
+        console.log(session.totalSlider);
 
     newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
@@ -118,29 +130,34 @@ router.post('/add', async function(req, res, next) {
     // if the goal counter is 3 then set the ammount allowed to give to .33*netAmmount
     // increment the sliders so that the total comes out to .10(.)
     //If the goalID and or Goals list is greater than 1 run this for loop
-    var sliderVal = 100;
-    switch(gID){
 
-        case 0:
-            gID = 1;
-            glSlider = sliderVal;
-            break;
-        case 1:
-            sliderVal = sliderVal - 50;
-            gID = 2;
-            glSlider = sliderVal;
-            gID(1).goalSlider = sliderVal ;
-            break;
-        case 2:
-            sliderVal = sliderVal - 33;
-            gID = 3;
-            glSlider = sliderVal ;
-            gID(2).goalSlider = sliderVal;
-            gID(1).goalSlider = sliderVal;
-            break;
-
-}
-        console.log(sliderVal);
+//
+//         try {
+//             if (query[0].gID == 1);{
+//                 gSlider = session.gSliderSum
+//         };
+//
+//         catch(err){
+//
+//             }
+//
+//             gID = 1;
+//             glSlider = session.gSliderSum;
+//             break;
+//         case 1:
+//             gID = 2;
+//             glSlider = sliderVal;
+//             gID(1).goalSlider = sliderVal ;
+//             break;
+//         case 2:
+//             gID = 3;
+//             glSlider = sliderVal ;
+//             gID(2).goalSlider = sliderVal;
+//             gID(1).goalSlider = sliderVal;
+//             break;
+//
+// }
+//         console.log(sliderVal);
 
     //set the goal priority on goal creation
         //if the goal counter is 1 then set the ammount of .10
@@ -201,6 +218,7 @@ router.post('/addFunds', async function(req, res, next) {
         let troveLimit = wage * priorityMultiplier;
         console.log(gID, gProgress);
         console.log(troveLimit+" is the number you cant pass!");
+
 
         // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
         // let query = await goalModel.findAll({raw:true});
