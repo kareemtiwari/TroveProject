@@ -49,15 +49,15 @@
             <input type="text" id="jobName" name="jobName">
             </br>
             <br>
-            <input type="radio" id="salary" name="salhour" value="Salary" <%=salary_sel%>>
+            <input type="radio" id="salary" name="jobType" value="Salary" <%=salary_sel%>>
             <label for="html">Salary</label><br>
-            <input type="radio" id="hourly" name="salhour" value="Hourly" <%=hourly_sel%>>
+            <input type="radio" id="hourly" name="jobType" value="Hourly" <%=hourly_sel%>>
             <label for="css">Hourly</label><br>
         </div>
     </fieldset>
 </form>
 
-<%if(jd[0]["has"]){%>
+<% if(jd[0]["has"]){%>
 <div id="job1Block">
     <p> Job #: <%=jd[0]["jobID"]%> <span id="jobIDDisplay1"></span></p>
     <p> Job Name: <%=jd[0]["jobName"]%> <span id="jobIDDisplay2"></span></p>
@@ -71,6 +71,34 @@
     </form>
 </div>
 <%}%>
+    <% if(jd[1]["has"]){%>
+    <div id="job2Block">
+        <p> Job #: <%=jd[1]["jobID"]%> <span id="jobIDDisplay1"></span></p>
+        <p> Job Name: <%=jd[1]["jobName"]%> <span id="jobIDDisplay2"></span></p>
+        <p> Job Type: <%=jd[1]["jobType"]%> <span id="jobIDDisplay3"></span></p>
+        <p> Job Pay: <%=jd[1]["jobPay"]%> <span id="jobIDDisplay4"></span></p>
+        <form  method="post" name="myForm" id="myForm">
+            <input type="hidden" value="<%=jd[1]["jobID"]%>" name="tempID" >
+            <input type="hidden" value="<%=jd[1]["jobName"]%>" name="tempName" >
+            <input type="hidden" value="<%=jd[1]["jobType"]%>" name="tempType" >
+            <input type="hidden" value="<%=jd[1]["jobPay"]%>" name="tempPay" >
+        </form>
+    </div>
+    <%}%>
+    <% if(jd[2]["has"]){%>
+    <div id="job3Block">
+        <p> Job #: <%=jd[2]["jobID"]%> <span id="jobIDDisplay1"></span></p>
+        <p> Job Name: <%=jd[2]["jobName"]%> <span id="jobIDDisplay2"></span></p>
+        <p> Job Type: <%=jd[2]["jobType"]%> <span id="jobIDDisplay3"></span></p>
+        <p> Job Pay: <%=jd[2]["jobPay"]%> <span id="jobIDDisplay4"></span></p>
+        <form  method="post" name="myForm" id="myForm">
+            <input type="hidden" value="<%=jd[2]["jobID"]%>" name="tempID" >
+            <input type="hidden" value="<%=jd[2]["jobName"]%>" name="tempName" >
+            <input type="hidden" value="<%=jd[2]["jobType"]%>" name="tempType" >
+            <input type="hidden" value="<%=jd[2]["jobPay"]%>" name="tempPay" >
+        </form>
+    </div>
+    <%}%>
     <br>
     <br>
     <br>
@@ -80,10 +108,109 @@
         <input type="submit" formaction="/submit" value="Save">
     </inline>
 </form>
+<script>
+    class Job{
+        constructor(jobNum, jobName, jobType, jobPay) {
+            this.jobNum = jobNum;
+            this.jobName = jobName;
+            this.jobType = jobType;
+            this.jobPay = jobPay;
+        }
+        getJobNum(){
+            return this.jobNum;
+        }
+        getJobName(){
+            return this.jobName;
+        }
+        getJobType(){
+            return this.jobType;
+        }
+        getJobPay(){
+            return this.jobPay;
+        }}
+
+    function addJob(){
+        let jobNum = document.getElementById("jobID").value;
+        let jobName = document.getElementById("jobName").value;
+        let jobType = document.getElementById("jobType").value;
+        let jobPay = document.getElementsByName("jobPay").value;
+        let newJob = new Job(jobName,jobNum,jobType,jobPay);
+
+        let form = document.getElementById('myForm');
+        form.action = '/accSettings/addJob';
+        form.submit();
+        form.reset();
+
+
+        if (jobNum == "1"){
+            var open = document.getElementById("job1Block");
+            open.style.display = "flex"
+            var open = document.getElementById("job1Block");
+            open.style.flexDirection = "column"
+            document.getElementById("jobIDDisplay").innerHTML = jobNum;
+            document.getElementById("jobIDDisplay2").innerHTML = jobName;
+            document.getElementById("jobIDDisplay3").innerHTML = jobType;
+            document.getElementById("jobIDDisplay4").innerHTML = jobPay;
+        }
+        else if (jobNum == "2"){
+            var open = document.getElementById("job2Block");
+            open.style.display = "flex"
+            var open = document.getElementById("job2Block");
+            open.style.flexDirection = "column"
+            document.getElementById("job2IDDisplay").innerHTML = jobNum;
+            document.getElementById("job2IDDisplay2").innerHTML = jobName;
+            document.getElementById("job2IDDisplay3").innerHTML = jobType;
+            document.getElementById("job2IDDisplay4").innerHTML = jobPay;
+        }
+        else if (jobNum == "3"){
+            var open = document.getElementById("job3Block");
+            open.style.display = "flex"
+            var open = document.getElementById("job3Block");
+            open.style.flexDirection = "column"
+            document.getElementById("job3IDDisplay").innerHTML = jobNum;
+            document.getElementById("job3IDDisplay2").innerHTML = jobName;
+            document.getElementById("job3IDDisplay3").innerHTML = jobType;
+            document.getElementById("job3IDDisplay4").innerHTML = jobPay;
+        }
+    }
+    function delJob(){
+        jobID = document.getElementById("jobID").value
+        clearID = document.getElementById("jobID")
+        clearID.value = ""
+        clearNum = document.getElementById("jobName")
+        clearNum.value = ""
+        clearAmount = document.getElementsByName("jobType")
+        clearAmount.value = ""
+        clearProgress = document.getElementById("JobPay")
+        clearProgress.value = ""
+        if (jobID == "1"){
+            //var option1 = document.getElementById("option1");
+            hideBlock1 = document.getElementById("job1Block")
+            hideBlock1.style.display = "None"
+        }
+        else if (jobID == "2"){
+            //var option2 = document.getElementById("option2");
+            hideBlock2 = document.getElementById("job2Block")
+            hideBlock2.style.display = "None"
+
+        }
+        else if (jobID == "3"){
+            //var option3 = document.getElementById("option3");
+            hideBlock3 = document.getElementById("job3Block")
+            hideBlock3.style.display = "None"
+
+        }
+    }
+</script>
+
 
 <%// if(remessage == "error") { %>
     <h3 style="color:#FF0000"> <%= remessage%> </h3>
 <% //} %>
+
+
+
+
 
 
 </body>

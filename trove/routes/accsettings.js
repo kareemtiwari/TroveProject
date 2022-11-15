@@ -21,17 +21,6 @@ router.get('/', async function(req, res, next) {
     raw : true
   });
 
-    jd = [...Array(3)].map(e => Array(6).fill(""));
-    for(let i =0; i<3;i++){
-      jd[i]["has"] = query[i] != null;
-      if(jd[i]["has"]) {
-        jd[i]["jobID"] = query[i].jobID
-        jd[i]["jobName"] = query[i].jobName;
-        jd[i]["jobType"] = query[i].jobType;
-        jd[i]["jobPay"] = query[i].jobPay;
-      }
-    }
-
   let user = query[0];  //the first user in query - there should really only ever be 1
   //TODO : have to check if there is a user
     var workingDob = user.dob;
@@ -49,6 +38,41 @@ router.get('/', async function(req, res, next) {
 router.get('/logout', async function(req, res, next) {
   req.session.userID = null;
   res.redirect('/Trove_Login');
+});
+
+router.get('/jobsUpdate',  async function(req, res, next) {
+  if(req.session.userID != null) {
+    if(!req.session.accComplete){
+      res.redirect('/accSettings'); //you need to complete your account before being here
+    }
+    let uid = req.session.userID;
+    //TODO : have to check if there is a userID in the session
+    //get the currently logged in user
+    let query = await jobModel.findAll({
+      where: {
+        userID: uid
+      },
+      raw : true
+    });
+
+    jd = [...Array(3)].map(e => Array(6).fill(""));
+    for(let i =0; i<3;i++){
+      jd[i]["has"] = query[i] != null;
+      if(jd[i]["has"]) {
+        jd[i]["jobID"] = query[i].jobID
+        jd[i]["jobName"] = query[i].jobName;
+        jd[i]["jobType"] = query[i].jobType;
+        jd[i]["jobPay"] = query[i].jobPay;
+      }
+    }
+    // //TODO : have to check if there is a user
+
+    res.render('AccountSettings', {display: jd}); //TODO : model doesn't have all
+    // console.log(user.id);
+
+  }else{
+    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+  }
 });
 
 /**
@@ -124,7 +148,7 @@ router.post('/addJob', async function(req, res, next) {
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
     let jID = req.body["jobID"];  //get all variables out of the form
     let jName = req.body["jobName"];
-    let jType = req.body["salhour"];
+    let jType = req.body["jobType"];
     let jPay = req.body["jobPay"];
     console.log(jID, jName, jType, jPay);
 
@@ -159,7 +183,7 @@ router.post('/deleteJob', async function(req, res, next) {
     removeJob = await jobModel.destroy({where: {userID: uid, jobID: jID}});
     let query = await jobModel.findAll({raw: true});
     console.log(query);
-    console.log("***Job***" + gID + " Deleted");
+    console.log("***Job***" + jID + " Deleted");
     res.redirect('/accSettings'); //TODO : model doesn't have all
 
   }else{
