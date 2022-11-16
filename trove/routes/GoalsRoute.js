@@ -59,14 +59,13 @@ router.post('/add', async function(req, res, next) {
 
         nGAmount = parseInt(gAmount);
         nGProgress = parseInt(gProgress);
-        if(isNaN(gAmount) || isNaN(gProgress) || nGAmount == null || nGProgress == null){
-            //res.redirect('/TroveAccounting');
-            res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
-            console.log("NaN catch");
-            return;
+    if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
+        //res.redirect('/TroveAccounting');
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
+        console.log("NaN catch");
+        return;
         }
-
-    if (gAmount < 0){
+    else if (gAmount < 0){
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
