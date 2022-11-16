@@ -53,7 +53,7 @@ router.post('/add', async function(req, res, next) {
     let gName = req.body["goalName"];//The Name field in the Goals.ejs
     let gSlider = req.body["goalSlider"];//The Slider Bar in the Goals.ejs
     session.totalSlider = 100;
-    session.gSliderSum += session.gSliderSum;
+    session.gSliderSum += 0;
     console.log(session.gSliderSum);
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
@@ -104,15 +104,17 @@ router.post('/add', async function(req, res, next) {
             return;
 
         }
-    else {
-        session.gSliderSum = session.gSliderSum + gSlider;
-        session.totalSlider = session.totalSlider - session.gSliderSum;
-        console.log(session.totalSlider);
+    else{
+        parseInt((session.gSliderSum) = session.gSliderSum + gSlider);
+        parseInt(session.totalSlider = session.totalSlider - session.gSliderSum);
 
+    }
     newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
     console.log(query);
     console.log("***Goal***"+gID+" Created");
+    console.log(session.totalSlider);
+    console.log(session.gSliderSum);
     //,{where:{userID:uid}}
     //res.redirect('/Dashboard');
     //}else{
@@ -189,7 +191,7 @@ router.post('/add', async function(req, res, next) {
     //}
 
     }//Goes to if statement with null catches
-    }
+
 
     else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
