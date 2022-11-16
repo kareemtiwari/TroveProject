@@ -63,38 +63,6 @@ router.get('/logout', async function(req, res, next) {
   res.redirect('/Trove_Login');
 });
 
-router.get('/',  async function(req, res, next) {
-  if(req.session.userID != null) {
-    let uid = req.session.userID;
-    //TODO : have to check if there is a userID in the session
-    //get the currently logged in user
-    let query = await jobModel.findAll({
-      where: {
-        userID: uid
-      },
-      raw : true
-    });
-
-    jd = [...Array(3)].map(e => Array(6).fill(""));
-    for(let i =0; i<3;i++){
-      jd[i]["has"] = query[i] != null;
-      if(jd[i]["has"]) {
-        jd[i]["jobID"] = query[i].jobID
-        jd[i]["jobName"] = query[i].jobName;
-        jd[i]["jobType"] = query[i].jobType;
-        jd[i]["jobPay"] = query[i].jobPay;
-      }
-    }
-    // //TODO : have to check if there is a user
-
-    res.render('AccountSettings', {display: jd}); //TODO : model doesn't have all
-    // console.log(user.id);
-
-  }else{
-    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
-  }
-});
-
 /**
  * POST router - this is what is called when this routers path is hit with an HTTP post request
  * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
