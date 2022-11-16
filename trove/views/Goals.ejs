@@ -7,16 +7,16 @@
 <body>
 <%- include('fragments/header'); %>
 <h1><b>Trove Goals</b></h1>
-<h3><b>Avast, welcome to your Trove Goals page! : </b></h3>
+<h3>Avast, welcome to your Trove Goals page! : </h3>
 <h3>In order to reap the reward for your Trove Goals make sure to read the FAQ page on the dashboard for tips! </h3>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
+        <p><b>Create your Goal HERE! </b></p>
         <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
         <button type="submit" formaction="/TroveAccounting/delete">Delete Goal</button>
-        <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
-
+        <br>
         <div>
-            <p><b>Goal </b></p>
+            <br>
             <label for="goalID">Goal Number:</label>
             <select id="goalID" name="goalID">
                 <option id="option1" value="1" >Goal1</option>

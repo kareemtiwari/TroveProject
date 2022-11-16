@@ -24,7 +24,7 @@ router.get('*',  async function(req, res, next) {
 
     // //TODO : have to check if there is a user
 
-    res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd}); //TODO : model doesn't have all
+    res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd}); //TODO : model doesn't have all
     // console.log(user.id);
 
     }else{
@@ -48,10 +48,10 @@ router.post('/add', async function(req, res, next) {
     uid = req.session.userID;
     gd = await queryData(uid);//need to check if there is one - [also eventually need to check if they are being brute forced??]
     let gID = req.body["goalID"];  //get all variables out of the form
-    let gAmount = req.body["goalAmount"];
-    let gProgress = req.body["goalProgress"];
-    let gName = req.body["goalName"];
-    let gSlider = req.body["goalSlider"];
+    let gAmount = req.body["goalAmount"]; //The Amount field in the Goals.ejs
+    let gProgress = req.body["goalProgress"];//The Progress field in the Goals.ejs
+    let gName = req.body["goalName"];//The Name field in the Goals.ejs
+    let gSlider = req.body["goalSlider"];//The Slider Bar in the Goals.ejs
     session.totalSlider = 100;
     session.gSliderSum += session.gSliderSum;
     console.log(session.gSliderSum);
@@ -61,47 +61,47 @@ router.post('/add', async function(req, res, next) {
         nGProgress = parseInt(gProgress);
         if(isNaN(gAmount) || isNaN(gProgress) || nGAmount == null || nGProgress == null){
             //res.redirect('/TroveAccounting');
-            res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
+            res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
             console.log("NaN catch");
             return;
         }
 
     if (gAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: 'Error: Please enter a valid non negative integer value',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
         return;
     }
     else if(nGAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null amount 2 catch");
         return;
     }
 
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Please enter a ',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null progress 2 catch");
         return;
     }
     else if (gName == ""){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null name catch");
         return;
     }
     else if (gSlider > session.totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
             return;
 
         }
@@ -215,7 +215,7 @@ router.post('/delete', async function(req, res, next) {
     console.log("***Goal***" + gID + " Deleted");
     //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
+        res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -264,7 +264,6 @@ router.post('/addFunds', async function(req, res, next) {
 
         nGProgress = parseInt(gProgress);
         if(isNaN(gProgress) || nGProgress == null){
-            //res.redirect('/TroveAccounting');
             res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
             console.log("NaN catch");
             return;
@@ -279,15 +278,16 @@ router.post('/addFunds', async function(req, res, next) {
                     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                     console.log("Goal number " + gID + " COMPLETED!");
                 } else {
-                    //removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                        newGoal = await goalModel.create({
+                    ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+
+                    newGoal = await goalModel.update({
                         userID: uid,
                         goalID: gID,
                         goalAmount: gAmount,
                         goalProgress: goal.goalProgress += gProgress,
                         goalName: gName,
                         goalSlider: gSlider
-                    });
+                    },{where: {userID:uid,goalID: gID}});
                     console.log("***Goal***" + gID + " Funds Added");
                 }
             }
@@ -353,24 +353,24 @@ router.post('/deleteFunds', async function(req, res, next) {
             if (goal.goalProgress - gProgress < 0) {
                 console.log("Goal number " + gID + " is empty :( !");
                 ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                newGoal = await goalModel.save({
+                newGoal= await goalModel.update({
                     userID: uid,
                     goalID: gID,
                     goalAmount: gAmount,
                     goalProgress: 0,
                     goalName: gName,
                     goalSlider: gSlider
-                });
+                },{where: {userID:uid,goalID: gID}});
             } else {
                 ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                newGoal = await goalModel.save({
+                newGoal= await goalModel.update({
                     userID: uid,
                     goalID: gID,
                     goalAmount: gAmount,
                     goalProgress: goal.goalProgress -= gProgress,
                     goalName: gName,
                     goalSlider: gSlider
-                });
+                },{where: {userID:uid,goalID: gID}});
                 console.log("***Goal***" + gID + " Funds Deleted");
             }
 
