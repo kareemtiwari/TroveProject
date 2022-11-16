@@ -7,9 +7,8 @@
 <body>
 <%- include('fragments/header'); %>
 <h1><b>Trove Goals</b></h1>
-<h3><b>Avast, your Trove net amount is : </b></h3>
-<label id="troveNet"> The Trove Net value would go here!</label>
-<h3><b>Make sure you only add this much per month on your goal! </b></h3>
+<h3><b>Avast, welcome to your Trove Goals page! : </b></h3>
+<h3>In order to reap the reward for your Trove Goals make sure to read the FAQ page on the dashboard for tips! </h3>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
         <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
@@ -45,12 +44,14 @@
     </fieldset>
 </form>
 <%if(gd[0]["has"]){%>
+    <p style="color:#FF0000"><%= remessage%> </p>
 <div id="goal1Block">
     <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
     <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
     <p> Goal Amount: <%=gd[0]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[0]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[0]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <p style="color:#fdbe03"> Your Trove Limit is: <%= limit%> </p>
     <form  method="post" name="myForm" id="myForm">
         <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
         <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">
@@ -69,6 +70,7 @@
     <p> Goal Amount: <%=gd[1]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[1]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[1]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <p style="color:#fdbe03"> Your Trove Limit is: <%= limit2%> </p>
     <form  method="post" name="myForm" id="myForm">
         <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
         <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">
@@ -87,6 +89,7 @@
     <p> Goal Amount: <%=gd[2]["goalAmount"]%> <span id="goalIDDisplay3"></span></p>
     <p> Goal Progress <%=gd[2]["goalProgress"]%> <span id="goalIDDisplay4"></span></p>
     <p> Goal Priority: <%=gd[2]["goalSlider"]%> <span id="goalIDDisplay5"></span></p>
+    <p style="color:#fdbe03"> Your Trove Limit is: <%= limit3%> </p>
     <form  method="post" name="myForm" id="myForm">
         <label for="goalAddFunds"><button type="submit" formaction="/TroveAccounting/addFunds">Add Funds</button></label> <input type="text" id="goalAddFunds" name="goalAddFunds">
         <label for="goalDeleteFunds"><button type="submit" formaction="/TroveAccounting/deleteFunds">Delete Funds</button></label> <input type="text" id="goalDeleteFunds" name="goalDeleteFunds">

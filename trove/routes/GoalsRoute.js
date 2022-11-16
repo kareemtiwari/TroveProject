@@ -3,12 +3,15 @@ const {Account: accountModel} = require('../db/Objects/account');
 const {or, INTEGER} = require("sequelize");
 var router = express.Router(); //NEEDED TO USE DATABASE OBJECT
 let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE DATABASE OBJECT
-
+var slot1 = 0;
+var slot2 = 0;
+var slot3 = 0;
 /**
  * GET router - this is what is called when this routers path is hit with an HTTP get request
  * This usually happens when a user navigated to your page, or refreshes the page
  */
 router.get('*',  async function(req, res, next) {
+
     if(req.session.userID != null) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
@@ -21,7 +24,7 @@ router.get('*',  async function(req, res, next) {
 
     // //TODO : have to check if there is a user
 
-    res.render('Goals', {display: gd}); //TODO : model doesn't have all
+    res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd}); //TODO : model doesn't have all
     // console.log(user.id);
 
     }else{
@@ -58,47 +61,47 @@ router.post('/add', async function(req, res, next) {
         nGProgress = parseInt(gProgress);
         if(isNaN(gAmount) || isNaN(gProgress) || nGAmount == null || nGProgress == null){
             //res.redirect('/TroveAccounting');
-            res.render('Goals', {display: gd});
+            res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
             console.log("NaN catch");
             return;
         }
 
     if (gAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
         return;
     }
     else if(nGAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
         console.log("null amount 2 catch");
         return;
     }
 
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
         console.log("null progress 2 catch");
         return;
     }
     else if (gName == ""){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
         console.log("null name catch");
         return;
     }
     else if (gSlider > session.totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
             return;
 
         }
@@ -158,8 +161,32 @@ router.post('/add', async function(req, res, next) {
         // if the goal counter is 3 then set the ammout to .10/3(.)
     // increment the sliders so that the total comes out to .10(.)
     //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
+
+
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {display: gd});
+
+        if(gID == 1){
+            wage = 2000/10;
+            priorityMultiplier = gSlider/100;
+            let troveLimit = wage * priorityMultiplier;
+            slot1 = troveLimit
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: "",display: gd});
+        }
+        else if(gID == 2){
+            wage = 2000/10;
+            priorityMultiplier = gSlider/100;
+            let troveLimit = wage * priorityMultiplier;
+            slot2 = troveLimit
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: "",display: gd});
+        }
+        else if(gID == 3){
+            wage = 2000/10;
+            priorityMultiplier = gSlider/100;
+            let troveLimit = wage * priorityMultiplier;
+            slot3 = troveLimit
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: "",display: gd});
+        }
+
     //}
 
     }//Goes to if statement with null catches
@@ -188,7 +215,7 @@ router.post('/delete', async function(req, res, next) {
     console.log("***Goal***" + gID + " Deleted");
     //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit:'',limit2:'',limit3:'',remessage: '',display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -211,9 +238,9 @@ router.post('/addFunds', async function(req, res, next) {
         let gName = req.body["tempName"];
         let gAmount = req.body["tempAmount"];
         let gSlider = req.body["tempSlider"];
-        priorityMultiplier = gSlider/100;
-        wage = 200;
         gProgress = parseInt(gProgress);
+        priorityMultiplier = gSlider/100;
+        wage = 2000/10;
         let troveLimit = wage * priorityMultiplier;
         console.log(gID, gProgress);
         console.log(troveLimit+" is the number you cant pass!");
@@ -238,7 +265,7 @@ router.post('/addFunds', async function(req, res, next) {
         nGProgress = parseInt(gProgress);
         if(isNaN(gProgress) || nGProgress == null){
             //res.redirect('/TroveAccounting');
-            res.render('Goals', {display: gd});
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
             console.log("NaN catch");
             return;
         }
@@ -252,8 +279,8 @@ router.post('/addFunds', async function(req, res, next) {
                     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                     console.log("Goal number " + gID + " COMPLETED!");
                 } else {
-                    removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                    newGoal = await goalModel.create({
+                    //removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+                        newGoal = await goalModel.create({
                         userID: uid,
                         goalID: gID,
                         goalAmount: gAmount,
@@ -268,7 +295,7 @@ router.post('/addFunds', async function(req, res, next) {
 
         //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {display: gd});
+        res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -294,8 +321,10 @@ router.post('/deleteFunds', async function(req, res, next) {
         let gAmount = req.body["tempAmount"];
         let gSlider = req.body["tempSlider"];
         gProgress = parseInt(gProgress);
+        priorityMultiplier = gSlider/100;
+        wage = 2000/10;
+        let troveLimit = wage * priorityMultiplier;
         console.log(gID, gProgress);
-
 
         // updateGoal = await goalModel.create({userID: uid, goalID: gID, goalProgress: gProgress});
         // let query = await goalModel.findAll({raw:true});
@@ -315,7 +344,7 @@ router.post('/deleteFunds', async function(req, res, next) {
         nGProgress = parseInt(gProgress);
         if (isNaN(gProgress) || nGProgress == null) {
             //res.redirect('/TroveAccounting');
-            res.render('Goals', {display: gd});
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
             console.log("NaN catch");
             return;
         } else {
@@ -323,8 +352,8 @@ router.post('/deleteFunds', async function(req, res, next) {
 ///The remove and add destroy the values and add more values to update the progress
             if (goal.goalProgress - gProgress < 0) {
                 console.log("Goal number " + gID + " is empty :( !");
-                removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                newGoal = await goalModel.create({
+                ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+                newGoal = await goalModel.save({
                     userID: uid,
                     goalID: gID,
                     goalAmount: gAmount,
@@ -333,8 +362,8 @@ router.post('/deleteFunds', async function(req, res, next) {
                     goalSlider: gSlider
                 });
             } else {
-                removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-                newGoal = await goalModel.create({
+                ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+                newGoal = await goalModel.save({
                     userID: uid,
                     goalID: gID,
                     goalAmount: gAmount,
@@ -348,7 +377,7 @@ router.post('/deleteFunds', async function(req, res, next) {
 
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
             gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {display: gd});
+            res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
 
         }
     }
