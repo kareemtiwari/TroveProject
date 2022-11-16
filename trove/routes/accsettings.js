@@ -18,8 +18,29 @@ router.get('/', async function(req, res, next) {
     where: {
       id: uid
     },
+
     raw : true
   });
+
+  let jobQuery = await jobModel.findAll({
+    where: {
+      userID: uid
+    },
+    raw : true
+  });
+
+  jd = [...Array(3)].map(e => Array(6).fill(""));
+    for(let i =0; i<3;i++){
+      jd[i]["has"] = jobQuery[i] != null;
+      if(jd[i]["has"]) {
+        jd[i]["jobID"] = jobQuery[i].jobID
+        jd[i]["jobName"] = jobQuery[i].jobName;
+        jd[i]["jobType"] = jobQuery[i].jobType;
+        jd[i]["jobPay"] = jobQuery[i].jobPay;
+      }
+    }
+
+
 
   let user = query[0];  //the first user in query - there should really only ever be 1
   //TODO : have to check if there is a user
@@ -28,6 +49,8 @@ router.get('/', async function(req, res, next) {
     if(workingDob != null) {
       date = workingDob.split(" ");
     }
+
+
   res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0]}); //TODO : model doesn't have all
   console.log(user.id);
   }else{
@@ -40,7 +63,7 @@ router.get('/logout', async function(req, res, next) {
   res.redirect('/Trove_Login');
 });
 
-router.get('/job',  async function(req, res, next) {
+router.get('/',  async function(req, res, next) {
   if(req.session.userID != null) {
     let uid = req.session.userID;
     //TODO : have to check if there is a userID in the session
@@ -92,34 +115,34 @@ router.post('/submit', async function(req, res, next) {
 
   correct = true;
   if(fName == ""||lName == ""||jPay== ""||jName == ""){
-    res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+    res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(!/^([A-Za-z]{1,10})$/.test(fName)) {
-    res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+    res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
   if(!/^([A-Za-z]{1,10})$/.test(lName)) {
-    res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+    res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
-  if(dateb == '' || dateb == null){
-    res.render('AccountSettings', {remessage: 'Date is empty', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
-    return;
-  }
+  // if(dateb == '' || dateb == null){
+  //   res.render('AccountSettings', {remessage: 'Date is empty', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+  //   return;
+  // }
 
   if(jPay <= 0){
     res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
 
-  if(mode == null || mode == ''){
-    res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
-    return;
-  }
+  // if(mode == null || mode == ''){
+  //   res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+  //   return;
+  // }
 
   if(correct){
     //update records
@@ -128,7 +151,7 @@ router.post('/submit', async function(req, res, next) {
     session.accComplete = true;
     res.redirect('/Dashboard');
   }else{
-    res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
+    res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
   }
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -151,8 +174,8 @@ router.post('/addJob', async function(req, res, next) {
 
 
     newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: jPay});
-    let query = await jobModel.findAll({raw:true});
-    console.log(query);
+    let jobQuery = await jobModel.findAll({raw:true});
+    console.log(jobQuery);
     console.log("***Job***"+jID+" Created");
 
     res.redirect('/accSettings'); //TODO : model doesn't have all
@@ -167,9 +190,6 @@ router.post('/addJob', async function(req, res, next) {
 
 router.post('/deleteJob', async function(req, res, next) {
   if(req.session.userID != null) {
-    if(!req.session.accComplete){
-      res.redirect('/accSettings'); //you need to complete your account before being here
-    }
     console.log(req.url);
     console.log(req.body);
 
@@ -178,14 +198,17 @@ router.post('/deleteJob', async function(req, res, next) {
     let jID = req.body["jobID"];  //get all variables out of the form
 
     removeJob = await jobModel.destroy({where: {userID: uid, jobID: jID}});
-    let query = await jobModel.findAll({raw: true});
-    console.log(query);
+    let jobQuery = await jobModel.findAll({raw: true});
+    console.log(jobQuery);
     console.log("***Job***" + jID + " Deleted");
     res.redirect('/accSettings'); //TODO : model doesn't have all
+    return
 
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    return
   }
+
 });
 
 function isSalarySelected(mode){

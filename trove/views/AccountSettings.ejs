@@ -26,7 +26,7 @@
            min="1901-01-01" max="2020-12-31">
     <br>
 </form>
-<h1><b>Jobs</b></h1>
+<h2><b>Jobs</b></h2>
 <form  method="post" name="myForm" id="myForm">
     <fieldset>
         <button type="submit" formaction="/accSettings/addJob">Add Job</button>
@@ -51,13 +51,13 @@
             <br>
             <input type="radio" id="salary" name="jobType" value="Salary" <%=salary_sel%>>
             <label for="html">Salary</label><br>
-            <input type="radio" id="hourly" name="jobType" value="Hourly" <%=hourly_sel%>>
+            <input type="radio" id="hourly" name="jobType" value="Hourly" <%=hourly_sel %>>
             <label for="css">Hourly</label><br>
 
         </div>
     </fieldset>
 </form>
-<%}%>
+
 <%if(jd[0]["has"]){%>
 <div id="job1Block">
     <p> Job #: <%=jd[0]["jobID"]%> <span id="jobIDDisplay1"></span></p>
@@ -103,10 +103,11 @@
     <br>
     <br>
     <br>
+<form  method="post" name="myForm" id="myForm">
     <inline>
-        <input type="submit" formaction="/submit" value="Save for Later">
-        <input type="submit" formaction="/submit" value="Submit">
-        <input type="submit" formaction="/submit" value="Save">
+        <input type="submit" formaction="/accSettings/submit" value="Save for Later">
+        <input type="submit" formaction="/accSettings/submit" value="Submit">
+        <input type="submit" formaction="/accSettings/submit" value="Save">
     </inline>
 </form>
 <script>
