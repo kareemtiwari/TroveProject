@@ -22,6 +22,7 @@ let accountModel = require('./db/Objects/account.js').Account;
 let eventsModel = require('./db/Objects/events.js').Events;
 let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
 let jobsModel = require('./db/Objects/jobs.js').Jobs;
+let expendModel = require('./db/Objects/expenditures.js').Expenditures;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,8 @@ accountModel.createModel(sequelize);                            //TODO : Create 
 DbGoalsModel.createModel(sequelize);                    //create database models
 eventsModel.createModel(sequelize);
 jobsModel.createModel(sequelize);                       //create database models
+expendModel.createModel(sequelize);
+
 
 testUser = null;
 async function createTables(){

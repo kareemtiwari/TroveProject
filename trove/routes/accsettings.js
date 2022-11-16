@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;   //NEEDED TO USE DATABASE OBJECT
+let expendModel = require('../db/Objects/expenditures.js').Expenditures;
 
 
 /**
@@ -18,6 +19,12 @@ router.get('/', async function(req, res, next) {
       },
       raw : true
     });
+    let expendQuery = await expendModel.findAll({
+      where: {
+        userID : uid
+      },
+      raw : true
+    });
     let user = query[0];  //the first user in query - there should really only ever be 1
     //TODO : have to check if there is a user
     var workingDob = user.dob;
@@ -25,7 +32,11 @@ router.get('/', async function(req, res, next) {
     if(workingDob != null) {
       date = workingDob.split(" ");
     }
-    let sdata = [["Car","Fixed","Transportation",4],["House","Fixed","Hosuing",120]];
+    let sdata = [];
+    for(let i=0;i<expendQuery.length;i++){
+      let curr = expendQuery[i];
+      sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+    }
     res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],expend:sdata}); //TODO : model doesn't have all
     console.log(user.id);
   }else{
@@ -47,56 +58,113 @@ router.post('*', async function(req, res, next) {
     console.log(req.url);
     console.log(req.body);
 
-    session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    fName = req.body["fname"];  //get all variables out of the form
-    lName = req.body["lname"];
-    sal = req.body["salary"];
-    mode = req.body["salhour"];
-    dateb = req.body["dob"];
-    let sdata = [["Car","Fixed","Transportation",4],["House","Fixed","Hosuing",120]];
+    let error = false;
+    let errorMsg = "";
 
-    correct = true;
+    let session = req.session;
+    let uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+    let fName = req.body["fname"];  //get all variables out of the form
+    let lName = req.body["lname"];
+    let sal = req.body["salary"];
+    let mode = req.body["salhour"];
+    let dateb = req.body["dob"];
+    let expSize = req.body["expendSize"];
+
+    //expenditures processing
+    let sdata = [];
+    for(let i = 0;i<expSize;i++){
+      sdata[i] = [req.body["expend["+i+"][0]"],req.body["expend["+i+"][1]"],req.body["expend["+i+"][2]"],req.body["expend["+i+"][3]"]];
+    }
+
+    let validTypes = ["Fixed","Variable"];
+    let validCategories = ["Housing","Transportation","Food","Education","Entertainment","Miscellaneous"];
+
+    //expenditures type checking
+    for(let i = 0;i<sdata.length;i++){
+      let a = sdata[i];
+      let numForm = "th";
+      if(i==0){
+        numForm = "st";
+      }
+      if(i==1){
+        numForm = "nd";
+      }
+      if(i==2){
+        numForm = "rd";
+      }
+      if(a[0].length >25) {
+        error = true;
+        errorMsg += "Your " + (i+1) + numForm + " expenditure has an incorrect name, ";
+      }
+      if(!/^[\d]{1,7}$/.test(a[3])) {
+        error = true;
+        errorMsg += "Your " + (i+1) + numForm + " expenditure has an incorrect amount, ";
+      }
+      if(!validTypes.includes(a[1])){
+        error = true;
+        errorMsg += "Your " + (i+1) + numForm + " expenditure has an incorrect type, ";
+      }
+      if(!validCategories.includes(a[2])){
+        error = true;
+        errorMsg += "Your " + (i+1) + numForm + " expenditure has an incorrect category, ";
+      }
+    }
+
+    console.log(sdata);
+
     if(fName == ""||lName == ""||sal== ""){
-      res.render('AccountSettings', {remessage: 'You have to fill out all fields', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "You Have to fill out Everything, ";
     }
 
     if(!/^([A-Za-z]{1,10})$/.test(fName)) {
-      res.render('AccountSettings', {remessage: 'First name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "First Name is wrong, ";
     }
 
     if(!/^([A-Za-z]{1,10})$/.test(lName)) {
-      res.render('AccountSettings', {remessage: 'Last name is formatted wrong', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "Last Name is wrong, ";
     }
 
     if(dateb == '' || dateb == null){
-      res.render('AccountSettings', {remessage: 'Date is empty', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "Date is Empty, ";
     }
 
     if(sal <= 0){
-      res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "you must make over $0, ";
     }
 
     if(mode == null || mode == ''){
-      res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
-      return;
+      error = true;
+      errorMsg += "you need to select salary or hourly, ";
     }
 
-    if(correct){
+    if(!error){
       //update records
       await accountModel.update({firstName: fName, lastName: lName, salary:sal, payMode:mode, dob:dateb, accComplete:true},{where:{id:uid}});
+      //update expenditures
+      let expendQuery = await expendModel.destroy({
+        where: {
+          userID : uid
+        },
+        raw : true
+      });
+      for(let i = 0;i<sdata.length;i++){
+        await expendModel.create({userID: uid, value : sdata[i][3], type : sdata[i][1], category: sdata[i][2], name: sdata[i][0]});
+      }
       session.accComplete = true;
       res.redirect('/Dashboard');
+      return;
     }else{
-      res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
+      res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:sal,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata});
+      return;
     }
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+    return;
   }
 });
 
