@@ -72,24 +72,14 @@ router.post('*', async function(req, res) {
 
     /* Begin switch cases for different Post types */
     let type = req.body["type"];
+    let nameErr = '';
+    let endErr = '';
     switch (type) {
         case 'addEvent':
             /* Get and Check the New Event Name */
             let eName = req.body["eName"];
             if(eName.length === 0){
-                if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        sName:eName, path: req.originalUrl});
-                }
-                else {
-                    res.render('WeeklyCalendar', {name: 'Event must be named.',end:'', jobs:jobs, noJob:'',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        sName:eName, path: req.originalUrl});
-                }
-                return;
+                nameErr = 'Event must be named.';
             }
 
             /* Get the New Event Day */
@@ -104,14 +94,18 @@ router.post('*', async function(req, res) {
             let eEnd = req.body["eEnd"];
             eEnd = parseFloat(eEnd.replace(",","."));
             if(eEnd <= eStart){
+                endErr = 'Event end time must be after the start time.';
+            }
+
+            if(nameErr !== '' || endErr !== '') {
                 if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
+                    res.render('WeeklyCalendar', {name:nameErr,end:endErr,
                         jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
                         sName:eName, path: req.originalUrl});
                 }
                 else {
-                    res.render('WeeklyCalendar', {name:'',end:'Event end time must be after the start time.',
+                    res.render('WeeklyCalendar', {name:nameErr,end:endErr,
                         jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
                         fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
                         sName:eName, path: req.originalUrl});
