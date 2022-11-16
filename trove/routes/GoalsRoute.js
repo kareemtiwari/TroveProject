@@ -6,6 +6,7 @@ let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE D
 var slot1 = 0;
 var slot2 = 0;
 var slot3 = 0;
+var totalSlider = 100;
 /**
  * GET router - this is what is called when this routers path is hit with an HTTP get request
  * This usually happens when a user navigated to your page, or refreshes the page
@@ -52,9 +53,8 @@ router.post('/add', async function(req, res, next) {
     let gProgress = req.body["goalProgress"];//The Progress field in the Goals.ejs
     let gName = req.body["goalName"];//The Name field in the Goals.ejs
     let gSlider = req.body["goalSlider"];//The Slider Bar in the Goals.ejs
-    session.totalSlider = 100;
-    session.gSliderSum += 0;
-    console.log(session.gSliderSum);
+    let gSliderSum = 0;
+    console.log(gSliderSum);
     console.log(gID, gAmount, gProgress, gName, gSlider);
 
         nGAmount = parseInt(gAmount);
@@ -97,7 +97,7 @@ router.post('/add', async function(req, res, next) {
         console.log("null name catch");
         return;
     }
-    else if (gSlider > session.totalSlider){
+    else if (gSlider > totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
@@ -105,16 +105,18 @@ router.post('/add', async function(req, res, next) {
 
         }
     else{
-        parseInt((session.gSliderSum) = session.gSliderSum + gSlider);
-        parseInt(session.totalSlider = session.totalSlider - session.gSliderSum);
+        gSliderSum = gSliderSum + parseInt(gSlider);
+        totalSlider = totalSlider - gSliderSum;
 
-    }
+
+
+
     newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider});
     let query = await goalModel.findAll({raw:true});
     console.log(query);
     console.log("***Goal***"+gID+" Created");
-    console.log(session.totalSlider);
-    console.log(session.gSliderSum);
+    console.log(totalSlider);
+    console.log(gSliderSum);
     //,{where:{userID:uid}}
     //res.redirect('/Dashboard');
     //}else{
@@ -188,7 +190,7 @@ router.post('/add', async function(req, res, next) {
             res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: "",display: gd});
         }
 
-    //}
+    }
 
     }//Goes to if statement with null catches
 
@@ -208,9 +210,17 @@ router.post('/delete', async function(req, res, next) {
     session = req.session;
     uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
     gd = await queryData(uid);
-    let gID = req.body["goalID"];  //get all variables out of the form
 
+
+    let gID = req.body["goalID"];  //get all variables out of the form
+    let gSlider = req.body["goalSlider"];
+    totalSlider = totalSlider + gSlider;
+    console.log("You Just Added "+ gSlider +" to "+ totalSlider);
+    console.log(totalSlider);
+    console.log(gSlider);
     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+
+
     let query = await goalModel.findAll({raw: true});
     console.log(query);
     console.log("***Goal***" + gID + " Deleted");
