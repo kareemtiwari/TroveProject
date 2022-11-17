@@ -133,7 +133,7 @@ async function doACC(req, res){
 
     console.log(sdata);
 
-    if(fName == ""||lName == ""||sal== ""||jName == ""){
+    if(fName == ""||lName == ""||jName == ""){
       error = true;
       errorMsg += "You Have to fill out Everything, ";
     }
@@ -160,7 +160,7 @@ async function doACC(req, res){
 
     if(!error){
       //update records
-      await accountModel.update({firstName: fName, lastName: lName, salary:sal, payMode:mode, dob:dateb, accComplete:true},{where:{id:uid}});
+      await accountModel.update({firstName: fName, lastName: lName, salary:jPay, payMode:mode, dob:dateb, accComplete:true},{where:{id:uid}});
       //update expenditures
       let jd = await qJobs(uid);
       let expendQuery = await expendModel.destroy({
@@ -176,7 +176,19 @@ async function doACC(req, res){
       res.redirect('/Dashboard');
       return;
     }else{
-      res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata},jd:jd);
+      let jd = await qJobs(uid);
+      let expendQuery = await expendModel.findAll({
+        where: {
+          userID : uid
+        },
+        raw : true
+      });
+      let sdata = [];
+      for(let i=0;i<expendQuery.length;i++){
+        let curr = expendQuery[i];
+        sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+      }
+      res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata,jd:jd,expend:sdata});
       return;
     }
 }
@@ -224,7 +236,18 @@ if(!error){
   if(workingDob != null) {
     date = workingDob.split(" ");
   }
-  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+  let expendQuery = await expendModel.findAll({
+    where: {
+      userID : uid
+    },
+    raw : true
+  });
+  let sdata = [];
+  for(let i=0;i<expendQuery.length;i++){
+    let curr = expendQuery[i];
+    sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+  }
+  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd,expend:sdata}); //TODO : model doesn't have all
 
   return;
   }else{
@@ -238,7 +261,18 @@ if(!error){
     date = workingDob.split(" ");
 
   }
-  res.render('AccountSettings', {remessage: emess, fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+  let expendQuery = await expendModel.findAll({
+    where: {
+      userID : uid
+    },
+    raw : true
+  });
+  let sdata = [];
+  for(let i=0;i<expendQuery.length;i++){
+    let curr = expendQuery[i];
+    sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+  }
+  res.render('AccountSettings', {remessage: emess, fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd,expend:sdata}); //TODO : model doesn't have all
 
 }
 }
@@ -259,7 +293,18 @@ async function doDEL(req, res){
   if(workingDob != null) {
     date = workingDob.split(" ");
   }
-  res.render('AccountSettings', {remessage: "", fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+  let expendQuery = await expendModel.findAll({
+    where: {
+      userID : uid
+    },
+    raw : true
+  });
+  let sdata = [];
+  for(let i=0;i<expendQuery.length;i++){
+    let curr = expendQuery[i];
+    sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+  }
+  res.render('AccountSettings', {remessage: "", fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd,expend:sdata}); //TODO : model doesn't have all
 
 }
 
