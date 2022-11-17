@@ -76,6 +76,27 @@ router.post('*', async function(req, res) {
     let endErr = '';
     switch (type) {
         case 'addEvent':
+            /* Get and the event's job */
+            let selectedJob = req.body["jobSelector"]
+            console.log(selectedJob);
+            if(selectedJob === undefined) {
+                if(query.length === 0) {
+                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+                        noJob:'You must have a job in Account Settings to create an event.',
+                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
+                        sName:'', path: req.originalUrl});
+                }
+                else {
+                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
+                        noJob:'You must have a Job in Account Settings to create an event.', sun:dispList[0],
+                        mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
+                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
+                        sName:'', path: req.originalUrl});
+                }
+                return;
+            }
+
             /* Get and Check the New Event Name */
             let eName = req.body["eName"];
             if(eName.length === 0){
@@ -113,26 +134,6 @@ router.post('*', async function(req, res) {
                 return;
             }
 
-            /* Get and the event's job */
-            let selectedJob = req.body["jobSelector"]
-            console.log(selectedJob);
-            if(selectedJob === undefined) {
-                if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
-                        noJob:'You must have a job in Account Settings to create an event.',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        sName:eName, path: req.originalUrl});
-                }
-                else {
-                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
-                        noJob:'You must have a Job in Account Settings to create an event.', sun:dispList[0],
-                        mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        sName:eName, path: req.originalUrl});
-                }
-                return;
-            }
             await eventsModel.create({
                 userID: uid, eventName: eName, eventDay: eDay,
                 eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
