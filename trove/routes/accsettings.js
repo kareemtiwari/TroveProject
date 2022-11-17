@@ -12,46 +12,16 @@ let jobModel = require('../db/Objects/jobs.js').Jobs;   //NEEDED TO USE DATABASE
 router.get('/', async function(req, res, next) {
   if(req.session.userID != null) {
   let uid = req.session.userID;
-  //TODO : have to check if there is a userID in the session
-  //get the currently logged in user
-  let query = await accountModel.findAll({
-    where: {
-      id: uid
-    },
+  console.log("subm");
 
-    raw : true
-  });
-
-  let jobQuery = await jobModel.findAll({
-    where: {
-      userID: uid
-    },
-    raw : true
-  });
-
-  jd = [...Array(3)].map(e => Array(6).fill(""));
-    for(let i =0; i<3;i++){
-      jd[i]["has"] = jobQuery[i] != null;
-      if(jd[i]["has"]) {
-        jd[i]["jobID"] = jobQuery[i].jobID
-        jd[i]["jobName"] = jobQuery[i].jobName;
-        jd[i]["jobType"] = jobQuery[i].jobType;
-        jd[i]["jobPay"] = jobQuery[i].jobPay;
-      }
-    }
-
-
-
-  let user = query[0];  //the first user in query - there should really only ever be 1
-  //TODO : have to check if there is a user
-    var workingDob = user.dob;
-    date = [];
+  let user = await qUser(uid);  //the first user in query - there should really only ever be 1
+  let jd = await qJobs(uid);
+    let workingDob = user.dob;
+    let date = [];
     if(workingDob != null) {
       date = workingDob.split(" ");
     }
-
-
-  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0]}); //TODO : model doesn't have all
+  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
   console.log(user.id);
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -67,11 +37,30 @@ router.get('/logout', async function(req, res, next) {
  * POST router - this is what is called when this routers path is hit with an HTTP post request
  * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
  */
-router.post('/submit', async function(req, res, next) {
+router.post('*', async function(req, res, next) {
   if(req.session.userID != null) {
+    fEvent = req.body["formID"];
+    switch(fEvent){
+      case "ACC":
+        await doACC(req, res);
+        break;
+      case "DEL":
+        await doDEL(req, res);
+        break;
+      case "ADD":
+        await doADD(req, res);
+        break;
+    }
   console.log(req.url);
   console.log(req.body);
 
+  }else{
+    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
+  }
+});
+
+
+async function doACC(req, res){
   session = req.session;
   uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
   fName = req.body["fname"];  //get all variables out of the form
@@ -120,62 +109,125 @@ router.post('/submit', async function(req, res, next) {
   }else{
     res.render('AccountSettings', {remessage: 'Input Error', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
   }
-  }else{
-    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
-  }
-});
+}
 
-router.post('/addJob', async function(req, res, next) {
-  if(req.session.userID != null) {
-    
-    console.log(req.url);
-    console.log(req.body);
+async function doADD(req, res){
+  session = req.session;
+  uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+  let jID = req.body["jobID"];  //get all variables out of the form
+  let jName = req.body["jobName"];
+  let jType = req.body["jobType"];
+  let jPay = req.body["jobPay"];
+  let nJPay = parseInt(jPay);
+  let validState = ["Salary","Hourly"];
+  console.log(jID, jName, jType, jPay);
 
-    session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    let jID = req.body["jobID"];  //get all variables out of the form
-    let jName = req.body["jobName"];
-    let jType = req.body["jobType"];
-    let jPay = req.body["jobPay"];
-    console.log(jID, jName, jType, jPay);
+  let error = false;
+  let emess = "";
 
-    newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: jPay});
-    let jobQuery = await jobModel.findAll({raw:true});
-    console.log(jobQuery);
-    console.log("***Job***"+jID+" Created");
-
-    res.redirect('/accSettings'); //TODO : model doesn't have all
-    return
-    //}
-
-  }else{
-    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
-    return
-  }
-});
-
-router.post('/deleteJob', async function(req, res, next) {
-  if(req.session.userID != null) {
-    console.log(req.url);
-    console.log(req.body);
-
-    session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    let jID = req.body["jobID"];  //get all variables out of the form
-
-    removeJob = await jobModel.destroy({where: {userID: uid, jobID: jID}});
-    let jobQuery = await jobModel.findAll({raw: true});
-    console.log(jobQuery);
-    console.log("***Job***" + jID + " Deleted");
-    res.redirect('/accSettings'); //TODO : model doesn't have all
-    return
-
-  }else{
-    res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
-    return
+  if(jName == null || jName.length <1 || jName.length > 25){
+    error = true;
+    emess += "You have an error in your job name, ";
   }
 
-});
+  if(isNaN(nJPay) || nJPay == null || nJPay <=0 ){
+    error = true;
+    emess += "You have an error in your job pay, ";
+  }
+
+  if(jType == null || (!validState.includes(jType))){
+    error = true;
+    emess += "You have an error in your job type, ";
+  }
+
+
+if(!error){
+  newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: nJPay});
+  let jobQuery = await jobModel.findAll({raw:true});
+  console.log(jobQuery);
+  console.log("***Job***"+jID+" Created");
+
+  let user = await qUser(uid);  //the first user in query - there should really only ever be 1
+  let jd = await qJobs(uid);
+  let workingDob = user.dob;
+  let date = [];
+  if(workingDob != null) {
+    date = workingDob.split(" ");
+  }
+  res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+
+  return;
+  }else{
+  //error
+
+  let user = await qUser(uid);  //the first user in query - there should really only ever be 1
+  let jd = await qJobs(uid);
+  let workingDob = user.dob;
+  let date = [];
+  if(workingDob != null) {
+    date = workingDob.split(" ");
+  }
+  res.render('AccountSettings', {remessage: emess, fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+
+}
+}
+
+async function doDEL(req, res){
+  session = req.session;
+  uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+  let jID = req.body["jobID"];  //get all variables out of the form
+
+  removeJob = await jobModel.destroy({where: {userID: uid, jobID: jID}});
+  let jobQuery = await jobModel.findAll({raw: true});
+  console.log(jobQuery);
+  console.log("***Job***" + jID + " Deleted");
+  let user = await qUser(uid);  //the first user in query - there should really only ever be 1
+  let jd = await qJobs(uid);
+  let workingDob = user.dob;
+  let date = [];
+  if(workingDob != null) {
+    date = workingDob.split(" ");
+  }
+  res.render('AccountSettings', {remessage: "", fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd}); //TODO : model doesn't have all
+
+}
+
+async function qUser(uid){
+  let query = await accountModel.findAll({
+    where: {
+      id: uid
+    },
+
+    raw : true
+  });
+  return query[0];
+}
+
+async function qJobs(uid){
+  let jobQuery = await jobModel.findAll({
+    where: {
+      userID: uid
+    },
+    raw : true
+  });
+
+  jd = [...Array(3)].map(e => Array(6).fill(""));
+  for(let i =0; i<3;i++){
+    jd[i]["has"] = jobQuery[i] != null;
+    if(jd[i]["has"]) {
+      jd[i]["jobID"] = jobQuery[i].jobID
+      jd[i]["jobName"] = jobQuery[i].jobName;
+      jd[i]["jobType"] = jobQuery[i].jobType;
+      jd[i]["jobPay"] = jobQuery[i].jobPay;
+    }
+  }
+  return jd;
+}
+
+async function formatDate(dob){
+
+  return date;
+}
 
 function isSalarySelected(mode){
   if(mode == "Salary"){

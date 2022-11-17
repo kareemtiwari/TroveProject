@@ -25,12 +25,18 @@
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
     <br>
+    <input type="hidden" value="ACC" name="formID">
+    <input type="submit" formaction="/accSettings" value="Submit">
+    <br>
 </form>
 <h2><b>Jobs</b></h2>
-<form  method="post" name="myForm" id="myForm">
+<form action="/accSettings" method="post" name="myForm" id="myForm">
     <fieldset>
-        <button type="submit" formaction="/accSettings/addJob">Add Job</button>
-        <button type="submit" formaction="/accSettings/deleteJob">Delete Job</button>
+        <button onclick="addJob();">Submit</button>
+        <select id="bit" name="formID">
+            <option value="ADD" selected>add job</option>
+            <option value="DEL">delete job</option>
+        </select>
         <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
 
         <div>
@@ -53,10 +59,24 @@
             <label for="html">Salary</label><br>
             <input type="radio" id="hourly" name="jobType" value="Hourly" <%=hourly_sel %>>
             <label for="css">Hourly</label><br>
-
         </div>
     </fieldset>
 </form>
+
+<script>
+     function addJob(){
+        const form = document.getElementById("myForm");
+        form.submit();
+    }
+
+     function delJob(){
+        const form = document.getElementById("myForm");
+        const submitter = document.getElementById("bit");
+        submitter.value = "DEL";
+
+        form.submit();
+    }
+</script>
 
 <%if(jd[0]["has"]){%>
 <div id="job1Block">
@@ -100,16 +120,6 @@
         </form>
     </div>
     <%}%>
-    <br>
-    <br>
-    <br>
-<form  method="post" name="myForm" id="myForm">
-    <inline>
-        <input type="submit" formaction="/accSettings/submit" value="Save for Later">
-        <input type="submit" formaction="/accSettings/submit" value="Submit">
-        <input type="submit" formaction="/accSettings/submit" value="Save">
-    </inline>
-</form>
 <script>
     class Job{
         constructor(jobNum, jobName, jobType, jobPay) {
