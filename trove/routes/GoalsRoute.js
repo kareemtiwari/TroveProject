@@ -214,7 +214,9 @@ router.post('/delete', async function(req, res, next) {
 
     let gID = req.body["goalID"];  //get all variables out of the form
     let gSlider = req.body["goalSlider"];
-    totalSlider = totalSlider + gSlider;
+    let gSliderSum = 0;
+    gSliderSum = gSliderSum + parseInt(gSlider);
+    totalSlider = totalSlider + gSliderSum;
     console.log("You Just Added "+ gSlider +" to "+ totalSlider);
     console.log(totalSlider);
     console.log(gSlider);
