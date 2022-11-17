@@ -11,6 +11,10 @@
 <%- include('fragments/header'); %>
 <h1>Account settings</h1>
 <p>Manage your account here!</p>
+
+<%// if(remessage == "error") { %>
+<h3 style="color:#FF0000"> <%=remessage%> </h3>
+<% //} %>
 <form action="/accSettings" method="post" id="acsform">
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname" value="<%=fname%>"><br><br>
@@ -27,12 +31,6 @@
     <input type="date" id="dob" name="dob"
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
-    <br>
-
-    <input type="hidden" value="ACC" name="formID">
-    <input type="submit" formaction="/accSettings" value="Submit">
-    <br>
-</form>
 
 
     <h3>Expenditures</h3>
@@ -65,12 +63,11 @@
         <button type="button" id="del" onclick="deleteE();">Delete Selected Expenditure</button>
     </div>
     <br>
-
-    <inline>
-        <input type="submit" value="Save for Later">
-        <input type="submit" value="Submit">
-        <input type="submit" value="Save">
-    </inline>
+<br>
+    <input type="hidden" value="ACC" name="formID">
+    <input type="submit" formaction="/accSettings" value="Submit">
+<br>
+</form>
 
 <h2><b>Jobs</b></h2>
 <form action="/accSettings" method="post" name="myForm" id="myForm">
@@ -258,10 +255,6 @@
     }
 </script>
 
-
-<%// if(remessage == "error") { %>
-<h3 style="color:#FF0000"> <%=remessage%> </h3>
-<% //} %>
 
 
 
