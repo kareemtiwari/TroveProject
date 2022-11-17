@@ -77,7 +77,7 @@ router.post('/submit', async function(req, res, next) {
   fName = req.body["fname"];  //get all variables out of the form
   lName = req.body["lname"];
   jPay = req.body["jobPay"];
-  mode = req.body["salhour"];
+  mode = req.body["jobType"];
   dateb = req.body["dob"];
   jName = req.body["jobName"];
 
@@ -106,7 +106,6 @@ router.post('/submit', async function(req, res, next) {
     res.render('AccountSettings', {remessage: 'You cant make $0 or less', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
     return;
   }
-
   // if(mode == null || mode == ''){
   //   res.render('AccountSettings', {remessage: 'You need to select salary or hourly', fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb});
   //   return;
@@ -139,7 +138,6 @@ router.post('/addJob', async function(req, res, next) {
     let jType = req.body["jobType"];
     let jPay = req.body["jobPay"];
     console.log(jID, jName, jType, jPay);
-
 
     newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: jPay});
     let jobQuery = await jobModel.findAll({raw:true});
