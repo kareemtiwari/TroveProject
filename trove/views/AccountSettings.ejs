@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>Account Settings</title>
 </head>
+<style>
+
+</style>
 <body>
 <%- include('fragments/header'); %>
 <h1>Account settings</h1>
 <p>Manage your account here!</p>
-<form action="/accSettings" method="post">
+<form action="/accSettings" method="post" id="acsform">
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname" value="<%=fname%>"><br><br>
     <label for="lname">Last name:</label>
@@ -25,10 +28,50 @@
            value="<%=dob%>"
            min="1901-01-01" max="2020-12-31">
     <br>
+
     <input type="hidden" value="ACC" name="formID">
     <input type="submit" formaction="/accSettings" value="Submit">
     <br>
 </form>
+
+
+    <h3>Expenditures</h3>
+    <div class="tableView">
+        <p>Click on a row to edit, Rows are saved when you click off</p>
+        <table id="expTable">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+            <% for(var i =0;i<expend.length;i++){%>
+            <tr onclick="edit(this);">
+                <td><%=expend[i][0];%></td>
+                <td><%=expend[i][1];%></td>
+                <td><%=expend[i][2];%></td>
+                <td><%=expend[i][3];%></td>
+            </tr>
+            <%}%>
+        </table>
+        <input type="hidden" value="<%=expend.length%>" name="expendSize" id="expendSize">
+        <% for(var i =0;i<expend.length;i++){%>
+            <input type="hidden" value="<%=expend[i][0];%>" name="expend[<%=i%>][0]" id="SM<%=i%>n0">
+            <input type="hidden" value="<%=expend[i][1];%>" name="expend[<%=i%>][1]" id="SM<%=i%>n1">
+            <input type="hidden" value="<%=expend[i][2];%>" name="expend[<%=i%>][2]" id="SM<%=i%>n2">
+            <input type="hidden" value="<%=expend[i][3];%>" name="expend[<%=i%>][3]" id="SM<%=i%>n3">
+        <%}%>
+        <button type="button" onclick="addE();">Add New Expenditure</button>
+        <button type="button" id="del" onclick="deleteE();">Delete Selected Expenditure</button>
+    </div>
+    <br>
+
+    <inline>
+        <input type="submit" value="Save for Later">
+        <input type="submit" value="Submit">
+        <input type="submit" value="Save">
+    </inline>
+
 <h2><b>Jobs</b></h2>
 <form action="/accSettings" method="post" name="myForm" id="myForm">
     <fieldset>
@@ -217,7 +260,7 @@
 
 
 <%// if(remessage == "error") { %>
-    <h3 style="color:#FF0000"> <%= remessage%> </h3>
+<h3 style="color:#FF0000"> <%=remessage%> </h3>
 <% //} %>
 
 
@@ -226,4 +269,192 @@
 
 
 </body>
+<script>
+    function edit(el){
+            const input = document.createElement("input");
+            input.type = "text";
+
+            input.value = el.cells[0].innerHTML;
+            el.cells[0].innerHTML = "";
+            el.cells[0].append(input);
+
+        const input2 = document.createElement("input");
+        input2.type = "text";
+
+        input2.value = el.cells[3].innerHTML;
+        el.cells[3].innerHTML = "";
+        el.cells[3].append(input2);
+
+        const input3 = document.createElement("select");
+        let optlist1 = ["Fixed","Variable"];
+        for (let i = 0; i<=optlist1.length; i++){
+            let opt = document.createElement('option');
+            opt.value = optlist1[i];
+            opt.innerHTML = optlist1[i];
+            input3.appendChild(opt);
+        }
+        input3.value = el.cells[1].innerHTML;
+        el.cells[1].innerHTML = "";
+        el.cells[1].append(input3);
+
+        const input4 = document.createElement("select");
+        let optlist = ["Housing","Transportation","Food","Education","Entertainment","Miscellaneous"];
+        for (let i = 0; i<=optlist.length; i++){
+            let opt = document.createElement('option');
+            opt.value = optlist[i];
+            opt.innerHTML = optlist[i];
+            input4.appendChild(opt);
+        }
+
+        input4.value = el.cells[2].innerHTML;
+        el.cells[2].innerHTML = "";
+        el.cells[2].append(input4);
+
+        el.className = "selrow";
+        el.id = "selrow";
+        el.setAttribute('onclick','');
+        hideOnClickOutside(el);
+    }
+    function commit(el){
+
+        let table = document.getElementById("expTable");
+        let smi = el.rowIndex -1;
+        if(smi < 0){
+            smi = table.rows.length -1;
+        }
+
+        let submitters = [];
+        submitters[0] = document.getElementById("SM"+smi+"n0");
+        submitters[1] = document.getElementById("SM"+smi+"n1");
+        submitters[2] = document.getElementById("SM"+smi+"n2");
+        submitters[3] = document.getElementById("SM"+smi+"n3");
+
+        for(let i = 0;i<el.cells.length;i++){
+            const save = el.cells[i].children[0].value;
+            //el.cells[i].children[1].value = save; //set the submitter
+            el.cells[i].innerHTML = save; // wipes out the hidden submitter
+            submitters[i].value = save;
+            //add a hidden form input attrib
+            //<input type="hidden" value="gd[2]["goalName"]" name="tempName" >
+
+        }
+        el.className = "";
+        el.id = "";
+        el.setAttribute('onclick','edit(this);');
+    }
+
+    function addE(){
+        const table = document.getElementById("expTable");
+        const newRow = table.insertRow();
+        newRow.setAttribute("onclick","edit(this);");
+        const c1 = newRow.insertCell();
+        c1.innerHTML = "New Expenditure";
+        const c2 = newRow.insertCell();
+        c2.innerHTML = "Variable";
+        const c3 = newRow.insertCell();
+        c3.innerHTML = "Miscellaneous";
+        const c4 = newRow.insertCell();
+        c4.innerHTML = "0";
+
+        const form = document.getElementById("acsform");
+
+        let subIdx = newRow.rowIndex-1;
+        if(subIdx < 0){
+            subIdx = table.rows.length -1;
+        }
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.value = "New Expenditure";
+        input.name = "expend[" + subIdx + "][0]";
+        input.id = "SM" + subIdx + "n0";
+        form.append(input);
+
+        const input2 = document.createElement("input");
+        input2.type = "hidden";
+        input2.value = "Variable";
+        input2.name = "expend[" + subIdx + "][1]";
+        input2.id = "SM" + subIdx + "n1";
+        form.append(input2);
+
+        const input3 = document.createElement("input");
+        input3.type = "hidden";
+        input3.value = "Miscellaneous";
+        input3.name = "expend[" + subIdx + "][2]";
+        input3.id = "SM" + subIdx + "n2";
+        form.append(input3);
+
+        const input4 = document.createElement("input");
+        input4.type = "hidden";
+        input4.value = "0";
+        input4.name = "expend[" + subIdx + "][3]";
+        input4.id = "SM" + subIdx + "n3";
+        form.append(input4);
+
+        document.getElementById("expendSize").value++;
+    }
+
+    function deleteE(){
+        const selrow = document.getElementsByClassName('selrow')[0];
+        if(selrow == null){
+            alert("you must have a row selected to delete it!");
+            return;
+        }
+        const table = document.getElementById('expTable');
+        console.log(selrow);
+
+        let smi = selrow.rowIndex-1;
+        if(selrow.rowIndex <0){
+            smi = table.rows.length-1;
+        }
+        let submitter1 = document.getElementById("SM"+smi+"n0");
+        let submitter2 = document.getElementById("SM"+smi+"n1");
+        let submitter3 = document.getElementById("SM"+smi+"n2");
+        let submitter4 = document.getElementById("SM"+smi+"n3");
+        submitter1.remove();
+        submitter2.remove();
+        submitter3.remove();
+        submitter4.remove();
+
+        table.deleteRow(selrow.rowIndex);
+
+        //need to reorder to avoid having the elements overwrite each other
+        //every row after smi -1 on id
+
+        for(let i = smi+1;i<table.rows.length;i++){ //loop through table upto n+1 (so end won't get left off calculation)
+            let c1 = document.getElementById("SM"+i+"n0");
+            console.log("SM"+i+"n0  to  SM"+(i-1)+"n0");
+            c1.id = "SM"+(i-1)+"n0";
+            c1.name = "expend[" + (i-1) + "][0]";
+            let c2 = document.getElementById("SM"+i+"n1");
+            c2.id = "SM"+(i-1)+"n1";
+            c2.name = "expend[" + (i-1) + "][1]";
+            let c3 = document.getElementById("SM"+i+"n2");
+            c3.id = "SM"+(i-1)+"n2";
+            c3.name = "expend[" + (i-1) + "][2]";
+            let c4 = document.getElementById("SM"+i+"n3");
+            c4.id = "SM"+(i-1)+"n3";
+            c4.name = "expend[" + (i-1) + "][3]";
+        }
+        //row.remove();
+        document.getElementById("expendSize").value--;
+    }
+
+    function hideOnClickOutside(element) {
+        const outsideClickListener = event => {
+            if (!element.contains(event.target)) { // or use: event.target.closest(selector) === null
+                if(!document.getElementById("del").contains(event.target)) {
+                    commit(element);
+                    removeClickListener();
+                }
+            }
+        }
+
+        const removeClickListener = () => {
+            document.removeEventListener('mousedown', outsideClickListener);
+        }
+
+        document.addEventListener('mousedown', outsideClickListener);
+    }
+</script>
 </html>

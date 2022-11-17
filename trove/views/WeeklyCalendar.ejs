@@ -32,20 +32,38 @@
         <td><%- sat %></td>
     </tr>
 </table>
-<form action = "/Weekly-Calendar" method="post" id="deleteEvent">
-        <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
-        <select id="eventSelector" name="eventSelector">
-        <%- events %>
-        </select><br>
-        <input type="hidden" id="type" name="type" value="deleteEvent">
-        <button type="submit">Delete Event</button>
+<form action="/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
+    <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
+    <select id="eventSelector" name="eventSelector">
+    <%- events %>
+    </select><br>
+    <input type="hidden" id="type" name="type" value="deleteEvent">
+    <button type="submit">Delete Event</button>
 </form><br><br>
+
+<form action="/Weekly-Calendar" method="post" id="deleteAll" style="display:<%= dAll %>">
+    <input type="hidden" id="type" name="type" value="deleteAll">
+    <button type="submit">Delete All</button>
+</form><br>
+
+<div id="deleteAllContainer" style="display:<%= conf %>">
+    <p style="color:#FF0000;">Are you sure you want to delete all events?</p>
+    <div id="deleteAllButtonsContainer" style="display: flex; flex-direction: row;">
+        <form action="/Weekly-Calendar" method="post" id="confirmDeleteAll">
+            <input type="hidden" id="type" name="type" value="confirmDeleteAll">
+            <button type="submit">Confirm Deletion</button>
+        </form>
+        <form action="/Weekly-Calendar" method="post" id="cancelDeleteAll">
+            <input type="hidden" id="type" name="type" value="cancelDeleteAll">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+</div><br>
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
-        <legend>Add Event</legend>
         <label for="eName">Event Name:</label>
-        <input id="eName" name="eName" type="text"><br>
+        <input id="eName" name="eName" type="text" value="<%=sName%>"><br>
         <p style="color:#FF0000;"> <%= name %></p>
 
         <label for="eDay">Day:</label>
@@ -164,16 +182,14 @@
         </select><br>
         <p style="color:#FF0000;"> <%= end %></p>
 
-        <label for="eHourly">Hourly Wage:</label>
-        <input id="eHourly" name="eHourly" type="text"><br><br>
-        <p style="color:#FF0000;"> <%= wage %></p>
+        <label for="jobSelector">Select Job:</label>
+        <select id="jobSelector" name="jobSelector">
+            <%- jobs %>
+        </select><br><br>
+        <p style="color:#FF0000;"> <%= noJob %></p>
 
         <input type="hidden" id="type" name="type" value="addEvent">
         <button type="submit">Create Event</button>
-
-<!--        <input type="hidden" id="type" name="type" value="editEvent">-->
-<!--        <button type="submit">Save Changes</button>-->
-
     </fieldset>
 </form>
 </body>

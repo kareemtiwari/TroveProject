@@ -9,7 +9,7 @@ class Expenditures extends Model {
      * @param sequelize - the sequelize instance
      */
     static createModel(sequelize){
-        Account.init({
+        Expenditures.init({
             // Model attributes are defined here
             value: {
                 type: DataTypes.DECIMAL,
