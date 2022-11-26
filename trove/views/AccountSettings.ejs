@@ -11,7 +11,7 @@
     button:hover {cursor: pointer;}
     select {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;}
     #heading{text-align: center;}
-    #mainContainer {display: flex; flex-direction: row; align-items: center; justify-content: center;}
+    #mainContainer {display: flex; flex-direction: row; justify-content: center;}
     #settingsContainer {}
     #jobsContainer {padding-left: 100px;}
 </style>
@@ -27,7 +27,7 @@
 </div>
 <div id="mainContainer">
 <div id="settingsContainer">
-    <h1>Account Information</h1>
+<h1>Account Information</h1>
 <form action="/accSettings" method="post" id="acsform">
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname" value="<%=fname%>"><br><br>
