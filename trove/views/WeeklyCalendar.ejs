@@ -2,25 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../public/stylesheets/style.css">
-    <title>Weekly Calendar</title>
+    <title>Trove</title>
 </head>
 <style>
+    body {background-color: #3E6990; color: #ffffff;}
+    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
+        padding: 10px;}
+    button:hover {cursor: pointer;}
+    select {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;}
+    table {width: 100%;}
     table, th, td {border:1px solid black;}
+    #del {display: flex; flex-direction: row;}
+    #deleteAll {padding-left: 20px;}
+    #delEvent {margin-left: 50px;}
+    #createEvent {margin-left: 50px;}
 </style>
 <body onload="main()">
 <%- include('fragments/header'); %>
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p><br>
-<table style="width:100%">
+<table style="background-color:#E9E3B4; color:#000000;" id="cal">
     <tr id="tableHead">
-        <td>Sunday</td>
-        <td>Monday</td>
-        <td>Tuesday</td>
-        <td>Wednesday</td>
-        <td>Thursday</td>
-        <td>Friday</td>
-        <td>Saturday</td>
+        <th>Sunday</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
     </tr>
     <tr>
         <td><%- sun %></td>
@@ -31,23 +40,25 @@
         <td><%- fri %></td>
         <td><%- sat %></td>
     </tr>
-</table>
-<form action="/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
-    <label id="eventSelector" for="eventSelector">Select an Event to Edit or Delete: </label>
-    <select id="eventSelector" name="eventSelector">
-    <%- events %>
-    </select><br>
-    <input type="hidden" id="type" name="type" value="deleteEvent">
-    <button type="submit">Delete Event</button>
-</form><br><br>
+</table><br>
+<div id="del">
+    <form action="/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
+        <label id="eventSelector" for="eventSelector">Select an Event to Delete: </label>
+        <select id="eventSelector" name="eventSelector">
+        <%- events %>
+        </select><br>
+        <input type="hidden" id="type" name="type" value="deleteEvent">
+        <button type="submit" id="delEvent">Delete Event</button>
+    </form><br>
 
-<form action="/Weekly-Calendar" method="post" id="deleteAll" style="display:<%= dAll %>">
-    <input type="hidden" id="type" name="type" value="deleteAll">
-    <button type="submit">Delete All</button>
-</form><br>
+    <form action="/Weekly-Calendar" method="post" id="deleteAll" style="display:<%= dAll %>">
+        <input type="hidden" id="type" name="type" value="deleteAll">
+        <button type="submit">Delete All Events</button>
+    </form><br>
+</div>
 
 <div id="deleteAllContainer" style="display:<%= conf %>">
-    <p style="color:#FF0000;">Are you sure you want to delete all events?</p>
+    <p style="color:#F39B6D;">Are you sure you want to delete all events?</p>
     <div id="deleteAllButtonsContainer" style="display: flex; flex-direction: row;">
         <form action="/Weekly-Calendar" method="post" id="confirmDeleteAll">
             <input type="hidden" id="type" name="type" value="confirmDeleteAll">
@@ -62,9 +73,10 @@
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
+        <legend>Create an Event</legend>
         <label for="eName">Event Name:</label>
         <input id="eName" name="eName" type="text" value="<%=sName%>"><br>
-        <p style="color:#FF0000;"> <%= name %></p>
+        <p style="color:#F39B6D;"> <%= name %></p>
 
         <label for="eDay">Day:</label>
         <select id="eDay" name="eDay">
@@ -180,16 +192,16 @@
             <option value="23.0">11:00pm</option>
             <option value="23.5">11:30pm</option>
         </select><br>
-        <p style="color:#FF0000;"> <%= end %></p>
+        <p style="color:#F39B6D;"> <%= end %></p>
 
         <label for="jobSelector">Select Job:</label>
         <select id="jobSelector" name="jobSelector">
             <%- jobs %>
         </select><br><br>
-        <p style="color:#FF0000;"> <%= noJob %></p>
+        <p style="color:#F39B6D;"> <%= noJob %></p>
 
         <input type="hidden" id="type" name="type" value="addEvent">
-        <button type="submit">Create Event</button>
+        <button type="submit" id="createEvent">Create Event</button>
     </fieldset>
 </form>
 </body>

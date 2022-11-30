@@ -1,6 +1,10 @@
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 100%;
+  background-color: #4871c2;
+
 }
 
 a {
@@ -34,3 +38,4 @@ a {
   background-color: #04AA6D;
   color: white;
 }
+
