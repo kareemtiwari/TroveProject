@@ -4,6 +4,7 @@ let accountModel = require('../db/Objects/account.js').Account;
 /* GET Login page. */
 
 router.get('*', function(req, res, next) {
+    res.status(200);
     res.render('Trove_Login', {nmessage:""});
 
 });
