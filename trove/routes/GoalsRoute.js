@@ -2,7 +2,9 @@ var express = require('express');
 const {Account: accountModel} = require('../db/Objects/account');
 const {or, INTEGER} = require("sequelize");
 var router = express.Router(); //NEEDED TO USE DATABASE OBJECT
-let goalModel = require('../db/Objects/dbGoals.js').DbGoals;   //NEEDED TO USE DATABASE OBJECT
+let goalModel = require('../db/Objects/dbGoals.js').DbGoals;
+let jobsModel = require('../db/Objects/jobs.js').Jobs;
+let eventModel = require('../db/Objects/events.js').Events;//NEEDED TO USE DATABASE OBJECT
 var totalSlider = 100;
 /**
  * GET router - this is what is called when this routers path is hit with an HTTP get request
@@ -71,27 +73,27 @@ router.post('/add', async function(req, res, next) {
     }
     else if(nGAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:'',remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
         console.log("null amount 2 catch");
         return;
     }
 
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Please enter a ',display: gd});
+        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log("null progress 2 catch");
         return;
     }
     else if (gName == ""){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value in the name field!',display: gd});
         console.log("null name catch");
         return;
     }
@@ -108,8 +110,10 @@ router.post('/add', async function(req, res, next) {
         totalSlider = totalSlider - gSliderSum;
 
 
-
-        wage = 2000/10.0;
+        await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
+        hourlyWage = (eventGrab.wage)*4
+        salaryWage = (Jobs.jobPay)
+        wage = howmuchyoumake/10.0;
         priorityMultiplier = gSlider/100;
         let troveLimit = wage * priorityMultiplier;
         gLimit = troveLimit;
@@ -192,6 +196,7 @@ router.post('/addFunds', async function(req, res, next) {
         let gLimit = req.body["tempLimit"];
         gProgress = parseFloat(gProgress);
         priorityMultiplier = gSlider/100;
+
         wage = 2000/10;
         gLimit = wage * priorityMultiplier;
         console.log(gID, gProgress);
