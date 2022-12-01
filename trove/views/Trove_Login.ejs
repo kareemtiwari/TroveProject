@@ -12,15 +12,15 @@
 	a {color: #ffffff;}
 	a:hover {font-weight: bold; cursor: pointer;}
 	#login {text-align: center;}
-	#logo {font-size: 50px; padding-top: 150px;}
+	#logo {padding-top: 150px; display: block;}
 	#loginForm {padding-top: 50px;}
 </style>
 <body>
 <div id="login">
-	<h1 id="logo">LOGO HERE</h1>
+	<img src="../public/images/TroveLogo.png" alt="Trove Logo" id="logo">
 	<form action="/Trove_Login" method="post" id="loginForm">
 		<label for ="UsName">Email</label><br>
-		<input type=text" id="UsName" name="UsName"><br><br>
+		<input type="text" id="UsName" name="UsName"><br><br>
 		<label for ="Psswd">Password</label><br>
 		<input type="password" id="Psswd" name="Psswd"><br><br>
 		<input type="hidden" id="type" name="type" value="Submit">
