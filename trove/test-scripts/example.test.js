@@ -51,5 +51,24 @@ describe("Test the login with bad username value",()=>{
             .field('Psswd','lolcleartext');
             expect(response.statusCode).toBe(200);
 
-    })
-})
+    });
+
+    describe("POST /todo", () => {
+        it("should add an item to todos array", async () => {
+            const response = await request(baseURL).post("/Trove_Login").field('UsName', 'johndoe')
+                .field('Psswd', 'lolcleartext');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe("Test the login with bad username value",()=>{
+        test("It should respond by redirect", async () => {
+            const response = await request(app).post("/Trove_Login")
+                .set({
+                    'Content-Type':'application/json',
+                }).field('UsName','12346584')
+                .field('Psswd','lolcleartext');
+            expect(response.statusCode).toBe(200);
+
+        });
+});
