@@ -6,6 +6,7 @@ let goalModel = require('../db/Objects/dbGoals.js').DbGoals;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 let eventModel = require('../db/Objects/events.js').Events;//NEEDED TO USE DATABASE OBJECT
 var totalSlider = 100;
+var completionField = '';
 /**
  * GET router - this is what is called when this routers path is hit with an HTTP get request
  * This usually happens when a user navigated to your page, or refreshes the page
@@ -24,7 +25,7 @@ router.get('*',  async function(req, res, next) {
 
     // //TODO : have to check if there is a user
 
-    res.render('Goals', {completion:'',remessage: '',display: gd}); //TODO : model doesn't have all
+    res.render('Goals', {completion:completionField,remessage: '',display: gd}); //TODO : model doesn't have all
     // console.log(user.id);
 
     }else{
@@ -61,46 +62,47 @@ router.post('/add', async function(req, res, next) {
         nGProgress = parseFloat(gProgress);
     if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
         console.log("NaN catch");
         return;
         }
     else if (gAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error: Please enter a valid non negative integer value',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
         return;
     }
     else if(nGAmount < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
         console.log("null amount 2 catch");
         return;
     }
 
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
         return;
     }
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log("null progress 2 catch");
         return;
     }
     else if (gName == ""){
         //res.redirect('/TroveAccounting');
-        res.render('Goals', {completion:'',remessage: 'Error: Please enter a value in the name field!',display: gd});
+        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value in the name field!',display: gd});
         console.log("null name catch");
         return;
     }
+    // checking the slidertotal doesn't overexceed the slider value currently
     else if (gSlider > totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:completionField,remessage: '',display: gd});
             return;
 
         }
@@ -109,17 +111,17 @@ router.post('/add', async function(req, res, next) {
         gSliderSum = gSliderSum + parseInt(gSlider);
         totalSlider = totalSlider - gSliderSum;
 
-
-        await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
-        hourlyWage = (eventGrab.wage)*4
-        salaryWage = (Jobs.jobPay)
-        wage = howmuchyoumake/10.0;
+        // Grabbing the event salary, job salary and Expenditures
+        // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
+        // hourlyWage = (eventGrab.wage)*4
+        // salaryWage = (Jobs.jobPay)
+        wage = 2000/10.0;
         priorityMultiplier = gSlider/100;
         let troveLimit = wage * priorityMultiplier;
         gLimit = troveLimit;
         console.log('***************************'+gLimit)
 
-
+        // creating a new goal
         newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
         let query = await goalModel.findAll({raw:true});
         console.log(query);
@@ -127,7 +129,7 @@ router.post('/add', async function(req, res, next) {
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
 
 
-        res.render('Goals', {completion:'',remessage: "",display: gd});
+        res.render('Goals', {completion:completionField,remessage: "",display: gd});
 
     }
 
@@ -170,7 +172,7 @@ router.post('/delete', async function(req, res, next) {
     console.log("***Goal***" + gID + " Deleted");
     //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -194,6 +196,7 @@ router.post('/addFunds', async function(req, res, next) {
         let gAmount = req.body["tempAmount"];
         let gSlider = req.body["tempSlider"];
         let gLimit = req.body["tempLimit"];
+        let gSliderSum = 0;
         gProgress = parseFloat(gProgress);
         priorityMultiplier = gSlider/100;
 
@@ -221,7 +224,7 @@ router.post('/addFunds', async function(req, res, next) {
 
         nGProgress = parseFloat(gProgress);
         if(isNaN(gProgress) || nGProgress == null){
-            res.render('Goals', {completion:'',remessage: '',display: gd});
+            res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
             return;
         }
@@ -232,8 +235,10 @@ router.post('/addFunds', async function(req, res, next) {
             } else {
                 ///The remove and add destroy the values and add more values to update the progress
                 if (goal.goalProgress + gProgress >= goal.goalAmount) {
-
-                    res.render('Goals', {completion: 'Goal '+gID+' completed!',remessage: '',display: gd});
+                    gSliderSum = gSliderSum + parseInt(gSlider);
+                    totalSlider = totalSlider + gSliderSum;
+                    completionField = completionField+"Goal "+gName+" completed. ";
+                    // res.render('Goals', {completion: completionField,remessage: '',display: gd});
                     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                     console.log("Goal number " + gID + " COMPLETED!");
 
@@ -255,7 +260,7 @@ router.post('/addFunds', async function(req, res, next) {
 
         //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {completion:'',remessage: '',display: gd});
+        res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
@@ -300,7 +305,7 @@ router.post('/deleteFunds', async function(req, res, next) {
         nGProgress = parseFloat(gProgress);
         if (isNaN(gProgress) || nGProgress == null) {
             //res.redirect('/TroveAccounting');
-            res.render('Goals', {completion:'',remessage: '',display: gd});
+            res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
             return;
         } else {
@@ -335,7 +340,7 @@ router.post('/deleteFunds', async function(req, res, next) {
 
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
             gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {completion:'',remessage: '',display: gd});
+            res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
         }
     }

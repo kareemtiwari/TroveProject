@@ -39,14 +39,12 @@
         </div>
         </br>
         <div id="mainError">
-            <label hidden=True> ERRORS WILL GO HERE</label>
+            <p style="color:#fdbe03"> <%= completion%> </p>
         </div>
     </fieldset>
 </form>
 <%if(gd[0]["has"]){%>
     <p style="color:#FF0000"><%= remessage%> </p>
-    <p style="color:#fdbe03"> <%= completion%> </p>
-
     <div id="goal1Block">
     <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
     <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
@@ -109,4 +107,7 @@
 </div>
 <%}%>
 </body>
+<script>
+
+    </script>
 </html>
