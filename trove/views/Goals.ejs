@@ -40,11 +40,12 @@
         </br>
         <div id="mainError">
             <p style="color:#fdbe03"> <%= completion%> </p>
+            <p style="color:#FF0000"><%= remessage%> </p>
         </div>
     </fieldset>
 </form>
 <%if(gd[0]["has"]){%>
-    <p style="color:#FF0000"><%= remessage%> </p>
+
     <div id="goal1Block">
     <p> Goal #: <%=gd[0]["goalID"]%> <span id="goalIDDisplay"></span></p>
     <p> Goal Name: <%=gd[0]["goalName"]%> <span id="goalIDDisplay2"></span></p>
