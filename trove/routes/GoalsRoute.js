@@ -56,8 +56,8 @@ router.post('/add', async function(req, res, next) {
     let gLimit = 0;
     console.log(gSliderSum);
     console.log(gID, gAmount, gProgress, gName, gSlider,gLimit);
-    nGAmount = parseFloat(gAmount);
-    nGProgress = parseFloat(gProgress);
+    let nGAmount = parseFloat(gAmount);
+    let nGProgress = parseFloat(gProgress);
     if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
         console.log("NaN catch");
@@ -101,8 +101,9 @@ router.post('/add', async function(req, res, next) {
         res.render('Goals', {completion:completionField,remessage: 'Error: Slider Value is set to be greater than is allowed, please enter a value lower than '+ totalSlider,display: gd});
         return;
         }
-    else if (gAmount < gProgress){
+    else if (nGProgress > nGAmount){
         console.log("You cannot make a goal that is already complete");
+        console.log(gAmount+' '+gProgress);
         res.render('Goals', {completion:completionField,remessage: 'Error: You cannot set the initial progress higher than the total amount of the goal ',display: gd});
         return;
     }
@@ -114,18 +115,18 @@ router.post('/add', async function(req, res, next) {
         // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
         // hourlyWage = (eventGrab.wage)*4
         // salaryWage = (Jobs.jobPay)
-        wage = 2000/10.0;
-        priorityMultiplier = gSlider/100;
+        let wage = 2000/10.0;
+        let priorityMultiplier = gSlider/100;
         let troveLimit = wage * priorityMultiplier;
         gLimit = troveLimit;
         console.log('***************************'+gLimit)
 
         // creating a new goal
-        newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+        let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
         let query = await goalModel.findAll({raw:true});
         console.log(query);
         console.log("***Goal***"+gID+" Created");
-        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
         res.render('Goals', {completion:completionField,remessage: "",display: gd});
     }
 
@@ -225,19 +226,25 @@ router.post('/addFunds', async function(req, res, next) {
         else {
 
             if (gProgress > gLimit) {
+                res.render('Goals', {completion:completionField,remessage: "Error: value entered is greater than Trove Limit!",display: gd});
                 console.log("Goal number " + gID + " ENTER A VALUE LOWER THAN " + gLimit);
-            } else {
+                return;
+            }
+            else if (gProgress < 0){
+                res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the add funds",display: gd});
+                console.log("ENTER A VALUE HIGHER THAN -1");
+                return;
+            }
+            else {
                 ///The remove and add destroy the values and add more values to update the progress
                 if (goal.goalProgress + gProgress >= goal.goalAmount) {
                     gSliderSum = gSliderSum + parseInt(gSlider);
                     totalSlider = totalSlider + gSliderSum;
                     completionField = completionField+"Goal "+gName+" completed. ";
-                    // res.render('Goals', {completion: completionField,remessage: '',display: gd});
                     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                     console.log("Goal number " + gID + " COMPLETED!");
 
                 } else {
-                    ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                     newGoal = await goalModel.update({
                         userID: uid,
                         goalID: gID,
@@ -252,7 +259,6 @@ router.post('/addFunds', async function(req, res, next) {
             }
         }
 
-        //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
         res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
@@ -298,7 +304,6 @@ router.post('/deleteFunds', async function(req, res, next) {
         console.log(query);
         nGProgress = parseFloat(gProgress);
         if (isNaN(gProgress) || nGProgress == null) {
-            //res.redirect('/TroveAccounting');
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
             return;
@@ -307,7 +312,6 @@ router.post('/deleteFunds', async function(req, res, next) {
 ///The remove and add destroy the values and add more values to update the progress
             if (goal.goalProgress - gProgress < 0) {
                 console.log("Goal number " + gID + " is empty :( !");
-                ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                 newGoal= await goalModel.update({
                     userID: uid,
                     goalID: gID,
@@ -318,7 +322,6 @@ router.post('/deleteFunds', async function(req, res, next) {
                     goalLimit: gLimit
                 },{where: {userID:uid,goalID: gID}});
             } else {
-                ///removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
                 newGoal= await goalModel.update({
                     userID: uid,
                     goalID: gID,
@@ -331,8 +334,6 @@ router.post('/deleteFunds', async function(req, res, next) {
                 console.log("***Goal***" + gID + " Funds Deleted");
             }
 
-
-            //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
             gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
