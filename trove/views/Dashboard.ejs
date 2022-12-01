@@ -26,7 +26,16 @@
     </tr>
     <tr>
         <td>
-            <a href="/Weekly-Calendar">Calendar Will Go Here</a>
+            <a href="/Weekly-Calendar">
+                <table style="background-color:#E9E3B4; color:#000000;" id="cal">
+                    <tr id="tableHead">
+                        <th><%= day %></th>
+                    </tr>
+                    <tr>
+                        <td><%- events %></td>
+                    </tr>
+                </table>
+            </a>
         </td>
         <td>
             <a href="/accSettings">Expenditures will go here</a>
