@@ -7,6 +7,8 @@ let jobModel = require('../db/Objects/jobs.js').Jobs;   //NEEDED TO USE DATABASE
 
 let expendModel = require('../db/Objects/expenditures.js').Expenditures;
 
+let eventsModel = require('../db/Objects/events.js').Events;
+
 
 
 /**
@@ -286,6 +288,11 @@ async function doDEL(req, res){
   let jobQuery = await jobModel.findAll({raw: true});
   console.log(jobQuery);
   console.log("***Job***" + jID + " Deleted");
+  let eventsQuery = await eventsModel.findAll({where: {userID: uid, eventJob: jID}, raw : true});
+  for(let i = 0; i < eventsQuery.length; i++) {
+    await eventsModel.destroy({where: {userID: uid, eventID: eventsQuery[i].eventID}});
+    console.log('*** Deleted ' + (i+1).toString() + ' Event(s)');
+  }
   let user = await qUser(uid);  //the first user in query - there should really only ever be 1
   let jd = await qJobs(uid);
   let workingDob = user.dob;

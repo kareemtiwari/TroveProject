@@ -2,19 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Settings</title>
+    <title>Trove</title>
 </head>
 <style>
-
+    body {background-color: #3E6990; color: #ffffff;}
+    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
+        padding: 10px;}
+    button:hover {cursor: pointer;}
+    select {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;}
+    #heading{text-align: center;}
+    #mainContainer {display: flex; flex-direction: row; justify-content: center;}
+    #settingsContainer {}
+    #jobsContainer {padding-left: 100px;}
 </style>
 <body>
 <%- include('fragments/header'); %>
-<h1>Account settings</h1>
+<div id="heading">
+<h1>Account Settings</h1>
 <p>Manage your account here!</p>
 
 <%// if(remessage == "error") { %>
-<h3 style="color:#FF0000"> <%=remessage%> </h3>
+<h3 style="color:#F39B6D"> <%=remessage%> </h3>
 <% //} %>
+</div>
+<div id="mainContainer">
+<div id="settingsContainer">
+<h1>Account Information</h1>
 <form action="/accSettings" method="post" id="acsform">
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname" value="<%=fname%>"><br><br>
@@ -65,11 +78,13 @@
     <br>
 <br>
     <input type="hidden" value="ACC" name="formID">
-    <input type="submit" formaction="/accSettings" value="Submit">
+    <input type="hidden" formaction="/accSettings" value="Submit">
+    <button type="submit">Save</button>
 <br>
 </form>
-
-<h2><b>Jobs</b></h2>
+</div>
+<div id="jobsContainer">
+<h1>Jobs</h1>
 <form action="/accSettings" method="post" name="myForm" id="myForm">
     <fieldset>
         <button onclick="addJob();">Submit</button>
@@ -102,7 +117,6 @@
         </div>
     </fieldset>
 </form>
-
 <script>
      function addJob(){
         const form = document.getElementById("myForm");
@@ -254,13 +268,8 @@
         }
     }
 </script>
-
-
-
-
-
-
-
+</div>
+</div>
 </body>
 <script>
     function edit(el){
