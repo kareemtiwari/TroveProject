@@ -7,6 +7,10 @@ let jobsModel = require('../db/Objects/jobs.js').Jobs;
 let eventModel = require('../db/Objects/events.js').Events;//NEEDED TO USE DATABASE OBJECT
 var totalSlider = 100;
 var completionField = '';
+var flag1 = 0;
+var flag2 = 0;
+var flag3 = 0;
+
 /**
  * GET router - this is what is called when this routers path is hit with an HTTP get request
  * This usually happens when a user navigated to your page, or refreshes the page
@@ -71,7 +75,6 @@ router.post('/add', async function(req, res, next) {
     }
     // checking if the starting amount is less than zero
     else if(nGAmount < 0){
-        //res.redirect('/TroveAccounting');
         res.render('Goals', {completion:completionField,remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
         console.log("null amount 2 catch");
         return;
@@ -115,19 +118,52 @@ router.post('/add', async function(req, res, next) {
         // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
         // hourlyWage = (eventGrab.wage)*4
         // salaryWage = (Jobs.jobPay)
+
+
         let wage = 2000/10.0;
         let priorityMultiplier = gSlider/100;
         let troveLimit = wage * priorityMultiplier;
         gLimit = troveLimit;
-        console.log('***************************'+gLimit)
+        console.log('***************************'+gLimit);
 
-        // creating a new goal
-        let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-        let query = await goalModel.findAll({raw:true});
-        console.log(query);
-        console.log("***Goal***"+gID+" Created");
-        let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {completion:completionField,remessage: "",display: gd});
+        if ((gID == 1) & (flag1 == 0)){
+            // creating a new goal
+            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+            let query = await goalModel.findAll({raw:true});
+            console.log(query);
+            console.log("***Goal***"+gID+" Created");
+            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+            res.render('Goals', {completion:completionField,remessage: "",display: gd});
+            flag1 = 1;
+            return;
+        }
+        else if ((gID == 2) & (flag2 == 0)){
+            // creating a new goal
+            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+            let query = await goalModel.findAll({raw:true});
+            console.log(query);
+            console.log("***Goal***"+gID+" Created");
+            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+            res.render('Goals', {completion:completionField,remessage: "",display: gd});
+            flag2 = 1;
+            return;
+        }
+        else if ((gID == 3) & (flag3 == 0)){
+            // creating a new goal
+            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+            let query = await goalModel.findAll({raw:true});
+            console.log(query);
+            console.log("***Goal***"+gID+" Created");
+            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+            res.render('Goals', {completion:completionField,remessage: "",display: gd});
+            flag3 = 1;
+            return;
+
+        }else{
+            res.render('Goals', {completion:completionField,remessage: "Error: goal #"+gID+" already exists!",display: gd});
+            return;
+        }
+
     }
 
     }//Goes to if statement with null catches
@@ -159,10 +195,17 @@ router.post('/delete', async function(req, res, next) {
     console.log(totalSlider);
     console.log(gSlider);
 
-
 /// destroys the goal
+    if (gID == 1){
+        flag1 = 0;
+    }
+    else if (gID == 2){
+        flag2 = 0;
+    }
+    else if (gID == 3){
+        flag3 = 0;
+    }
     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-
     let query = await goalModel.findAll({raw: true});
     console.log(query);
     console.log("***Goal***" + gID + " Deleted");
@@ -238,6 +281,15 @@ router.post('/addFunds', async function(req, res, next) {
             else {
                 ///The remove and add destroy the values and add more values to update the progress
                 if (goal.goalProgress + gProgress >= goal.goalAmount) {
+                    if (gID == 1){
+                        flag1 = 0;
+                    }
+                    else if (gID == 2){
+                        flag2 = 0;
+                    }
+                    else if (gID == 3){
+                        flag3 = 0;
+                    }
                     gSliderSum = gSliderSum + parseInt(gSlider);
                     totalSlider = totalSlider + gSliderSum;
                     completionField = completionField+"Goal "+gName+" completed. ";
@@ -260,8 +312,7 @@ router.post('/addFunds', async function(req, res, next) {
         }
 
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        res.render('Goals', {completion:completionField,remessage: '',display: gd});
-
+        res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -302,15 +353,21 @@ router.post('/deleteFunds', async function(req, res, next) {
         console.log(goal);
 
         console.log(query);
-        nGProgress = parseFloat(gProgress);
+        let nGProgress = parseFloat(gProgress);
         if (isNaN(gProgress) || nGProgress == null) {
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
             return;
-        } else {
+        } else if (nGProgress < 0){
+            res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the delete funds",display: gd});
+            console.log("ENTER A VALUE HIGHER THAN -1");
+            return;
+        }
+        else {
 
 ///The remove and add destroy the values and add more values to update the progress
-            if (goal.goalProgress - gProgress < 0) {
+            if (goal.goalProgress - nGProgress < 0) {
+                res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the delete funds",display: gd});
                 console.log("Goal number " + gID + " is empty :( !");
                 newGoal= await goalModel.update({
                     userID: uid,
@@ -326,18 +383,19 @@ router.post('/deleteFunds', async function(req, res, next) {
                     userID: uid,
                     goalID: gID,
                     goalAmount: gAmount,
-                    goalProgress: goal.goalProgress -= gProgress,
+                    goalProgress: goal.goalProgress -= nGProgress,
                     goalName: gName,
                     goalSlider: gSlider,
                     goalLimit: gLimit
                 },{where: {userID:uid,goalID: gID}});
                 console.log("***Goal***" + gID + " Funds Deleted");
             }
-
+            console.log("YOU HAVE REACHED THE LAST GD")
             gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {completion:completionField,remessage: '',display: gd});
+            res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
 
         }
+
     }
         else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
