@@ -77,8 +77,7 @@ router.post('*', async function(req, res) {
     switch (type) {
         case 'addEvent':
             /* Get and the event's job */
-            let selectedJob = req.body["jobSelector"]
-            console.log(selectedJob);
+            let selectedJob = req.body["jobSelector"];
             if(selectedJob === undefined) {
                 if(query.length === 0) {
                     res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;
+
 /* GET Login page. */
 
 router.get('*', function(req, res, next) {
@@ -22,7 +23,7 @@ router.post('*', async function(req, res, next) {
     });
 
     getUsers = JSON.parse(JSON.stringify(name,null,2))[0];
-     if(getUsers["password"] == Passval)
+     if(getUsers["password"] === Passval)
     {
         session.userID = getUsers["id"];
         session.accComplete = getUsers["accComplete"];
