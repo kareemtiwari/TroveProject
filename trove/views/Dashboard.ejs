@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trove</title>
+</head>
 <body>
 <%- include('fragments/header'); %>
 <style>
@@ -7,18 +11,21 @@
     button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
         padding: 10px;}
     button:hover {cursor: pointer;}
+    .bar {-webkit-appearance: none; width: 25%; height: 15px; color: #2B2A32; background-color: #AABD8C;
+        -webkit-transition: .2s; transition: opacity .2s; margin-top: 10px; border: none;}
     a {color: #000000; text-decoration: none;}
     a:hover {font-weight: bold; cursor: pointer;}
     table {width: 100%; background-color:#E9E3B4; color:#000000;}
     table, th, td {border:1px solid black; background-color:#E9E3B4; color:#000000;}
 </style>
 <h1>Dashboard</h1>
-<p> Welcome! <%= userid%></p>
-<nobr><p>The dashboard doesn't exist yet!</p></nobr>
+<p> Welcome! <%= userid %></p>
 <table>
     <tr>
         <td>
-            <a href="/TroveAccounting"> Goals Will Go Here</a>
+            <a href="/TroveAccounting">
+                <%- goals %>
+            </a>
         </td>
         <td>
             <a>Tips will go here</a>

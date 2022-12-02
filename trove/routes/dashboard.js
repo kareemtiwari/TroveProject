@@ -2,6 +2,7 @@ var express = require('express');
 const {Account: accountModel} = require("../db/Objects/account");
 const {Events: eventsModel} = require("../db/Objects/events");
 const {Jobs: jobsModel} = require("../db/Objects/jobs");
+const {DbGoals: goalsModel} = require("../db/Objects/dbGoals");
 var router = express.Router();
 
 /* GET Login page. */
@@ -17,6 +18,9 @@ router.get('/', async function(req, res, next) {
 
         /* Get all the current user's jobs */
         let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
+
+        /* Get all the current user's goals */
+        let goalsQuery = await goalsModel.findAll({where: {userID: uid}, raw: true});
 
         let eventsList = getEventsList(events, jobQuery);
         let dispList = getDisplayList(eventsList);
@@ -47,7 +51,25 @@ router.get('/', async function(req, res, next) {
                         day += "Saturday";
                         break;
         }
-        res.render('Dashboard', {day: day, events: dispList[DoW], userid: user.firstName, path: req.originalUrl});
+        let goals = '';
+        switch(goalsQuery.length) {
+                case 0:
+                        goals += 'You have no active goals. Click here to add.';
+                        break;
+                default:
+                        for(let i = 0; i < goalsQuery.length; i++) {
+                                let goal = goalsQuery[i];
+                                let amount = goal.goalAmount;
+                                let progress = goal.goalProgress;
+                                let perc = ((progress/amount)*100).toFixed(2);
+                                goals += '<label for="goal' + i.toString() + '">' + goal.goalName +
+                                    ' Progress: ' + perc.toString() + '% </label>';
+                                goals += '<progress class="bar" id="goal' + i.toString() + '" value="' + progress.toString() +
+                                    '" max="' + amount.toString() + '"></progress><br>';
+                        }
+        }
+
+        res.render('Dashboard', {day: day, events: dispList[DoW], goals: goals, userid: user.firstName, path: req.originalUrl});
         }else{
                 res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
         }
@@ -87,7 +109,7 @@ function getDisplayList(eventsList) {
                         dispList[i] = "<ul><li>No Events Today</li></ul>";
                 }
                 else {
-                        let text = "<ul>"
+                        let text = "<ul>";
                         for(let j=0;j<eventsList[i].length;j++) {
                                 text += "<li>" + eventsList[i][j].printEvent() + "</li>";
                         }
