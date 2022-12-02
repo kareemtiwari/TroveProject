@@ -1,6 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
-const baseURL = "https://localhost:3000/";
+const baseURL = "http://localhost:3000";
 
 
 describe("Test basic math", () => {
