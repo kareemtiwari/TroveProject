@@ -7,24 +7,46 @@ router.get('*', function(req, res, next) {
 });
 router.post('*', async function(req, res, next) {
     session = req.session
+    if(FirstVal !==  "" && LastVal !== ""&& EmailVal !== "" && NewPassVal !== "" && CheckPassVal !== "" ) {
+        res.render('Sign-Up', {EmptyErr: 'You have to fill out all forms, Nothing must be left empty', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+    }
     FirstVal = req.body["Fname"];
+    if (FirstVal==""){
+        res.render('Sign-Up', {FirstErr: 'You have to fill out The First Name field', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+    }
     LastVal = req.body["Lname"];
-    EmailVal = req.body["Email"];
-    NewPassVal = req.body["NewPsswd"];
-    CheckPassVal = req.body["CheckPsswd"];
-    if(FirstVal !==  "" && LastVal !== ""&& EmailVal !== "" && NewPassVal !== "" && CheckPassVal !== "" ){
-        if(CheckPassVal === NewPassVal){
-            newuser = await accountModel.create({firstName:FirstVal, lastName:LastVal, email:EmailVal, password:NewPassVal, accComplete:false});
-            session.userID = newuser.id;
-            res.redirect('/accSettings')
-            return;
-        }
+    if (LastVal ==""){
+        res.render('Sign-Up', {LastErr: 'You have to fill out The Last Name field', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
 
     }
+    EmailVal = req.body["Email"];
+    if (EmailVal==""){
+        res.render('Sign-Up', {EmailErr: 'You have to fill out The Email field', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+
+    }
+    NewPassVal = req.body["NewPsswd"];
+    if (NewPassVal==""){
+        res.render('Sign-Up', {NewPassErr: 'You have to fill out The New Password field', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+
+    }
+    else if(length(NewPassVal)< 11){
+        res.render('Sign-Up', {NewPassErr: "The New password value is too short. Needs to be a minimum of 12 characters.", FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+
+    }
+    CheckPassVal = req.body["CheckPsswd"];
+    if(CheckPassVal === NewPassVal){
+        newuser = await accountModel.create({firstName:FirstVal, lastName:LastVal, email:EmailVal, password:NewPassVal, accComplete:false});
+        session.userID = newuser.id;
+        res.redirect('/accSettings')
+        return;
+    }
+
+
 
     console.log(NewPassVal,CheckPassVal);
-    res.render('Sign-Up', {nmessage:"Error"});
 
 });
 module.exports = router;
 
+
+}

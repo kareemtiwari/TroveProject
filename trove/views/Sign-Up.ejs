@@ -7,17 +7,23 @@
 <body>
 <form action="/Sign_Up" method="post">
   <label for ="Fname">First Name:</label><br>
-  <input type="text" id="Fname" name="Fname"><br>
+  <input type="text" id="Fname" name="Fname" value="<%=FName%>"><br>
+  <p style="color:#F39B6D;"><%= FirstErr%></p>
   <label for ="Lname">Last Name:</label><br>
-  <input type="text" id="Lname" name="Lname"><br>
+  <input type="text" id="Lname" name="Lname" value="<%=LName%>"><br>
+  <p style="color:#F39B6D;"><%= LastErr%></p>
   <label for="Email">Email:</label><br>
-  <input type="text" id="Email" name="Email"><br>
+  <input type="text" id="Email" name="Email" value="<%=ElectMail%>"><br>
+  <p style="color:#F39B6D;"><%= EmailErr%></p>
   <label for="NewPsswd">Enter Password:</label><br>
-  <input type="password" id="NewPsswd" name="NewPsswd"><br>
+  <input type="password" id="NewPsswd" name="NewPsswd" value="<%=NewPassword%>"><br>
+  <p style="color:#F39B6D;"><%= NewPassErr%></p>
   <label for="CheckPsswd">Re-Enter Password:</label><br>
-  <input type="password" id="CheckPsswd" name="CheckPsswd"><br>
+  <input type="password" id="CheckPsswd" name="CheckPsswd" value="<%=ChecPassword%>"><br>
+  <p style="color:#F39B6D;"><%= CheckPassErr%></p>
 
   <input type="submit" value="Submit">
+  <p style="color:#F39B6D;"><%= EmptyErr%></p>
 </form>
 </body>
 </html>
