@@ -4,10 +4,17 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('trove:server');
-var https = require('https'); //literally just adding an s to the requirement [bye bye https]
-var fs = require('fs');
+let mode = "production"; //TODO set to "production" for https, "testing" for testing server
+
+const app = require('../app');
+const debug = require('debug')('trove:server');
+let https;
+if(mode === 'production') {
+  https = require('https'); //literally just adding an s to the requirement [bye bye https]
+}else{
+  https = require('http');
+}
+const fs = require('fs');
 
 const options = {
   key: fs.readFileSync('key.pem','utf8'),
@@ -18,14 +25,20 @@ const options = {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
+let server;
+if(mode === 'production') {
+  server = https.createServer(options, app);
+}else{
+  server = https.createServer(app);
+}
 
-var server = https.createServer(options, app);
+const redirect = "will be a server to redirect http to https, will have to be on port 80 or a port routed to 80";
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -40,7 +53,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  let port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -64,7 +77,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  let bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -88,8 +101,8 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  let addr = server.address();
+  let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
