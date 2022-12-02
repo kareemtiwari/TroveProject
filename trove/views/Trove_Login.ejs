@@ -1,6 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
+
+<header>
+<h1> LOGIN or SIGN-UP </h1>
+</header>
+	<meta charset="utf-8" />
+	<title></title>
+	<body>
+
+
 	<meta charset="UTF-8">
 	<title>Trove</title>
 </head>
@@ -18,6 +28,7 @@
 <body>
 <div id="login">
 	<h1 id="logo">LOGO HERE</h1>
+	<img src="/images/chest.jpg">
 	<form action="/Trove_Login" method="post" id="loginForm">
 		<label for ="UsName">Email</label><br>
 		<input type=text" id="UsName" name="UsName"><br><br>
@@ -25,83 +36,84 @@
 		<input type="password" id="Psswd" name="Psswd"><br><br>
 		<input type="hidden" id="type" name="type" value="Submit">
 		<button type="submit">Log In</button>
+
 	</form>
-	<p style="color:#F39B6D;"><%=nmessage%></p>
+	<h1>
+		<%=nmessage%>
+	</h1>
 
-	<p>Don't have an account? <a href="/Sign_Up">Sign Up Here</a></p>
-</div>
-</body>
-</html>
-<script>
-class login {
+	<a href="/Sign_Up">Sign-Up Here</a>
+	</body>
+	<script>
+	class login {
 
-/**
- * Login - Database will instantiate
- * @param userid
- * @param sessionid
- */
-Login(userid, sessionid) {
-	this.userid = userid;
-	this.sessionid = sessionid;
-}
+    /**
+     * Login - Database will instantiate
+     * @param userid
+     * @param sessionid
+     */
+    Login(userid, sessionid) {
+        this.userid = userid;
+        this.sessionid = sessionid;
+    }
 
-/**
- * This function checks if the email entered matches in the database
- * @returns boolean values
- */
-checkEmail(){              //CheckEmail
-	return 0;
-}
+    /**
+     * This function checks if the email entered matches in the database
+     * @returns boolean values
+     */
+    checkEmail(){              //CheckEmail
+        return 0;
+    }
 
-/**
- * This function checks if the Password entered matches in the database
- * @returns boolean values
- */
-checkPsswd(){              //CheckPsswd
-	return 0;
-}
+    /**
+     * This function checks if the Password entered matches in the database
+     * @returns boolean values
+     */
+    checkPsswd(){              //CheckPsswd
+        return 0;
+    }
 
-}
-class signup{
-
-/**
- * This gets the users email that was entered
- * @returns nothing
- */
-getEmail(){            //getEmail
-	return this.email;
-}
- /**
- * This gets the users password that was entered
- * @returns nothing
- */
-getPassword(){            //getPassword
-	return this.password;
-}
+    }
+    class signup{
+    
+    /**
+     * This gets the users email that was entered
+     * @returns nothing
+     */
+    getEmail(){            //getEmail
+        return this.email;
+    }
+     /**
+     * This gets the users password that was entered
+     * @returns nothing
+     */
+    getPassword(){            //getPassword
+        return this.password;
+    }
 
 
-/**
- * This sets the user password
- * @This returns the user password
- */
-setPassword(){
-	this.password = newPassword;
-}
-  /**
- * This sets the user email
- * @This returns the user email
- */
-setEmail(){
-	this.email= newEmail;
-}
-	 /**
- * This checks if the Email is valid
- * @this return a boolean value
- */
-isValid(){
-	return;
-}
+    /**
+     * This sets the user password
+     * @This returns the user password 
+     */
+    setPassword(){
+        this.password = newPassword;
+    }
+      /**
+     * This sets the user email
+     * @This returns the user email
+     */
+    setEmail(){
+        this.email= newEmail;
+    }
+         /**
+     * This checks if the Email is valid
+     * @this return a boolean value
+     */
+   isValid(){
+        return;
+    }
 
 }
-
-</script>
+	
+	</script>

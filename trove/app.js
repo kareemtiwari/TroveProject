@@ -8,14 +8,14 @@ var logger = require('morgan');
 var sessions = require('express-session');
 var {Sequelize, DataTypes, Model} = require('sequelize');
 
-var indexRouter = require('./routes/Dashboard');
-var usersRouter = require('./routes/users');                    //TODO : Include router objects here
-var accSetRouter = require('./routes/accSettings');
-var LoginRouter = require('./routes/Trove_Login');
-var SignUpRouter = require('./routes/Sign_Up');
-var dashRouter = require('./routes/Dashboard');
-var goalsRouter = require('./routes/GoalsRoute');
-var calendarRouter = require('./routes/WeeklyCalendar');
+var indexRouter = require('./routes/dashboard.js');
+var usersRouter = require('./routes/users.js');                    //TODO : Include router objects here
+var accSetRouter = require('./routes/accsettings.js');
+var LoginRouter = require('./routes/Trove_Login.js');
+var SignUpRouter = require('./routes/Sign_Up.js');
+var dashRouter = require('./routes/dashboard.js');
+var goalsRouter = require('./routes/GoalsRoute.js');
+var calendarRouter = require('./routes/WeeklyCalendar.js');
 
 //domain model classes
 let accountModel = require('./db/Objects/account.js').Account;
