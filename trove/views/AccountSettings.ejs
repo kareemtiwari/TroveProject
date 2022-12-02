@@ -6,14 +6,31 @@
 </head>
 <style>
     body {background-color: #3E6990; color: #ffffff;}
-    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
+    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 8px;
         padding: 10px;}
     button:hover {cursor: pointer;}
     select {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;}
-    #heading{text-align: center;}
+    #heading{text-align: center;
+    }
     #mainContainer {display: flex; flex-direction: row; justify-content: center;}
-    #settingsContainer {}
-    #jobsContainer {padding-left: 100px;}
+    #settingsContainer {
+        border-radius: 25px;
+        background: #33455A;
+        padding: 30px;}
+    #jobsContainer {
+        border-radius: 25px;
+        background: #33455A;
+        padding: 30px;
+    }
+    #spacer {
+        padding:30px;
+    }
+    input {
+        border: 2px solid #AABD8C;
+        border-radius: 8px;
+        background-color: #E9E3B4;
+    }
+
 </style>
 <body>
 <%- include('fragments/header'); %>
@@ -48,7 +65,9 @@
 
     <h3>Expenditures</h3>
     <div class="tableView">
-        <p>Click on a row to edit, Rows are saved when you click off</p>
+        <p>Click "Add new Expenditure" to add a row</p>
+        <p> Click on a row to edit it</p>
+        <p> Rows are saved when you click off of them</p>
         <table id="expTable">
             <tr>
                 <th>Name</th>
@@ -83,6 +102,7 @@
 <br>
 </form>
 </div>
+    <div id="spacer"></div>
 <div id="jobsContainer">
 <h1>Jobs</h1>
 <form action="/accSettings" method="post" name="myForm" id="myForm">
