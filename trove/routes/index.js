@@ -10,6 +10,8 @@ router.get('/', function(req, res, next) {
     res.status(200);
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
   }
+
+
 });
 
 module.exports = router;
