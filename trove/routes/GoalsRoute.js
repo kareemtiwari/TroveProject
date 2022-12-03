@@ -63,19 +63,19 @@ router.post('/add', async function(req, res, next) {
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
         console.log("NaN catch");
-        return;
+
         }
     else if (gAmount < 0){
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
-        return;
+
     }
     else if(nGAmount < 0){
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null amount 2 catch");
-        return;
+
     }
 
     else if(nGProgress < 0){
@@ -83,25 +83,25 @@ router.post('/add', async function(req, res, next) {
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: 'Please enter a ',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
-        return;
+
     }
     else if(nGProgress < 0){
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null progress 2 catch");
-        return;
+
     }
     else if (gName == ""){
         //res.redirect('/TroveAccounting');
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
         console.log("null name catch");
-        return;
+
     }
     else if (gSlider > totalSlider){
             console.log("Your priority is full you cannot make anymore goals");
             //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
         res.render('Goals', {limit:slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
-            return;
+
 
         }
     else{
@@ -359,7 +359,7 @@ router.post('/deleteFunds', async function(req, res, next) {
             //res.redirect('/TroveAccounting');
             res.render('Goals', {limit: slot1,limit2:slot2,limit3:slot3,remessage: '',display: gd});
             console.log("NaN catch");
-            return;
+
         } else {
 
 ///The remove and add destroy the values and add more values to update the progress
