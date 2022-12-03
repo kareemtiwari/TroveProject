@@ -3,6 +3,7 @@ const {Account: accountModel} = require("../db/Objects/account");
 const {Events: eventsModel} = require("../db/Objects/events");
 const {Jobs: jobsModel} = require("../db/Objects/jobs");
 const {DbGoals: goalsModel} = require("../db/Objects/dbGoals");
+const {Expenditures: expendModel} = require("../db/Objects/expenditures")
 var router = express.Router();
 
 /* GET Login page. */
@@ -21,6 +22,9 @@ router.get('/', async function(req, res, next) {
 
         /* Get all the current user's goals */
         let goalsQuery = await goalsModel.findAll({where: {userID: uid}, raw: true});
+
+
+        let expendQuery = await expendModel.findAll({where: {userID: uid}, raw: true});
 
         let eventsList = getEventsList(events, jobQuery);
         let dispList = getDisplayList(eventsList);
@@ -69,7 +73,19 @@ router.get('/', async function(req, res, next) {
                         }
         }
 
-        res.render('Dashboard', {day: day, events: dispList[DoW], goals: goals, userid: user.firstName, path: req.originalUrl});
+                let expend = '';
+                switch(expendQuery.length) {
+                        case 0:
+                                goals += 'You currently have no expenditures.';
+                                break;
+                        default:
+                                let sdata = [];
+                                for (let i = 0; i < expendQuery.length; i++) {
+                                        let curr = expendQuery[i];
+                                        sdata[i] = [curr.name, curr.type, curr.category, curr.value];
+                                }
+                }
+        res.render('Dashboard', {day: day, events: dispList[DoW], goals: goals, userid: user.firstName,dob:date[0],expend:sdata, path: req.originalUrl});
         }else{
                 res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
         }
