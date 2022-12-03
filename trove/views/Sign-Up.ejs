@@ -1,38 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Trove</title>
+    <meta charset="UTF-8">
+    <title>Trove</title>
 </head>
 <style>
-  body {background-color: #3E6990; color: #ffffff;}
-  button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
-    padding: 10px;}
-  button:hover {cursor: pointer;}
-  a {color: #ffffff;}
-  a:hover {font-weight: bold; cursor: pointer;}
-  #signup {text-align: center;}
-  #logo {font-size: 50px; padding-top: 150px;}
-  #signupForm {padding-top: 50px;}
+    body {
+        background-color: #3E6990;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    a {
+        color: #ffffff;
+    }
+
+    a:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #signup {
+        text-align: center;
+    }
+
+    #logo {
+        padding-top: 100px;
+        width: 250px;
+        height: 250px;
+    }
+
+    #signupForm {
+        padding: 30px;
+        background-color: #33455A;
+        border-radius: 25px;
+        width: min-content;
+        margin: auto;
+    }
 </style>
 <body>
 <div id="signup">
-  <h1 id="logo">LOGO HERE</h1>
-  <form id="signupForm" action="/Sign_Up" method="post">
-    <label for ="Fname">First Name:</label><br>
-    <input type="text" id="Fname" name="Fname"><br>
-    <label for ="Lname">Last Name:</label><br>
-    <input type="text" id="Lname" name="Lname"><br>
-    <label for="Email">Email:</label><br>
-    <input type="text" id="Email" name="Email"><br>
-    <label for="NewPsswd">Enter Password:</label><br>
-    <input type="password" id="NewPsswd" name="NewPsswd"><br>
-    <label for="CheckPsswd">Re-Enter Password:</label><br>
-    <input type="password" id="CheckPsswd" name="CheckPsswd"><br><br>
+    <img src="images/TroveLogo.png" alt="Trove Logo" id="logo"/>
+    <form id="signupForm" action="/Sign_Up" method="post">
+        <label for="Fname">First Name:</label><br>
+        <input type="text" id="Fname" name="Fname"><br>
+        <label for="Lname">Last Name:</label><br>
+        <input type="text" id="Lname" name="Lname"><br>
+        <label for="Email">Email:</label><br>
+        <input type="text" id="Email" name="Email"><br>
+        <label for="NewPsswd">Enter Password:</label><br>
+        <input type="password" id="NewPsswd" name="NewPsswd"><br>
+        <label for="CheckPsswd">Re-Enter Password:</label><br>
+        <input type="password" id="CheckPsswd" name="CheckPsswd"><br><br>
 
-    <input type="hidden" id="type" name="type" value="Submit">
-    <button type="submit">Create Account</button>
-  </form>
+        <input type="hidden" id="type" name="type" value="Submit">
+        <button type="submit">Create Account</button>
+    </form>
 </div>
 </body>
 </html>

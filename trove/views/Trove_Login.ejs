@@ -1,107 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Trove</title>
+    <meta charset="UTF-8">
+    <title>Trove</title>
 </head>
 <style>
-	body {background-color: #3E6990; color: #ffffff;}
-	button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
-		padding: 10px;}
-	button:hover {cursor: pointer;}
-	a {color: #ffffff;}
-	a:hover {font-weight: bold; cursor: pointer;}
-	#login {text-align: center;}
-	#logo {padding-top: 100px; width: 250px; height: 250px;}
-	#loginForm {padding-top: 50px;}
+    body {
+        background-color: #3E6990;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    a {
+        color: #ffffff;
+    }
+
+    a:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #login {
+        text-align: center;
+    }
+
+    #logo {
+        padding-top: 100px;
+        width: 250px;
+        height: 250px;
+    }
+
+    #loginForm {
+        padding: 30px;
+        background-color: #33455A;
+        border-radius: 25px;
+        width: min-content;
+        margin: auto;
+    }
 </style>
 <body>
 <div id="login">
-	<img src="images/TroveLogo.png" alt="Trove Logo" id="logo" />
-	<form action="/Trove_Login" method="post" id="loginForm">
-		<label for ="UsName">Email</label><br>
-		<input type="text" id="UsName" name="UsName"><br><br>
-		<label for ="Psswd">Password</label><br>
-		<input type="password" id="Psswd" name="Psswd"><br><br>
-		<input type="hidden" id="type" name="type" value="Submit">
-		<button type="submit">Log In</button>
-	</form>
-	<p style="color:#F39B6D;"><%=nmessage%></p>
+    <img src="images/TroveLogo.png" alt="Trove Logo" id="logo"/>
+    <form action="/Trove_Login" method="post" id="loginForm">
+        <label for="UsName">Email</label><br>
+        <input type="text" id="UsName" name="UsName"><br><br>
+        <label for="Psswd">Password</label><br>
+        <input type="password" id="Psswd" name="Psswd"><br><br>
+        <input type="hidden" id="type" name="type" value="Submit">
+        <button type="submit">Log In</button>
+    </form>
+    <p style="color:#F39B6D;"><%= nmessage %></p>
 
-	<p>Don't have an account? <a href="/Sign_Up">Sign Up Here</a></p>
+    <p>Don't have an account? <a href="/Sign_Up">Sign Up Here</a></p>
 </div>
 </body>
 </html>
 <script>
-class login {
+    class login {
 
-/**
- * Login - Database will instantiate
- * @param userid
- * @param sessionid
- */
-Login(userid, sessionid) {
-	this.userid = userid;
-	this.sessionid = sessionid;
-}
+        /**
+         * Login - Database will instantiate
+         * @param userid
+         * @param sessionid
+         */
+        Login(userid, sessionid) {
+            this.userid = userid;
+            this.sessionid = sessionid;
+        }
 
-/**
- * This function checks if the email entered matches in the database
- * @returns boolean values
- */
-checkEmail(){              //CheckEmail
-	return 0;
-}
+        /**
+         * This function checks if the email entered matches in the database
+         * @returns boolean values
+         */
+        checkEmail() {              //CheckEmail
+            return 0;
+        }
 
-/**
- * This function checks if the Password entered matches in the database
- * @returns boolean values
- */
-checkPsswd(){              //CheckPsswd
-	return 0;
-}
+        /**
+         * This function checks if the Password entered matches in the database
+         * @returns boolean values
+         */
+        checkPsswd() {              //CheckPsswd
+            return 0;
+        }
 
-}
-class signup{
+    }
 
-/**
- * This gets the users email that was entered
- * @returns nothing
- */
-getEmail(){            //getEmail
-	return this.email;
-}
- /**
- * This gets the users password that was entered
- * @returns nothing
- */
-getPassword(){            //getPassword
-	return this.password;
-}
+    class signup {
+
+        /**
+         * This gets the users email that was entered
+         * @returns nothing
+         */
+        getEmail() {            //getEmail
+            return this.email;
+        }
+
+        /**
+         * This gets the users password that was entered
+         * @returns nothing
+         */
+        getPassword() {            //getPassword
+            return this.password;
+        }
 
 
-/**
- * This sets the user password
- * @This returns the user password
- */
-setPassword(){
-	this.password = newPassword;
-}
-  /**
- * This sets the user email
- * @This returns the user email
- */
-setEmail(){
-	this.email= newEmail;
-}
-	 /**
- * This checks if the Email is valid
- * @this return a boolean value
- */
-isValid(){
-	return;
-}
+        /**
+         * This sets the user password
+         * @This returns the user password
+         */
+        setPassword() {
+            this.password = newPassword;
+        }
 
-}
+        /**
+         * This sets the user email
+         * @This returns the user email
+         */
+        setEmail() {
+            this.email = newEmail;
+        }
+
+        /**
+         * This checks if the Email is valid
+         * @this return a boolean value
+         */
+        isValid() {
+
+        }
+
+    }
 
 </script>
