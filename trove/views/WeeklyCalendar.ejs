@@ -5,60 +5,34 @@
     <title>Trove</title>
 </head>
 <style>
-    body {
-        background-color: #3E6990;
-        color: #ffffff;
-    }
-
-    button {
-        background-color: #AABD8C;
-        color: #000000;
-        border: 1px solid #000000;
-        border-radius: 10px;
-        padding: 10px;
-    }
-
-    button:hover {
-        cursor: pointer;
-    }
-
-    select {
-        background-color: #AABD8C;
-        color: #000000;
-        border: 1px solid #000000;
-        border-radius: 10px;
-    }
-
-    table {
-        width: 100%;
-    }
-
-    table, th, td {
-        border: 1px solid black;
-    }
-
-    #del {
-        display: flex;
-        flex-direction: row;
-    }
-
-    #deleteAll {
-        padding-left: 20px;
-    }
-
-    #delEvent {
-        margin-left: 50px;
-    }
-
-    #createEvent {
-        margin-left: 50px;
+    body {background-color: #3E6990; color: #ffffff;}
+    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
+        padding: 10px;}
+    button:hover {cursor: pointer;}
+    select {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;}
+    table {width: 100%; background-color: #33455A; border-radius: 25px; padding:10px; color: black;}
+    /*
+    table, th, td {border:1px solid black;}*/
+    td {background-color: #E9E3B4; border-radius: 25px;}
+    th {color:white;}
+    #del {display: flex; flex-direction: row; background-color: #33455A; border-radius: 25px; padding:10px; width:min-content;}
+    #deleteAll {padding-left: 20px;}
+    #deleteAllContainer {background-color: #33455A; border-radius: 25px;width:min-content;padding:10px;}
+    #delEvent {margin-left: 50px;}
+    #createEvent {margin-left: 50px;}
+    #addEvent {background-color: #33455A; border-radius: 25px; padding:10px; width:min-content;}
+    fieldset {border-radius: 25px;}
+    input {
+        border: 2px solid #AABD8C;
+        border-radius: 8px;
+        background-color: #E9E3B4;
     }
 </style>
 <body onload="main()">
 <%- include('fragments/header'); %>
 <h1>Weekly Calendar</h1>
 <p>Manage your calendar by adding, editing, and removing events here!</p><br>
-<table style="background-color:#E9E3B4; color:#000000;" id="cal">
+<table id="cal">
     <tr id="tableHead">
         <th>Sunday</th>
         <th>Monday</th>
@@ -77,36 +51,37 @@
         <td><%- fri %></td>
         <td><%- sat %></td>
     </tr>
-</table>
-<br>
-<div id="del">
+
+</table><br>
+<div id="del"
+<%if(dEvent=="none;"){%>
+    style="display: none;"
+<%}%>>
     <form action="/Weekly-Calendar" method="post" id="deleteEvent" style="display:<%= dEvent %>">
         <label id="eventSelector" for="eventSelector">Select an Event to Delete: </label>
         <select id="eventSelector" name="eventSelector">
-            <%- events %>
-        </select><br>
+        <%- events %>
+        </select>
         <input type="hidden" id="type" name="type" value="deleteEvent">
         <button type="submit" id="delEvent">Delete Event</button>
     </form>
-    <br>
 
     <form action="/Weekly-Calendar" method="post" id="deleteAll" style="display:<%= dAll %>">
         <input type="hidden" id="type" name="type" value="deleteAll">
-        <button type="submit">Delete All Events</button>
-    </form>
-    <br>
+        <button style="background-color: #F39B6D; align:right;" type="submit">Delete All Events</button>
+    </form><br>
 </div>
 
 <div id="deleteAllContainer" style="display:<%= conf %>">
     <p style="color:#F39B6D;">Are you sure you want to delete all events?</p>
     <div id="deleteAllButtonsContainer" style="display: flex; flex-direction: row;">
-        <form action="/Weekly-Calendar" method="post" id="confirmDeleteAll">
-            <input type="hidden" id="type" name="type" value="confirmDeleteAll">
-            <button type="submit">Confirm Deletion</button>
-        </form>
         <form action="/Weekly-Calendar" method="post" id="cancelDeleteAll">
             <input type="hidden" id="type" name="type" value="cancelDeleteAll">
             <button type="submit">Cancel</button>
+        </form>
+        <form action="/Weekly-Calendar" method="post" id="confirmDeleteAll">
+            <input type="hidden" id="type" name="type" value="confirmDeleteAll">
+            <button style="background-color: #F39B6D;" type="submit">Confirm Deletion</button>
         </form>
     </div>
 </div>

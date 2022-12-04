@@ -55,21 +55,25 @@ router.get('/', async function (req, res, next) {
                 break;
         }
         let goals = '';
-        switch (goalsQuery.length) {
-            case 0:
-                goals += 'You have no active goals. Click here to add.';
-                break;
-            default:
-                for (let i = 0; i < goalsQuery.length; i++) {
-                    let goal = goalsQuery[i];
-                    let amount = goal.goalAmount;
-                    let progress = goal.goalProgress;
-                    let perc = ((progress / amount) * 100).toFixed(2);
-                    goals += '<label for="goal' + i.toString() + '">' + goal.goalName +
-                        ' Progress: ' + perc.toString() + '% </label>';
-                    goals += '<progress class="bar" id="goal' + i.toString() + '" value="' + progress.toString() +
-                        '" max="' + amount.toString() + '"></progress><br>';
-                }
+
+        switch(goalsQuery.length) {
+                case 0:
+                        goals += 'You have no active goals. Click here to add.';
+                        break;
+                default:
+                        for(let i = 0; i < goalsQuery.length; i++) {
+                                let goal = goalsQuery[i];
+                                let amount = goal.goalAmount;
+                                let progress = goal.goalProgress;
+                                let perc = ((progress/amount)*100).toFixed(2);
+                                goals += '<div class="goalline">';
+                                goals += '<label for="goal' + i.toString() + '">' + goal.goalName +
+                                    ' Progress: ' + perc.toString() + '% </label>';
+                                goals += '<progress class="bar" id="goal' + i.toString() + '" value="' + progress.toString() +
+                                    '" max="' + amount.toString() + '"></progress><br>';
+                                goals += '</div>';
+                        }
+
         }
 
         let expendQuery = await expendModel.findAll({
