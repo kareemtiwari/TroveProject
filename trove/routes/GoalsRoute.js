@@ -333,7 +333,7 @@ router.post('/deleteFunds', async function(req, res, next) {
 
         let gID = req.body["tempID"];  //get all variables out of the form
         let gProgress = req.body["goalDeleteFunds"];
-        let goalProgress = req.body["tempProgress"];
+        let goalProgress = req.body["goalProgress"];
         let gName = req.body["tempName"]; //changed value here!
         let gAmount = req.body["tempAmount"];
         let gSlider = req.body["tempSlider"];
@@ -370,17 +370,9 @@ router.post('/deleteFunds', async function(req, res, next) {
 
 ///The remove and add destroy the values and add more values to update the progress
             if (goal.goalProgress - nGProgress < 0) {
-                console.log("Goal number " + gID + " is empty :( !");
-                newGoal= await goalModel.update({
-                    userID: uid,
-                    goalID: gID,
-                    goalAmount: gAmount,
-                    goalProgress: 0,
-                    goalName: gName,
-                    goalSlider: gSlider,
-                    goalLimit: gLimit
-                },{where: {userID:uid,goalID: gID}});
-                res.render('Goals', {completion:completionField,remessage: "HEY! You just overdrew by "+ Math.abs(nGProgress - goal.goalProgress),display: gd});
+                res.render('Goals', {completion:completionField,remessage: "Error: You overdrew from your progress, please enter a value lower than "+gProgress,display: gd});
+                console.log(query);
+                return;
 
             } else {
                 newGoal= await goalModel.update({
@@ -393,14 +385,12 @@ router.post('/deleteFunds', async function(req, res, next) {
                     goalLimit: gLimit
                 },{where: {userID:uid,goalID: gID}});
                 console.log("***Goal***" + gID + " Funds Deleted");
-                res.render('Goals', {completion:completionField,remessage: "",display: gd});
 
             }
 
         }
         console.log("YOU HAVE REACHED THE LAST GD");
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-        //res.render('Goals', {completion:completionField,remessage: "",display: gd});
         res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
     }
 
