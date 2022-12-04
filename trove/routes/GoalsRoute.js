@@ -5,9 +5,9 @@ var router = express.Router(); //NEEDED TO USE DATABASE OBJECT
 let goalModel = require('../db/Objects/dbGoals.js').DbGoals;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 let eventModel = require('../db/Objects/events.js').Events;//NEEDED TO USE DATABASE OBJECT
-var totalSlider = 100;
-var completionField = '';
-var flag1 = 0;
+var totalSlider = 100; // holds the total slider value of 100 as a placeholder
+var completionField = ''; // field that holds the completed goals value
+var flag1 = 0; // flags 1-3 are created in order to negate the creation of multiple goals with the same ID
 var flag2 = 0;
 var flag3 = 0;
 
@@ -25,21 +25,16 @@ router.get('*',  async function(req, res, next) {
         gd = await queryData(uid);
     //TODO : have to check if there is a userID in the session
     //get the currently logged in user
-
-
-    // //TODO : have to check if there is a user
-
     res.render('Goals', {completion:completionField,remessage: '',display: gd}); //TODO : model doesn't have all
     // console.log(user.id);
-
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
 
 /**
- * POST router - this is what is called when this routers path is hit with an HTTP post request
- * This usually happens when a user has clicked submit on a form, or is otherwise sending data to your site
+ * The /add post method is called when the 'Add Goal' button is pressed on the Goals.ejs page is clicked
+ * The /add post method creates a goal of ID 1-3
  */
 router.post('/add', async function(req, res, next) {
     if(req.session.userID != null) {
@@ -60,8 +55,10 @@ router.post('/add', async function(req, res, next) {
     let gLimit = 0;
     console.log(gSliderSum);
     console.log(gID, gAmount, gProgress, gName, gSlider,gLimit);
-    let nGAmount = parseFloat(gAmount);
-    let nGProgress = parseFloat(gProgress);
+
+    let nGAmount = parseFloat(gAmount); //parsing the amount
+    let nGProgress = parseFloat(gProgress); // parsing the progress
+    //Checking if the progress or amount fields are empty
     if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
         console.log("NaN catch");
@@ -104,12 +101,14 @@ router.post('/add', async function(req, res, next) {
         res.render('Goals', {completion:completionField,remessage: 'Error: Slider Value is set to be greater than is allowed, please enter a value lower than '+ totalSlider,display: gd});
         return;
         }
+    //checking if the progress is set higher than amount, which if true results in a error
     else if (nGProgress > nGAmount){
         console.log("You cannot make a goal that is already complete");
         console.log(gAmount+' '+gProgress);
         res.render('Goals', {completion:completionField,remessage: 'Error: You cannot set the initial progress higher than the total amount of the goal ',display: gd});
         return;
     }
+    // if the exceptions come through false then proceed to make goal
     else{
         gSliderSum = gSliderSum + parseInt(gSlider); //Slider calculation for subtracting from the total slider value of 100
         totalSlider = totalSlider - gSliderSum;
@@ -126,6 +125,7 @@ router.post('/add', async function(req, res, next) {
         gLimit = troveLimit;
         console.log('***************************'+gLimit);
 
+        // if the ID is set to 1 and the flag1 is open then add goal
         if ((gID == 1) & (flag1 == 0)){
             // creating a new goal
             let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
@@ -134,9 +134,10 @@ router.post('/add', async function(req, res, next) {
             console.log("***Goal***"+gID+" Created");
             let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
             res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag1 = 1;
+            flag1 = 1; // set the flag to 1 to indicate the creation of goal 1
             return;
         }
+        // if the ID is set to 2 and the flag2 is open then add goal
         else if ((gID == 2) & (flag2 == 0)){
             // creating a new goal
             let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
@@ -145,9 +146,10 @@ router.post('/add', async function(req, res, next) {
             console.log("***Goal***"+gID+" Created");
             let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
             res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag2 = 1;
+            flag2 = 1; // set the flag to 1 to indicate the creation of goal 2
             return;
         }
+        // if the ID is set to 3 and the flag3 is open then add goal
         else if ((gID == 3) & (flag3 == 0)){
             // creating a new goal
             let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
@@ -156,23 +158,21 @@ router.post('/add', async function(req, res, next) {
             console.log("***Goal***"+gID+" Created");
             let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
             res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag3 = 1;
+            flag3 = 1; // set the flag to 1 to indicate the creation of goal 3
             return;
-
+        // if any of the cases fails then throw multiple goals error
         }else{
             res.render('Goals', {completion:completionField,remessage: "Error: goal #"+gID+" already exists!",display: gd});
             return;
         }
-
-    }
-
-    }//Goes to if statement with null catches
-
+    }}
     else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
-
+/**
+ The delete post method deletes a goal which is set by the ID that is selected
+ **/
 router.post('/delete', async function(req, res, next) {
     if(req.session.userID != null) {
         if(!req.session.accComplete){
@@ -189,28 +189,28 @@ router.post('/delete', async function(req, res, next) {
     let gID = req.body["goalID"];  //get all variables out of the form
     let gSlider = req.body["goalSlider"];
     let gSliderSum = 0;
-    gSliderSum = gSliderSum + parseInt(gSlider);
+    gSliderSum = gSliderSum + parseInt(gSlider); // adds the deleted slider values back to the total
     totalSlider = totalSlider + gSliderSum;
     console.log("You Just Added "+ gSlider +" to "+ totalSlider);
     console.log(totalSlider);
     console.log(gSlider);
 
-/// destroys the goal
+// Resetting of the flag dependent on which goal you delete
     if (gID == 1){
-        flag1 = 0;
+        flag1 = 0; // reset flag1 to open
     }
     else if (gID == 2){
-        flag2 = 0;
+        flag2 = 0;// reset flag2 to open
     }
     else if (gID == 3){
-        flag3 = 0;
+        flag3 = 0;// reset flag3 to open
     }
+    // destroying the selected goal with the .destroy
     removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
     let query = await goalModel.findAll({raw: true});
     console.log(query);
     console.log("***Goal***" + gID + " Deleted");
-    //res.redirect('/TroveAccounting'); //TODO : model doesn't have all
-        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+    gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
         res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
     }else{
