@@ -89,8 +89,9 @@ router.get('/', async function (req, res, next) {
             events: dispList[DoW],
             goals: goals,
             userid: user.firstName,
+            expend:sdata,
             path: req.originalUrl,
-            expend: sdata
+
         });
     } else {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
