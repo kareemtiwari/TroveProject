@@ -64,8 +64,34 @@ describe("Testing the adding a goal with an empty field", () => {
             'goalName': 'New car',
             'goalSlider': '50'
         };
-        const response = await request(baseURL).post("/TroveAccounting/deleteFunds").send(form);
-        expect(response['remessage']).toContain("substring");
+        const response = await request(baseURL).post("/TroveAccounting/add").send(form);
+        cookie = response.headers['set-cookie'];
+        expect(response['text']).toContain('Found.')
+
+    });
+});
+describe("Testing the adding a goal with an empty field #2", () => {
+    test("It should respond by redirect", async () => {
+        const form = {
+            'goalID': 'option1',
+            'goalAmount':'50000',
+            'goalProgress': '20',
+            'goalName': '',
+            'goalSlider': '50'
+        };
+        const response = await request(baseURL).post("/TroveAccounting/add").send(form);
+        cookie = response.headers['set-cookie'];
+        expect(response['text']).toContain('Found.')
+
+    });
+});
+describe("Testing the code redirects you to login upon no user id", () => {
+    test("It should respond by redirect", async () => {
+        const form = {
+            'uid':''
+        };
+        const response = await request(baseURL).post("/TroveAccounting/add").send(form);
+        expect(response['text']).toContain('Found.')
 
     });
 });
