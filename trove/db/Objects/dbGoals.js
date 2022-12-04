@@ -1,8 +1,7 @@
-const {Model, DataTypes} = require('sequelize');
-
+var {Model, DataTypes} = require('sequelize');
 class DbGoals extends Model {
-
-    static createModel(sequelize) {
+    otherInfo;  //additional non-database mirrored attribute
+    static createModel(sequelize){
         DbGoals.init({
             // Model attributes are defined here
             userID: {

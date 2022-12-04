@@ -21,12 +21,14 @@ router.get('*',  async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    let uid = req.session.userID;
+        let uid = req.session.userID;
         gd = await queryData(uid);
-    //TODO : have to check if there is a userID in the session
-    //get the currently logged in user
-    res.render('Goals', {completion:completionField,remessage: '',display: gd}); //TODO : model doesn't have all
-    // console.log(user.id);
+
+        //TODO : have to check if there is a userID in the session
+        //get the currently logged in user
+        res.render('Goals', {completion:completionField,remessage: '',display: gd}); //TODO : model doesn't have all
+        // console.log(user.id);
+
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -41,133 +43,133 @@ router.post('/add', async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    console.log(req.url);
-    console.log(req.body);
-    session = req.session;
-    uid = req.session.userID;
-    gd = await queryData(uid);//need to check if there is one - [also eventually need to check if they are being brute forced??]
-    let gID = req.body["goalID"];  //get all variables out of the form
-    let gAmount = req.body["goalAmount"]; //The Amount field in the Goals.ejs
-    let gProgress = req.body["goalProgress"];//The Progress field in the Goals.ejs
-    let gName = req.body["goalName"];//The Name field in the Goals.ejs
-    let gSlider = req.body["goalSlider"];//The Slider Bar in the Goals.ejs
-    let gSliderSum = 0;
-    let gLimit = 0;
-    console.log(gSliderSum);
-    console.log(gID, gAmount, gProgress, gName, gSlider,gLimit);
 
-    let nGAmount = parseFloat(gAmount); //parsing the amount
-    let nGProgress = parseFloat(gProgress); // parsing the progress
-    //Checking if the progress or amount fields are empty
-    if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
-        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
-        console.log("NaN catch");
+        console.log(req.url);
+        console.log(req.body);
+        session = req.session;
+        uid = req.session.userID;
+        gd = await queryData(uid);//need to check if there is one - [also eventually need to check if they are being brute forced??]
+        let gID = req.body["goalID"];  //get all variables out of the form
+        let gAmount = req.body["goalAmount"]; //The Amount field in the Goals.ejs
+        let gProgress = req.body["goalProgress"];//The Progress field in the Goals.ejs
+        let gName = req.body["goalName"];//The Name field in the Goals.ejs
+        let gSlider = req.body["goalSlider"];//The Slider Bar in the Goals.ejs
+        let gSliderSum = 0;
+        let gLimit = 0;
+        console.log(gSliderSum);
+        console.log(gID, gAmount, gProgress, gName, gSlider,gLimit);
 
-        }
-    // checking if the starting amount is less than zero
-    else if (gAmount < 0){
-        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
-        console.log("null amount catch");
-
-    }
-    // checking if the starting amount is less than zero
-    else if(nGAmount < 0){
-        res.render('Goals', {completion:completionField,remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
-        console.log("null amount 2 catch");
-
-    }
-    //checking if the progress is less than 0
-    else if(nGProgress < 0){
-        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
-        console.log(nGProgress)
-        console.log("null progress catch");
-
-    }
-    //checking if the progress is less than 0
-    else if(nGProgress < 0){
-        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
-        console.log("null progress 2 catch");
-
-    }
-    // checking if the name field is empty
-    else if (gName == ""){
-        res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value in the name field!',display: gd});
-        console.log("null name catch");
-
-    }
-    // checking the slidertotal doesn't overexceed the slider value currently
-    else if (gSlider > totalSlider){
-
-        console.log("Your priority is full you cannot make anymore goals");
-        res.render('Goals', {completion:completionField,remessage: 'Error: Slider Value is set to be greater than is allowed, please enter a value lower than '+ totalSlider,display: gd});
-        return;
-
-        }
-    //checking if the progress is set higher than amount, which if true results in a error
-    else if (nGProgress > nGAmount){
-        console.log("You cannot make a goal that is already complete");
-        console.log(gAmount+' '+gProgress);
-        res.render('Goals', {completion:completionField,remessage: 'Error: You cannot set the initial progress higher than the total amount of the goal ',display: gd});
-        return;
-    }
-    // if the exceptions come through false then proceed to make goal
-    else{
-        gSliderSum = gSliderSum + parseInt(gSlider); //Slider calculation for subtracting from the total slider value of 100
-        totalSlider = totalSlider - gSliderSum;
-
-        // Grabbing the event salary, job salary and Expenditures
-        // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
-        // hourlyWage = (eventGrab.wage)*4
-        // salaryWage = (Jobs.jobPay)
-
-
-        let wage = 2000/10.0;
-        let priorityMultiplier = gSlider/100;
-        let troveLimit = wage * priorityMultiplier;
-        gLimit = troveLimit;
-        console.log('***************************'+gLimit);
-
-        // if the ID is set to 1 and the flag1 is open then add goal
-        if ((gID == 1) & (flag1 == 0)){
-            // creating a new goal
-            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-            let query = await goalModel.findAll({raw:true});
-            console.log(query);
-            console.log("***Goal***"+gID+" Created");
-            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag1 = 1; // set the flag to 1 to indicate the creation of goal 1
+        let nGAmount = parseFloat(gAmount); //parsing the amount
+        let nGProgress = parseFloat(gProgress); // parsing the progress
+        //Checking if the progress or amount fields are empty
+        if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
+            res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
+            console.log("NaN catch");
             return;
         }
-        // if the ID is set to 2 and the flag2 is open then add goal
-        else if ((gID == 2) & (flag2 == 0)){
-            // creating a new goal
-            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-            let query = await goalModel.findAll({raw:true});
-            console.log(query);
-            console.log("***Goal***"+gID+" Created");
-            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag2 = 1; // set the flag to 1 to indicate the creation of goal 2
+        // checking if the starting amount is less than zero
+        else if (gAmount < 0){
+            res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
+            console.log("null amount catch");
             return;
         }
-        // if the ID is set to 3 and the flag3 is open then add goal
-        else if ((gID == 3) & (flag3 == 0)){
-            // creating a new goal
-            let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-            let query = await goalModel.findAll({raw:true});
-            console.log(query);
-            console.log("***Goal***"+gID+" Created");
-            let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.render('Goals', {completion:completionField,remessage: "",display: gd});
-            flag3 = 1; // set the flag to 1 to indicate the creation of goal 3
-            return;
-        // if any of the cases fails then throw multiple goals error
-        }else{
-            res.render('Goals', {completion:completionField,remessage: "Error: goal #"+gID+" already exists!",display: gd});
+        // checking if the starting amount is less than zero
+        else if(nGAmount < 0){
+            res.render('Goals', {completion:completionField,remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
+            console.log("null amount 2 catch");
             return;
         }
-    }}
+        //checking if the progress is less than 0
+        else if(nGProgress < 0){
+            res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
+            console.log(nGProgress)
+            console.log("null progress catch");
+            return;
+        }
+        //checking if the progress is less than 0
+        else if(nGProgress < 0){
+            res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
+            console.log("null progress 2 catch");
+            return;
+        }
+        // checking if the name field is empty
+        else if (gName == ""){
+            res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value in the name field!',display: gd});
+            console.log("null name catch");
+            return;
+        }
+        // checking the slidertotal doesn't overexceed the slider value currently
+        else if (gSlider > totalSlider){
+            console.log("Your priority is full you cannot make anymore goals");
+            res.render('Goals', {completion:completionField,remessage: 'Error: Slider Value is set to be greater than is allowed, please enter a value lower than '+ totalSlider,display: gd});
+            return;
+        }
+        //checking if the progress is set higher than amount, which if true results in a error
+        else if (nGProgress > nGAmount){
+            console.log("You cannot make a goal that is already complete");
+            console.log(gAmount+' '+gProgress);
+            res.render('Goals', {completion:completionField,remessage: 'Error: You cannot set the initial progress higher than the total amount of the goal ',display: gd});
+            return;
+        }
+        // if the exceptions come through false then proceed to make goal
+        else{
+            gSliderSum = gSliderSum + parseInt(gSlider); //Slider calculation for subtracting from the total slider value of 100
+            totalSlider = totalSlider - gSliderSum;
+
+            // Grabbing the event salary, job salary and Expenditures
+            // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
+            // hourlyWage = (eventGrab.wage)*4
+            // salaryWage = (Jobs.jobPay)
+
+
+            let wage = 2000/10.0;
+            let priorityMultiplier = gSlider/100;
+            let troveLimit = wage * priorityMultiplier;
+            gLimit = troveLimit;
+            console.log('***************************'+gLimit);
+
+            // if the ID is set to 1 and the flag1 is open then add goal
+            if ((gID == 1) & (flag1 == 0)){
+                // creating a new goal
+                let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+                let query = await goalModel.findAll({raw:true});
+                console.log(query);
+                console.log("***Goal***"+gID+" Created");
+                let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+                res.render('Goals', {completion:completionField,remessage: "",display: gd});
+                flag1 = 1; // set the flag to 1 to indicate the creation of goal 1
+                return;
+            }
+            // if the ID is set to 2 and the flag2 is open then add goal
+            else if ((gID == 2) & (flag2 == 0)){
+                // creating a new goal
+                let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+                let query = await goalModel.findAll({raw:true});
+                console.log(query);
+                console.log("***Goal***"+gID+" Created");
+                let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+                res.render('Goals', {completion:completionField,remessage: "",display: gd});
+                flag2 = 1; // set the flag to 1 to indicate the creation of goal 2
+                return;
+            }
+            // if the ID is set to 3 and the flag3 is open then add goal
+            else if ((gID == 3) & (flag3 == 0)){
+                // creating a new goal
+                let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
+                let query = await goalModel.findAll({raw:true});
+                console.log(query);
+                console.log("***Goal***"+gID+" Created");
+                let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+                res.render('Goals', {completion:completionField,remessage: "",display: gd});
+                flag3 = 1; // set the flag to 1 to indicate the creation of goal 3
+                return;
+                // if any of the cases fails then throw multiple goals error
+            }else{
+                res.render('Goals', {completion:completionField,remessage: "Error: goal #"+gID+" already exists!",display: gd});
+                return;
+            }
+        }}
+
     else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -180,39 +182,41 @@ router.post('/delete', async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    console.log(req.url);
-    console.log(req.body);
 
-    session = req.session;
-    uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    gd = await queryData(uid);
+        console.log(req.url);
+        console.log(req.body);
+
+        session = req.session;
+        uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
+        gd = await queryData(uid);
 
 ///Calling the individual database elements
-    let gID = req.body["goalID"];  //get all variables out of the form
-    let gSlider = req.body["goalSlider"];
-    let gSliderSum = 0;
-    gSliderSum = gSliderSum + parseInt(gSlider); // adds the deleted slider values back to the total
-    totalSlider = totalSlider + gSliderSum;
-    console.log("You Just Added "+ gSlider +" to "+ totalSlider);
-    console.log(totalSlider);
-    console.log(gSlider);
+        let gID = req.body["goalID"];  //get all variables out of the form
+        let gSlider = req.body["goalSlider"];
+        let gSliderSum = 0;
+        gSliderSum = gSliderSum + parseInt(gSlider); // adds the deleted slider values back to the total
+        totalSlider = totalSlider + gSliderSum;
+        console.log("You Just Added "+ gSlider +" to "+ totalSlider);
+        console.log(totalSlider);
+        console.log(gSlider);
 
 // Resetting of the flag dependent on which goal you delete
-    if (gID == 1){
-        flag1 = 0; // reset flag1 to open
-    }
-    else if (gID == 2){
-        flag2 = 0;// reset flag2 to open
-    }
-    else if (gID == 3){
-        flag3 = 0;// reset flag3 to open
-    }
-    // destroying the selected goal with the .destroy
-    removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-    let query = await goalModel.findAll({raw: true});
-    console.log(query);
-    console.log("***Goal***" + gID + " Deleted");
-    gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        if (gID == 1){
+            flag1 = 0; // reset flag1 to open
+        }
+        else if (gID == 2){
+            flag2 = 0;// reset flag2 to open
+        }
+        else if (gID == 3){
+            flag3 = 0;// reset flag3 to open
+        }
+        // destroying the selected goal with the .destroy
+        removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
+        let query = await goalModel.findAll({raw: true});
+        console.log(query);
+        console.log("***Goal***" + gID + " Deleted");
+        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+
         res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
     }else{
