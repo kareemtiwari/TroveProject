@@ -2,71 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Trove</title>
+    <h1>Create an Account</h1>
 </head>
-<style>
-    body {
-        background-color: #3E6990;
-        color: #ffffff;
-    }
-
-    button {
-        background-color: #AABD8C;
-        color: #000000;
-        border: 1px solid #000000;
-        border-radius: 10px;
-        padding: 10px;
-    }
-
-    button:hover {
-        cursor: pointer;
-    }
-
-    a {
-        color: #ffffff;
-    }
-
-    a:hover {
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    #signup {
-        text-align: center;
-    }
-
-    #logo {
-        padding-top: 100px;
-        width: 250px;
-        height: 250px;
-    }
-
-    #signupForm {
-        padding: 30px;
-        background-color: #33455A;
-        border-radius: 25px;
-        width: min-content;
-        margin: auto;
-    }
-</style>
 <body>
-<div id="signup">
-    <img src="images/TroveLogo.png" alt="Trove Logo" id="logo"/>
-    <form id="signupForm" action="/Sign_Up" method="post">
-        <label for="Fname">First Name:</label><br>
-        <input type="text" id="Fname" name="Fname"><br>
-        <label for="Lname">Last Name:</label><br>
-        <input type="text" id="Lname" name="Lname"><br>
-        <label for="Email">Email:</label><br>
-        <input type="text" id="Email" name="Email"><br>
-        <label for="NewPsswd">Enter Password:</label><br>
-        <input type="password" id="NewPsswd" name="NewPsswd"><br>
-        <label for="CheckPsswd">Re-Enter Password:</label><br>
-        <input type="password" id="CheckPsswd" name="CheckPsswd"><br><br>
+<form action="/Sign_Up" method="post">
+  <label for ="Fname">First Name:</label><br>
+  <input type="text" id="Fname" name="Fname" value="<%=FName%>"><br>
+  <p style="color:#F39B6D;"><%= FirstErr%></p>
+  <label for ="Lname">Last Name:</label><br>
+  <input type="text" id="Lname" name="Lname" value="<%=LName%>"><br>
+  <p style="color:#F39B6D;"><%= LastErr%></p>
+  <label for="Email">Email:</label><br>
+  <input type="text" id="Email" name="Email" value="<%=ElectMail%>"><br>
+  <p style="color:#F39B6D;"><%= EmailErr%></p>
+  <label for="NewPsswd">Enter Password:</label><br>
+  <input type="password" id="NewPsswd" name="NewPsswd" value="<%=NewPassword%>"><br>
+  <p style="color:#F39B6D;"><%= NewPassErr%></p>
+  <label for="CheckPsswd">Re-Enter Password:</label><br>
+  <input type="password" id="CheckPsswd" name="CheckPsswd" value="<%=CheckPassword%>"><br>
+  <p style="color:#F39B6D;"><%= CheckPassErr%></p>
 
-        <input type="hidden" id="type" name="type" value="Submit">
-        <button type="submit">Create Account</button>
-    </form>
-</div>
+  <input type="submit" value="Submit">
+  <p style="color:#F39B6D;"><%= EmptyErr%></p>
+</form>
 </body>
 </html>

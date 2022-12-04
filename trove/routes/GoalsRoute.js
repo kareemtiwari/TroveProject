@@ -23,10 +23,12 @@ router.get('*',  async function(req, res, next) {
         }
         let uid = req.session.userID;
         gd = await queryData(uid);
+
         //TODO : have to check if there is a userID in the session
         //get the currently logged in user
         res.render('Goals', {completion:completionField,remessage: '',display: gd}); //TODO : model doesn't have all
         // console.log(user.id);
+
     }else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -41,6 +43,7 @@ router.post('/add', async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
+
         console.log(req.url);
         console.log(req.body);
         session = req.session;
@@ -166,6 +169,7 @@ router.post('/add', async function(req, res, next) {
                 return;
             }
         }}
+
     else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
@@ -178,6 +182,7 @@ router.post('/delete', async function(req, res, next) {
         if(!req.session.accComplete){
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
+
         console.log(req.url);
         console.log(req.body);
 
@@ -211,6 +216,7 @@ router.post('/delete', async function(req, res, next) {
         console.log(query);
         console.log("***Goal***" + gID + " Deleted");
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+
         res.render('Goals', {completion:completionField,remessage: '',display: gd});
 
     }else{
@@ -362,6 +368,7 @@ router.post('/deleteFunds', async function(req, res, next) {
         if (isNaN(gProgress) || nGProgress == null) {
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
+
             return;
             ///progress cant be less than zero
         } else if (nGProgress < 0){
