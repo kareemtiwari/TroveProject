@@ -313,7 +313,8 @@ router.post('/addFunds', async function(req, res, next) {
 
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
         res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
-    }else{
+    }
+    else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
@@ -332,8 +333,8 @@ router.post('/deleteFunds', async function(req, res, next) {
 
         let gID = req.body["tempID"];  //get all variables out of the form
         let gProgress = req.body["goalDeleteFunds"];
-        let goalProgress = req.body["goalProgress"];
-        let gName = req.body["tempName"];
+        let goalProgress = req.body["tempProgress"];
+        let gName = req.body["tempName"]; //changed value here!
         let gAmount = req.body["tempAmount"];
         let gSlider = req.body["tempSlider"];
         let gLimit = req.body["tempLimit"];
@@ -353,7 +354,9 @@ router.post('/deleteFunds', async function(req, res, next) {
         console.log(goal);
 
         console.log(query);
+        let nGoalProgress = parseFloat(goalProgress);
         let nGProgress = parseFloat(gProgress);
+
         if (isNaN(gProgress) || nGProgress == null) {
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
@@ -367,7 +370,6 @@ router.post('/deleteFunds', async function(req, res, next) {
 
 ///The remove and add destroy the values and add more values to update the progress
             if (goal.goalProgress - nGProgress < 0) {
-                res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the delete funds",display: gd});
                 console.log("Goal number " + gID + " is empty :( !");
                 newGoal= await goalModel.update({
                     userID: uid,
@@ -378,6 +380,8 @@ router.post('/deleteFunds', async function(req, res, next) {
                     goalSlider: gSlider,
                     goalLimit: gLimit
                 },{where: {userID:uid,goalID: gID}});
+                res.render('Goals', {completion:completionField,remessage: "HEY! You just overdrew by "+ Math.abs(nGProgress - goal.goalProgress),display: gd});
+
             } else {
                 newGoal= await goalModel.update({
                     userID: uid,
@@ -389,15 +393,18 @@ router.post('/deleteFunds', async function(req, res, next) {
                     goalLimit: gLimit
                 },{where: {userID:uid,goalID: gID}});
                 console.log("***Goal***" + gID + " Funds Deleted");
+                res.render('Goals', {completion:completionField,remessage: "",display: gd});
+
             }
-            console.log("YOU HAVE REACHED THE LAST GD")
-            gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
-            res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
 
         }
-
+        console.log("YOU HAVE REACHED THE LAST GD");
+        gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
+        //res.render('Goals', {completion:completionField,remessage: "",display: gd});
+        res.redirect('/TroveAccounting/#goal'+gID.toString()+'Block');
     }
-        else{
+
+    else{
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login
     }
 });
