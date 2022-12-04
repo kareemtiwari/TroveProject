@@ -1,14 +1,11 @@
-var {Model, DataTypes} = require('sequelize');
-class Account extends Model {
-    otherInfo;  //example additional non-database mirrored attribute
-    //variables defined in create model are automatically defined and available
-    //do not shadow them here
+const {Model, DataTypes} = require('sequelize');
 
+class Account extends Model {
     /**
      * createModel - called once to create an instance / table in the sequelize db
      * @param sequelize - the sequelize instance
      */
-    static createModel(sequelize){
+    static createModel(sequelize) {
         Account.init({
             // Model attributes are defined here
             firstName: {
@@ -41,7 +38,6 @@ class Account extends Model {
             },
             salary: {       //TODO - were required but not in model
                 type: DataTypes.NUMBER
-
             },
             payMode: {
                 type: DataTypes.BOOLEAN
@@ -49,6 +45,10 @@ class Account extends Model {
             accComplete: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false
+            },
+            hourlyIncome: {
+                type: DataTypes.FLOAT,
+                defaultValue: 0.0
             }
         }, {
             // Other model options go here

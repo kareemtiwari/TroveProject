@@ -1,10 +1,16 @@
-var {Model, DataTypes} = require('sequelize');
+const {Model, DataTypes} = require('sequelize');
+
 class Events extends Model {
-    otherInfo;  //additional non-database mirrored attribute
-    static createModel(sequelize){
+
+    static createModel(sequelize) {
         Events.init({
             // Model attributes are defined here
             eventID: {
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            userID: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
@@ -24,8 +30,8 @@ class Events extends Model {
                 type: DataTypes.FLOAT,
                 allowNull: false
             },
-            eventWage: {
-                type: DataTypes.FLOAT,
+            eventJob: {
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
         }, {

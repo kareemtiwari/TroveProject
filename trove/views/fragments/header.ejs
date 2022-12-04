@@ -1,10 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<style>
+    /* Add a black background color to the top navigation */
+    .topnav {
+        background-color: #2B2A32;
+        overflow: hidden;
+    }
 
-</body>
-</html>
+    /* Style the links inside the navigation bar */
+    .topnav a {
+        float: left;
+        color: #ffffff;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    /* Change the color of links on hover */
+    .topnav a:hover {
+        background-color: #E9E3B4;
+        color: black;
+    }
+
+    /* Add a color to the active/current link */
+    .topnav a.active {
+        background-color: #E9E3B4;
+        color: black;
+    }
+
+    .tableView table {
+        border-radius: 25px;
+        color: black;
+        background: #E9E3B4;
+        border-collapse: collapse;
+    }
+
+    .tableView th {
+        border: 1px solid Gray;
+        background: #AABD8C;
+        border-collapse: collapse;
+    }
+
+    .tableView td {
+        border: 1px solid Gray;
+        background: #E9E3B4;
+        border-collapse: collapse;
+    }
+
+    .tableView tr {
+        border: 1px solid Gray;
+        border-radius: 25px;
+        background: #E9E3B4;
+        border-collapse: collapse;
+    }
+
+
+    .tableView tr.selrow {
+        border: 3px solid #F39B6D;
+        border-collapse: collapse;
+    }
+</style>
+<div class="topnav">
+    <a id="dash" class="inactive" href="/Dashboard">Trove</a>
+    <a id="calendar" class="inactive" href="/Weekly-Calendar">Calendar</a>
+    <a id="accounting" class="inactive" href="/TroveAccounting">Accounting</a>
+    <a style="float:right" class="inactive" href="/accSettings/logout">Logout</a>
+    <a id="accountset" class="inactive" style="float:right" href="/accSettings">Settings</a>
+</div>
+<script>
+    let loc = window.location.href;
+    let url = new URL(loc);
+    let path = url.pathname;
+    console.log(path);
+    let dbb;
+    switch (path) {
+        case '/':
+            dbb = document.getElementById("dash");
+            console.log('dash');
+            break;
+        case '/Dashboard':
+            dbb = document.getElementById("dash");
+            console.log('dash');
+            break;
+        case '/Weekly-Calendar':
+            dbb = document.getElementById("calendar");
+            console.log('calendar');
+            break;
+        case '/accSettings':
+            dbb = document.getElementById("accountset");
+            console.log('accountset');
+            break;
+        case '/TroveAccounting':
+            dbb = document.getElementById("accounting");
+            console.log("accounting");
+            break;
+    }
+    dbb.className = "active";
+</script>

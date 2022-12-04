@@ -2,76 +2,514 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Settings</title>
+    <title>Trove</title>
 </head>
+<style>
+    body {
+        background-color: #3E6990;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    select {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 10px;
+    }
+
+    #heading {
+        text-align: center;
+    }
+
+    #mainContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    #settingsContainer {
+        border-radius: 25px;
+        background: #33455A;
+        padding: 30px;
+    }
+
+    #jobsContainer {
+        border-radius: 25px;
+        background: #33455A;
+        padding: 30px;
+    }
+
+    #spacer {
+        padding: 30px;
+    }
+
+    input {
+        border: 2px solid #AABD8C;
+        border-radius: 8px;
+        background-color: #E9E3B4;
+    }
+
+</style>
 <body>
-<h1>Account settings</h1>
-<p>Manage your account here!</p>
-<form action="/accSettings" method="post">
-    <label for="fname">First name:</label>
-    <input type="text" id="fname" name="fname" value="<%=fname%>"><br><br>
-    <label for="lname">Last name:</label>
-    <input type="text" id="lname" name="lname" value="<%=lname%>"><br><br>
-    <label for="lname">Salary/ Hourly:</label>
-    <input type="text" id="salary" name="salary" value="<%=salary%>"><br><br>
-    <input type="radio" id="salary" name="salhour" value="Salary" <%=salary_sel%>>
-    <label for="html">Salary</label><br>
-    <input type="radio" id="hourly" name="salhour" value="Hourly" <%=hourly_sel%>>
-    <label for="css">Hourly</label><br>
-    <label for="start">DOB:</label>
+<%- include('fragments/header'); %>
+<div id="heading">
+    <h1>Account Settings</h1>
+    <p>Manage your account here!</p>
 
-    <input type="date" id="dob" name="dob"
-           value="<%=dob%>"
-           min="1901-01-01" max="2020-12-31">
+    <% // if(remessage == "error") {  %>
+    <h3 style="color:#F39B6D"> <%= remessage %> </h3>
+    <% //}  %>
+</div>
+<div id="mainContainer">
+    <div id="settingsContainer">
+        <h1>Account Information</h1>
+        <form action="/accSettings" method="post" id="acsform">
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" value="<%= fname %>"><br><br>
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname" value="<%= lname %>"><br><br>
+            <!--    <label for="lname">Salary/ Hourly:</label>-->
+            <!--    <input type="text" id="salary" name="salary" value="<%= salary %>"><br><br>-->
+            <!--    <input type="radio" id="salary" name="salhour" value="Salary" <%= salary_sel %>>-->
+            <!--    <label for="html">Salary</label><br>-->
+            <!--    <input type="radio" id="hourly" name="salhour" value="Hourly" <%= hourly_sel %>>-->
+            <!--    <label for="css">Hourly</label><br>-->
+            <label for="start">DOB:</label>
 
-    <input type="submit" value="Submit">
-</form>
-<%// if(remessage == "error") { %>
-    <h3 style="color:#FF0000"> <%= remessage%> </h3>
-<% //} %>
+            <input type="date" id="dob" name="dob"
+                   value="<%= dob %>"
+                   min="1901-01-01" max="2020-12-31">
 
+
+            <h3>Expenditures</h3>
+            <div class="tableView">
+                <p>Click "Add new Expenditure" to add a row</p>
+                <p> Click on a row to edit it</p>
+                <p> Rows are saved when you click off of them</p>
+                <table id="expTable">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                    <% for(var i = 0;i < expend.length;i++){ %>
+                    <tr onclick="edit(this);">
+                        <td><%= expend[i][0]; %></td>
+                        <td><%= expend[i][1]; %></td>
+                        <td><%= expend[i][2]; %></td>
+                        <td><%= expend[i][3]; %></td>
+                    </tr>
+                    <% } %>
+                </table>
+                <input type="hidden" value="<%= expend.length %>" name="expendSize" id="expendSize">
+                <% for(var i = 0;i < expend.length;i++){ %>
+                <input type="hidden" value="<%= expend[i][0]; %>" name="expend[<%= i %>][0]" id="SM<%= i %>n0">
+                <input type="hidden" value="<%= expend[i][1]; %>" name="expend[<%= i %>][1]" id="SM<%= i %>n1">
+                <input type="hidden" value="<%= expend[i][2]; %>" name="expend[<%= i %>][2]" id="SM<%= i %>n2">
+                <input type="hidden" value="<%= expend[i][3]; %>" name="expend[<%= i %>][3]" id="SM<%= i %>n3">
+                <% } %>
+                <button type="button" onclick="addE();">Add New Expenditure</button>
+                <button type="button" id="del" onclick="deleteE();">Delete Selected Expenditure</button>
+            </div>
+            <br>
+            <br>
+            <input type="hidden" value="ACC" name="formID">
+            <input type="hidden" formaction="/accSettings" value="Submit">
+            <button type="submit">Save</button>
+            <br>
+        </form>
+    </div>
+    <div id="spacer"></div>
+    <div id="jobsContainer">
+        <h1>Jobs</h1>
+        <form action="/accSettings" method="post" name="myForm" id="myForm">
+            <fieldset>
+                <button onclick="addJob();">Submit</button>
+                <select id="bit" name="formID">
+                    <option value="ADD" selected>add job</option>
+                    <option value="DEL">delete job</option>
+                </select>
+                <!--  <button method = "post" formaction="/Goals/delete" type="submit" onclick="delGoal()">Del Goal</button>-->
+
+                <div>
+                    <br>
+                    <label for="jobID">Job Number:</label>
+                    <select id="jobID" name="jobID">
+                        <option id="option1" value="1">Job1</option>
+                        <option id="option2" value="2">Job2</option>
+                        <option id="option3" value="3">Job3</option>
+                    </select>
+                    </br>
+                    <label for="JobPay">Enter Job Pay:</label>
+                    <input type="text" id="jobPay" name="jobPay">
+                    </br>
+                    <label for="jobName">Enter Job Name:</label>
+                    <input type="text" id="jobName" name="jobName">
+                    </br>
+                    <br>
+                    <input type="radio" id="salary" name="jobType" value="Salary" <%= salary_sel %>>
+                    <label for="html">Salary</label><br>
+                    <input type="radio" id="hourly" name="jobType" value="Hourly" <%= hourly_sel %>>
+                    <label for="css">Hourly</label><br>
+                </div>
+            </fieldset>
+        </form>
+        <script>
+            function addJob() {
+                const form = document.getElementById("myForm");
+                form.submit();
+            }
+
+            function delJob() {
+                const form = document.getElementById("myForm");
+                const submitter = document.getElementById("bit");
+                submitter.value = "DEL";
+
+                form.submit();
+            }
+        </script>
+
+        <% if(jd[0]["has"]){ %>
+        <div id="job1Block">
+            <p> Job #: <%= jd[0]["jobID"] %> <span id="jobIDDisplay1"></span></p>
+            <p> Job Name: <%= jd[0]["jobName"] %> <span id="jobIDDisplay2"></span></p>
+            <p> Job Type: <%= jd[0]["jobType"] %> <span id="jobIDDisplay3"></span></p>
+            <p> Job Pay: <%= jd[0]["jobPay"] %> <span id="jobIDDisplay4"></span></p>
+            <form method="post" name="myForm" id="myForm">
+                <input type="hidden" value="<%= jd[0]["jobID"] %>" name="tempID">
+                <input type="hidden" value="<%= jd[0]["jobName"] %>" name="tempName">
+                <input type="hidden" value="<%= jd[0]["jobType"] %>" name="tempType">
+                <input type="hidden" value="<%= jd[0]["jobPay"] %>" name="tempPay">
+            </form>
+        </div>
+        <% } %>
+        <% if(jd[1]["has"]){ %>
+        <div id="job2Block">
+            <p> Job #: <%= jd[1]["jobID"] %> <span id="jobIDDisplay1"></span></p>
+            <p> Job Name: <%= jd[1]["jobName"] %> <span id="jobIDDisplay2"></span></p>
+            <p> Job Type: <%= jd[1]["jobType"] %> <span id="jobIDDisplay3"></span></p>
+            <p> Job Pay: <%= jd[1]["jobPay"] %> <span id="jobIDDisplay4"></span></p>
+            <form method="post" name="myForm" id="myForm">
+                <input type="hidden" value="<%= jd[1]["jobID"] %>" name="tempID">
+                <input type="hidden" value="<%= jd[1]["jobName"] %>" name="tempName">
+                <input type="hidden" value="<%= jd[1]["jobType"] %>" name="tempType">
+                <input type="hidden" value="<%= jd[1]["jobPay"] %>" name="tempPay">
+            </form>
+        </div>
+        <% } %>
+        <% if(jd[2]["has"]){ %>
+        <div id="job3Block">
+            <p> Job #: <%= jd[2]["jobID"] %> <span id="jobIDDisplay1"></span></p>
+            <p> Job Name: <%= jd[2]["jobName"] %> <span id="jobIDDisplay2"></span></p>
+            <p> Job Type: <%= jd[2]["jobType"] %> <span id="jobIDDisplay3"></span></p>
+            <p> Job Pay: <%= jd[2]["jobPay"] %> <span id="jobIDDisplay4"></span></p>
+            <form method="post" name="myForm" id="myForm">
+                <input type="hidden" value="<%= jd[2]["jobID"] %>" name="tempID">
+                <input type="hidden" value="<%= jd[2]["jobName"] %>" name="tempName">
+                <input type="hidden" value="<%= jd[2]["jobType"] %>" name="tempType">
+                <input type="hidden" value="<%= jd[2]["jobPay"] %>" name="tempPay">
+            </form>
+        </div>
+        <% } %>
+        <script>
+            class Job {
+                constructor(jobNum, jobName, jobType, jobPay) {
+                    this.jobNum = jobNum;
+                    this.jobName = jobName;
+                    this.jobType = jobType;
+                    this.jobPay = jobPay;
+                }
+
+                getJobNum() {
+                    return this.jobNum;
+                }
+
+                getJobName() {
+                    return this.jobName;
+                }
+
+                getJobType() {
+                    return this.jobType;
+                }
+
+                getJobPay() {
+                    return this.jobPay;
+                }
+            }
+
+            function addJob() {
+                let jobNum = document.getElementById("jobID").value;
+                let jobName = document.getElementById("jobName").value;
+                let jobType = document.getElementById("jobType").value;
+                let jobPay = document.getElementsByName("jobPay").value;
+                let newJob = new Job(jobName, jobNum, jobType, jobPay);
+
+                let form = document.getElementById('myForm');
+                form.action = '/accSettings/addJob';
+                form.submit();
+                form.reset();
+
+
+                if (jobNum == "1") {
+                    var open = document.getElementById("job1Block");
+                    open.style.display = "flex"
+                    var open = document.getElementById("job1Block");
+                    open.style.flexDirection = "column"
+                    document.getElementById("jobIDDisplay").innerHTML = jobNum;
+                    document.getElementById("jobIDDisplay2").innerHTML = jobName;
+                    document.getElementById("jobIDDisplay3").innerHTML = jobType;
+                    document.getElementById("jobIDDisplay4").innerHTML = jobPay;
+                } else if (jobNum == "2") {
+                    var open = document.getElementById("job2Block");
+                    open.style.display = "flex"
+                    var open = document.getElementById("job2Block");
+                    open.style.flexDirection = "column"
+                    document.getElementById("job2IDDisplay").innerHTML = jobNum;
+                    document.getElementById("job2IDDisplay2").innerHTML = jobName;
+                    document.getElementById("job2IDDisplay3").innerHTML = jobType;
+                    document.getElementById("job2IDDisplay4").innerHTML = jobPay;
+                } else if (jobNum == "3") {
+                    var open = document.getElementById("job3Block");
+                    open.style.display = "flex"
+                    var open = document.getElementById("job3Block");
+                    open.style.flexDirection = "column"
+                    document.getElementById("job3IDDisplay").innerHTML = jobNum;
+                    document.getElementById("job3IDDisplay2").innerHTML = jobName;
+                    document.getElementById("job3IDDisplay3").innerHTML = jobType;
+                    document.getElementById("job3IDDisplay4").innerHTML = jobPay;
+                }
+            }
+
+            function delJob() {
+                jobID = document.getElementById("jobID").value
+                clearID = document.getElementById("jobID")
+                clearID.value = ""
+                clearNum = document.getElementById("jobName")
+                clearNum.value = ""
+                clearAmount = document.getElementsByName("jobType")
+                clearAmount.value = ""
+                clearProgress = document.getElementById("JobPay")
+                clearProgress.value = ""
+                if (jobID == "1") {
+                    //var option1 = document.getElementById("option1");
+                    hideBlock1 = document.getElementById("job1Block")
+                    hideBlock1.style.display = "None"
+                } else if (jobID == "2") {
+                    //var option2 = document.getElementById("option2");
+                    hideBlock2 = document.getElementById("job2Block")
+                    hideBlock2.style.display = "None"
+
+                } else if (jobID == "3") {
+                    //var option3 = document.getElementById("option3");
+                    hideBlock3 = document.getElementById("job3Block")
+                    hideBlock3.style.display = "None"
+
+                }
+            }
+        </script>
+    </div>
+</div>
 </body>
 <script>
-    class AccountSettings {
+    function edit(el) {
+        const input = document.createElement("input");
+        input.type = "text";
 
-        /**
-         * The constructor - Database will instantiate
-         * @param login object
-         */
-        constructor(login) {
-            this.userID = login.userID;
-            this.sessionID = login.sessionID;
-            this.firstName = "from db";
-            this.lastName = "from db";
-            this.email = "from db";
-            //password and secuirty question not instantiated
-            this.expenditures = 0; //get from database or user input later (should be a table)
-            this.wageInfo = 0; //get from database or user input later
+        input.value = el.cells[0].innerHTML;
+        el.cells[0].innerHTML = "";
+        el.cells[0].append(input);
+
+        const input2 = document.createElement("input");
+        input2.type = "text";
+
+        input2.value = el.cells[3].innerHTML;
+        el.cells[3].innerHTML = "";
+        el.cells[3].append(input2);
+
+        const input3 = document.createElement("select");
+        let optlist1 = ["Fixed", "Variable"];
+        for (let i = 0; i <= optlist1.length; i++) {
+            let opt = document.createElement('option');
+            opt.value = optlist1[i];
+            opt.innerHTML = optlist1[i];
+            input3.appendChild(opt);
+        }
+        input3.value = el.cells[1].innerHTML;
+        el.cells[1].innerHTML = "";
+        el.cells[1].append(input3);
+
+        const input4 = document.createElement("select");
+        let optlist = ["Housing", "Transportation", "Food", "Education", "Entertainment", "Miscellaneous"];
+        for (let i = 0; i <= optlist.length; i++) {
+            let opt = document.createElement('option');
+            opt.value = optlist[i];
+            opt.innerHTML = optlist[i];
+            input4.appendChild(opt);
         }
 
-        /**
-         * Getter for userID
-         * @returns {*}
-         */
-        get userID() {              //example function
-            return this.userID;
+        input4.value = el.cells[2].innerHTML;
+        el.cells[2].innerHTML = "";
+        el.cells[2].append(input4);
+
+        el.className = "selrow";
+        el.id = "selrow";
+        el.setAttribute('onclick', '');
+        hideOnClickOutside(el);
+    }
+
+    function commit(el) {
+
+        let table = document.getElementById("expTable");
+        let smi = el.rowIndex - 1;
+        if (smi < 0) {
+            smi = table.rows.length - 1;
         }
 
-        /**
-         * Getter for expenditures
-         * @returns {*}
-         */
-        get Expenditures() {            //example getter
-            return this.expenditures;
+        let submitters = [];
+        submitters[0] = document.getElementById("SM" + smi + "n0");
+        submitters[1] = document.getElementById("SM" + smi + "n1");
+        submitters[2] = document.getElementById("SM" + smi + "n2");
+        submitters[3] = document.getElementById("SM" + smi + "n3");
+
+        for (let i = 0; i < el.cells.length; i++) {
+            const save = el.cells[i].children[0].value;
+            //el.cells[i].children[1].value = save; //set the submitter
+            el.cells[i].innerHTML = save; // wipes out the hidden submitter
+            submitters[i].value = save;
+            //add a hidden form input attrib
+            //<input type="hidden" value="gd[2]["goalName"]" name="tempName" >
+
+        }
+        el.className = "";
+        el.id = "";
+        el.setAttribute('onclick', 'edit(this);');
+    }
+
+    function addE() {
+        const table = document.getElementById("expTable");
+        const newRow = table.insertRow();
+        newRow.setAttribute("onclick", "edit(this);");
+        const c1 = newRow.insertCell();
+        c1.innerHTML = "New Expenditure";
+        const c2 = newRow.insertCell();
+        c2.innerHTML = "Variable";
+        const c3 = newRow.insertCell();
+        c3.innerHTML = "Miscellaneous";
+        const c4 = newRow.insertCell();
+        c4.innerHTML = "0";
+
+        const form = document.getElementById("acsform");
+
+        let subIdx = newRow.rowIndex - 1;
+        if (subIdx < 0) {
+            subIdx = table.rows.length - 1;
         }
 
-        /**
-         * Getter for wage info
-         * @returns {*}
-         */
-        get WageInfo() {
-            return this.wageInfo;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.value = "New Expenditure";
+        input.name = "expend[" + subIdx + "][0]";
+        input.id = "SM" + subIdx + "n0";
+        form.append(input);
+
+        const input2 = document.createElement("input");
+        input2.type = "hidden";
+        input2.value = "Variable";
+        input2.name = "expend[" + subIdx + "][1]";
+        input2.id = "SM" + subIdx + "n1";
+        form.append(input2);
+
+        const input3 = document.createElement("input");
+        input3.type = "hidden";
+        input3.value = "Miscellaneous";
+        input3.name = "expend[" + subIdx + "][2]";
+        input3.id = "SM" + subIdx + "n2";
+        form.append(input3);
+
+        const input4 = document.createElement("input");
+        input4.type = "hidden";
+        input4.value = "0";
+        input4.name = "expend[" + subIdx + "][3]";
+        input4.id = "SM" + subIdx + "n3";
+        form.append(input4);
+
+        document.getElementById("expendSize").value++;
+    }
+
+    function deleteE() {
+        const selrow = document.getElementsByClassName('selrow')[0];
+        if (selrow == null) {
+            alert("you must have a row selected to delete it!");
+            return;
         }
+        const table = document.getElementById('expTable');
+        console.log(selrow);
+
+        let smi = selrow.rowIndex - 1;
+        if (selrow.rowIndex < 0) {
+            smi = table.rows.length - 1;
+        }
+        let submitter1 = document.getElementById("SM" + smi + "n0");
+        let submitter2 = document.getElementById("SM" + smi + "n1");
+        let submitter3 = document.getElementById("SM" + smi + "n2");
+        let submitter4 = document.getElementById("SM" + smi + "n3");
+        submitter1.remove();
+        submitter2.remove();
+        submitter3.remove();
+        submitter4.remove();
+
+        table.deleteRow(selrow.rowIndex);
+
+        //need to reorder to avoid having the elements overwrite each other
+        //every row after smi -1 on id
+
+        for (let i = smi + 1; i < table.rows.length; i++) { //loop through table upto n+1 (so end won't get left off calculation)
+            let c1 = document.getElementById("SM" + i + "n0");
+            console.log("SM" + i + "n0  to  SM" + (i - 1) + "n0");
+            c1.id = "SM" + (i - 1) + "n0";
+            c1.name = "expend[" + (i - 1) + "][0]";
+            let c2 = document.getElementById("SM" + i + "n1");
+            c2.id = "SM" + (i - 1) + "n1";
+            c2.name = "expend[" + (i - 1) + "][1]";
+            let c3 = document.getElementById("SM" + i + "n2");
+            c3.id = "SM" + (i - 1) + "n2";
+            c3.name = "expend[" + (i - 1) + "][2]";
+            let c4 = document.getElementById("SM" + i + "n3");
+            c4.id = "SM" + (i - 1) + "n3";
+            c4.name = "expend[" + (i - 1) + "][3]";
+        }
+        //row.remove();
+        document.getElementById("expendSize").value--;
+    }
+
+    function hideOnClickOutside(element) {
+        const outsideClickListener = event => {
+            if (!element.contains(event.target)) { // or use: event.target.closest(selector) === null
+                if (!document.getElementById("del").contains(event.target)) {
+                    commit(element);
+                    removeClickListener();
+                }
+            }
+        }
+
+        const removeClickListener = () => {
+            document.removeEventListener('mousedown', outsideClickListener);
+        }
+
+        document.addEventListener('mousedown', outsideClickListener);
     }
 </script>
 </html>

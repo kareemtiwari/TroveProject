@@ -1,11 +1,15 @@
 # Using the trove server in general
 ## Quick Note
 I am using the trove folder in the root of the repository to put all of the server code into, this means that in order to be used by the server, any code needs to be put in this (or a subfolder of this) directory 
+## Useful Documentation
+- https://expressjs.com/en/guide/routing.html - About the Router system
+- https://sequelize.org/docs/v6/core-concepts/model-querying-basics/ - About the ORM system
 ## Running the application
 - Using a terminal navigate to the "csc450fa22-project-group-4" directory where you have pulled the github repository. 
 - Navigate into the trove folder 
 - To run the application type "npm start" - you should get the output "Trove server is now running!"
-- To vist the page goto http://localhost:3000/ and you should see the homepage
+- node modules have been removed from github - that means no more switching out the sqlite3 module
+- To vist the page goto https://localhost:3000/ and you should see the homepage [MUST BE HTTPS:// otherwise you will get an empty response]
 # Understanding the Express folder structure
 - **bin** - This is where the main executable is stored [dont edit]
 - **node_modules** - included packages and dependencies for express [dont edit]
