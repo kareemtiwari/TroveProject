@@ -176,7 +176,7 @@ async function doACC(req, res){
       }
       session.accComplete = true;
       res.redirect('/Dashboard');
-      return;
+
     }else{
       let jd = await qJobs(uid);
       let expendQuery = await expendModel.findAll({
@@ -191,7 +191,7 @@ async function doACC(req, res){
         sdata[i] = [curr.name,curr.type,curr.category,curr.value];
       }
       res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata,jd:jd,expend:sdata});
-      return;
+
     }
 }
 
@@ -251,7 +251,7 @@ if(!error){
   }
   res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd,expend:sdata}); //TODO : model doesn't have all
 
-  return;
+
   }else{
   //error
 

@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-let accountModel = require('../db/Objects/account.js').Account;
-let eventsModel = require('../db/Objects/events.js').Events;
-let jobsModel = require('../db/Objects/jobs.js').Jobs;
+const accountModel = require('../db/Objects/account.js').Account;
+const eventsModel = require('../db/Objects/events.js').Events;
+const jobsModel = require('../db/Objects/jobs.js').Jobs;
 
 /* GET Weekly Calendar page. */
-router.get('/', async function(req, res) {
-    if(req.session.userID != null) {
-        if(!req.session.accComplete){
+router.get('/', async function (req, res) {
+    if (req.session.userID != null) {
+        if (!req.session.accComplete) {
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
         // Get session user ID
         let uid = req.session.userID;
 
         /* Get all the current user's events to build the calendar */
-        let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
+        let query = await eventsModel.findAll({where: {userID: uid}, raw: true});
 
         /* Get user's account information */
-        let accountQuery = await accountModel.findAll ({where: {id: uid}, raw : true});
+        let accountQuery = await accountModel.findAll({where: {id: uid}, raw: true});
 
         /* Get all the current user's jobs */
         let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
@@ -31,189 +31,278 @@ router.get('/', async function(req, res) {
         let inc = accountQuery[0].hourlyIncome;
         console.log('*** hourlyIncome = ' + inc.toString() + ' ***');
 
-        if(query.length === 0) {
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
-                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"none;", dAll:'none', conf:'none', sName:'', path: req.originalUrl});
-        }
-        else {
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1],
-                tue:dispList[2], wed:dispList[3], thu:dispList[4], fri:dispList[5], sat:dispList[6], events:events,
-                dEvent:"block;", dAll:'block', conf:'none', sName:'', path: req.originalUrl});
+        if (query.length === 0) {
+            res.render('WeeklyCalendar', {
+                name: '',
+                end: '',
+                jobs: jobs,
+                noJob: '',
+                sun: dispList[0],
+                mon: dispList[1],
+                tue: dispList[2],
+                wed: dispList[3],
+                thu: dispList[4],
+                fri: dispList[5],
+                sat: dispList[6],
+                events: events,
+                dEvent: "none;",
+                dAll: 'none',
+                conf: 'none',
+                sName: '',
+                path: req.originalUrl
+            });
+        } else {
+            res.render('WeeklyCalendar', {
+                name: '',
+                end: '',
+                jobs: jobs,
+                noJob: '',
+                sun: dispList[0],
+                mon: dispList[1],
+                tue: dispList[2],
+                wed: dispList[3],
+                thu: dispList[4],
+                fri: dispList[5],
+                sat: dispList[6],
+                events: events,
+                dEvent: "block;",
+                dAll: 'block',
+                conf: 'none',
+                sName: '',
+                path: req.originalUrl
+            });
         }
 
 
-    }else{
+    } else {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to log in
     }
 });
 
-router.post('*', async function(req, res) {
-    if(req.session.userID != null) {
-        if(!req.session.accComplete){
+router.post('*', async function (req, res) {
+    if (req.session.userID != null) {
+        if (!req.session.accComplete) {
             res.redirect('/accSettings'); //you need to complete your account before being here
         }
-    // Get session user ID
-    let uid = req.session.userID;
+        // Get session user ID
+        let uid = req.session.userID;
 
-    /* Get all the current user's events to build the calendar */
-    let query = await eventsModel.findAll({where: {userID: uid}, raw : true});
+        /* Get all the current user's events to build the calendar */
+        let query = await eventsModel.findAll({where: {userID: uid}, raw: true});
 
-    /* Get user's account information */
-    let accountQuery = await accountModel.findAll ({where: {id: uid}, raw : true});
+        /* Get user's account information */
+        let accountQuery = await accountModel.findAll({where: {id: uid}, raw: true});
 
-    /* Get all the current user's jobs */
-    let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
+        /* Get all the current user's jobs */
+        let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw: true});
 
-    let jobs = getJobOptions(jobQuery);
-    let eventsList = getEventsList(query, jobQuery);
-    let dispList = getDisplayList(eventsList);
-    let events = getEventsOptions(eventsList);
+        let jobs = getJobOptions(jobQuery);
+        let eventsList = getEventsList(query, jobQuery);
+        let dispList = getDisplayList(eventsList);
+        let events = getEventsOptions(eventsList);
 
-    /* Begin switch cases for different Post types */
-    let type = req.body["type"];
-    let nameErr = '';
-    let endErr = '';
-    switch (type) {
-        case 'addEvent':
-            /* Get and the event's job */
-            let selectedJob = req.body["jobSelector"];
-            if(selectedJob === undefined) {
-                if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
-                        noJob:'You must have a job in Account Settings to create an event.',
-                        sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        sName:'', path: req.originalUrl});
+        /* Begin switch cases for different Post types */
+        let type = req.body["type"];
+        let nameErr = '';
+        let endErr = '';
+        switch (type) {
+            case 'addEvent':
+                /* Get and the event's job */
+                let selectedJob = req.body["jobSelector"];
+                if (selectedJob === undefined) {
+                    if (query.length === 0) {
+                        res.render('WeeklyCalendar', {
+                            name: '',
+                            end: '',
+                            jobs: jobs,
+                            noJob: 'You must have a job in Account Settings to create an event.',
+                            sun: dispList[0],
+                            mon: dispList[1],
+                            tue: dispList[2],
+                            wed: dispList[3],
+                            thu: dispList[4],
+                            fri: dispList[5],
+                            sat: dispList[6],
+                            events: events,
+                            dEvent: "none;",
+                            dAll: 'none',
+                            conf: 'none',
+                            sName: '',
+                            path: req.originalUrl
+                        });
+                    } else {
+                        res.render('WeeklyCalendar', {
+                            name: '',
+                            end: '',
+                            jobs: jobs,
+                            noJob: 'You must have a Job in Account Settings to create an event.',
+                            sun: dispList[0],
+                            mon: dispList[1],
+                            tue: dispList[2],
+                            wed: dispList[3],
+                            thu: dispList[4],
+                            fri: dispList[5],
+                            sat: dispList[6],
+                            events: events,
+                            dEvent: "block;",
+                            dAll: 'block',
+                            conf: 'none',
+                            sName: '',
+                            path: req.originalUrl
+                        });
+                    }
+                    return;
                 }
-                else {
-                    res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs,
-                        noJob:'You must have a Job in Account Settings to create an event.', sun:dispList[0],
-                        mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        sName:'', path: req.originalUrl});
+
+                /* Get and Check the New Event Name */
+                let eName = req.body["eName"];
+                if (eName.length === 0) {
+                    nameErr = 'Event must be named.';
                 }
-                return;
-            }
 
-            /* Get and Check the New Event Name */
-            let eName = req.body["eName"];
-            if(eName.length === 0){
-                nameErr = 'Event must be named.';
-            }
+                /* Get the New Event Day */
+                let eDay = req.body["eDay"];
+                eDay = parseInt(eDay);
 
-            /* Get the New Event Day */
-            let eDay = req.body["eDay"];
-            eDay = parseInt(eDay);
+                /* Get the New Event Start Time */
+                let eStart = req.body["eStart"];
+                eStart = parseFloat(eStart.replace(",", "."));
 
-            /* Get the New Event Start Time */
-            let eStart = req.body["eStart"];
-            eStart = parseFloat(eStart.replace(",","."));
-
-            /* Get and Check the New Event End Time */
-            let eEnd = req.body["eEnd"];
-            eEnd = parseFloat(eEnd.replace(",","."));
-            if(eEnd <= eStart){
-                endErr = 'Event end time must be after the start time.';
-            }
-
-            if(nameErr !== '' || endErr !== '') {
-                if(query.length === 0) {
-                    res.render('WeeklyCalendar', {name:nameErr,end:endErr,
-                        jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'none',
-                        sName:eName, path: req.originalUrl});
+                /* Get and Check the New Event End Time */
+                let eEnd = req.body["eEnd"];
+                eEnd = parseFloat(eEnd.replace(",", "."));
+                if (eEnd <= eStart) {
+                    endErr = 'Event end time must be after the start time.';
                 }
-                else {
-                    res.render('WeeklyCalendar', {name:nameErr,end:endErr,
-                        jobs:jobs, noJob:'', sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                        fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                        sName:eName, path: req.originalUrl});
+
+                if (nameErr !== '' || endErr !== '') {
+                    if (query.length === 0) {
+                        res.render('WeeklyCalendar', {
+                            name: nameErr,
+                            end: endErr,
+                            jobs: jobs,
+                            noJob: '',
+                            sun: dispList[0],
+                            mon: dispList[1],
+                            tue: dispList[2],
+                            wed: dispList[3],
+                            thu: dispList[4],
+                            fri: dispList[5],
+                            sat: dispList[6],
+                            events: events,
+                            dEvent: "none;",
+                            dAll: 'none',
+                            conf: 'none',
+                            sName: eName,
+                            path: req.originalUrl
+                        });
+                    } else {
+                        res.render('WeeklyCalendar', {
+                            name: nameErr,
+                            end: endErr,
+                            jobs: jobs,
+                            noJob: '',
+                            sun: dispList[0],
+                            mon: dispList[1],
+                            tue: dispList[2],
+                            wed: dispList[3],
+                            thu: dispList[4],
+                            fri: dispList[5],
+                            sat: dispList[6],
+                            events: events,
+                            dEvent: "block;",
+                            dAll: 'block',
+                            conf: 'none',
+                            sName: eName,
+                            path: req.originalUrl
+                        });
+                    }
+                    return;
                 }
-                return;
-            }
 
-            await eventsModel.create({
-                userID: uid, eventName: eName, eventDay: eDay,
-                eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
-            });
+                await eventsModel.create({
+                    userID: uid, eventName: eName, eventDay: eDay,
+                    eventStartTime: eStart, eventEndTime: eEnd, eventJob: selectedJob
+                });
 
-            let selectedJobQuery = await jobsModel.findAll ({where: {jobID: selectedJob, userID: uid}, raw : true});
-            let jobType = selectedJobQuery[0].jobType;
-            if(jobType) {
-                console.log('*** Added Salary Event - No Change to Hourly Income ***');
-            }
-            else {
-                let hourlyPay = selectedJobQuery[0].jobPay;
-                let jobHours = eEnd - eStart;
-                let eventPay = jobHours * hourlyPay;
-                let prevIncome = accountQuery[0].hourlyIncome;
-                let newIncome = prevIncome + eventPay;
+                let selectedJobQuery = await jobsModel.findAll({where: {jobID: selectedJob, userID: uid}, raw: true});
+                let jobType = selectedJobQuery[0].jobType;
+                if (jobType) {
+                    console.log('*** Added Salary Event - No Change to Hourly Income ***');
+                } else {
+                    let hourlyPay = selectedJobQuery[0].jobPay;
+                    let jobHours = eEnd - eStart;
+                    let eventPay = jobHours * hourlyPay;
+                    let prevIncome = accountQuery[0].hourlyIncome;
+                    let newIncome = prevIncome + eventPay;
+                    await accountModel.update(
+                        {hourlyIncome: newIncome},
+                        {where: {id: uid}}
+                    );
+                    console.log('*** Added ' + eventPay.toString() + ' to Hourly Income ***')
+                }
+                console.log("***New Event " + eName + " Created***");
+                res.redirect("/Weekly-Calendar");
+                break;
+
+            case 'deleteEvent':
+                let selectedID = req.body["eventSelector"]
+                let selectedEvent = await eventsModel.findAll({where: {eventID: selectedID, userID: uid}, raw: true});
+                let jobID = selectedEvent[0].eventJob;
+                let selectedJobs = await jobsModel.findAll({where: {jobID: jobID, userID: uid}, raw: true});
+                let selectedType = selectedJobs[0].jobType;
+                if (selectedType) {
+                    console.log('*** Deleted Salary Event - No Change to Hourly Income ***');
+                } else {
+                    let hourlyPay = selectedJobs[0].jobPay;
+                    let jobHours = selectedEvent[0].eventEndTime - selectedEvent[0].eventStartTime;
+                    let eventPay = jobHours * hourlyPay;
+                    let prevIncome = accountQuery[0].hourlyIncome;
+                    let newIncome = prevIncome - eventPay;
+                    await accountModel.update(
+                        {hourlyIncome: newIncome},
+                        {where: {id: uid}}
+                    );
+                    console.log('*** Deleted ' + eventPay.toString() + ' from Hourly Income ***')
+                }
+                await eventsModel.destroy({where: {eventID: selectedID, userID: uid}});
+                console.log("***Event " + selectedEvent[0].eventName + " Deleted***");
+                res.redirect("/Weekly-Calendar");
+                break;
+
+            case 'deleteAll':
+                res.render('WeeklyCalendar', {
+                    name: '', end: '', jobs: jobs, noJob: '',
+                    sun: dispList[0], mon: dispList[1], tue: dispList[2], wed: dispList[3], thu: dispList[4],
+                    fri: dispList[5], sat: dispList[6], events: events, dEvent: "none;", dAll: 'none', conf: 'block',
+                    sName: '', path: req.originalUrl
+                });
+                break;
+
+            case 'confirmDeleteAll':
+                console.log('*** Confirm Delete All ***');
+                for (let i = 0; i < query.length; i++) {
+                    let eID = query[i].eventID;
+                    console.log('*** Deleted Event ' + eID.toString() + ' ***');
+                    await eventsModel.destroy({where: {userID: uid, eventID: eID}});
+                }
                 await accountModel.update(
-                    {hourlyIncome: newIncome},
-                    {where:{id: uid}}
+                    {hourlyIncome: 0.0},
+                    {where: {id: uid}}
                 );
-                console.log('*** Added ' + eventPay.toString() + ' to Hourly Income ***')
-            }
-            console.log("***New Event " + eName + " Created***");
-            res.redirect("/Weekly-Calendar");
-            break;
-
-        case 'deleteEvent':
-            let selectedID = req.body["eventSelector"]
-            let selectedEvent = await eventsModel.findAll ({where: {eventID: selectedID, userID: uid}, raw : true});
-            let jobID = selectedEvent[0].eventJob;
-            let selectedJobs = await jobsModel.findAll ({where: {jobID: jobID, userID: uid}, raw : true});
-            let selectedType = selectedJobs[0].jobType;
-            if(selectedType) {
-                console.log('*** Deleted Salary Event - No Change to Hourly Income ***');
-            }
-            else {
-                let hourlyPay = selectedJobs[0].jobPay;
-                let jobHours = selectedEvent[0].eventEndTime - selectedEvent[0].eventStartTime;
-                let eventPay = jobHours * hourlyPay;
-                let prevIncome = accountQuery[0].hourlyIncome;
-                let newIncome = prevIncome - eventPay;
-                await accountModel.update(
-                    {hourlyIncome: newIncome},
-                    {where:{id: uid}}
-                );
-                console.log('*** Deleted ' + eventPay.toString() + ' from Hourly Income ***')
-            }
-            await eventsModel.destroy({where: {eventID:selectedID,userID:uid}});
-            console.log("***Event "+ selectedEvent[0].eventName +" Deleted***" );
-            res.redirect("/Weekly-Calendar");
-            break;
-
-        case 'deleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
-                sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                fri:dispList[5], sat:dispList[6], events:events, dEvent:"none;", dAll:'none', conf:'block',
-                sName:'', path: req.originalUrl});
-            break;
-
-        case 'confirmDeleteAll':
-            console.log('*** Confirm Delete All ***');
-            for(let i=0; i < query.length; i++) {
-                let eID = query[i].eventID;
-                console.log('*** Deleted Event ' + eID.toString() + ' ***');
-                await eventsModel.destroy({where: {userID: uid, eventID: eID}});
-            }
-            await accountModel.update(
-                {hourlyIncome: 0.0},
-                {where:{id: uid}}
-            );
-            console.log('*** All user events deleted ***')
-            res.redirect("/Weekly-Calendar");
-            break;
-        case 'cancelDeleteAll':
-            res.render('WeeklyCalendar', {name:'',end:'', jobs:jobs, noJob:'',
-                sun:dispList[0], mon:dispList[1], tue:dispList[2], wed:dispList[3], thu:dispList[4],
-                fri:dispList[5], sat:dispList[6], events:events, dEvent:"block;", dAll:'block', conf:'none',
-                sName:'',path: req.originalUrl});
-            break;
-    }
-    }else{
+                console.log('*** All user events deleted ***')
+                res.redirect("/Weekly-Calendar");
+                break;
+            case 'cancelDeleteAll':
+                res.render('WeeklyCalendar', {
+                    name: '', end: '', jobs: jobs, noJob: '',
+                    sun: dispList[0], mon: dispList[1], tue: dispList[2], wed: dispList[3], thu: dispList[4],
+                    fri: dispList[5], sat: dispList[6], events: events, dEvent: "block;", dAll: 'block', conf: 'none',
+                    sName: '', path: req.originalUrl
+                });
+                break;
+        }
+    } else {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to log in
     }
 });
@@ -225,7 +314,7 @@ router.post('*', async function(req, res) {
  */
 function getJobOptions(jobsQuery) {
     let jobs = "";
-    for(let i=0;i<jobsQuery.length;i++) {
+    for (let i = 0; i < jobsQuery.length; i++) {
         jobs += "<option value='" + jobsQuery[i].jobID + "'>" + jobsQuery[i].jobName + "</option>";
     }
     return jobs
@@ -238,8 +327,8 @@ function getJobOptions(jobsQuery) {
  */
 function getEventsOptions(eventsList) {
     let events = "";
-    for(let i=0;i<eventsList.length;i++) {
-        for(let j=0;j<eventsList[i].length;j++) {
+    for (let i = 0; i < eventsList.length; i++) {
+        for (let j = 0; j < eventsList[i].length; j++) {
             events += "<option value='" + eventsList[i][j].getEventID() + "'>" + eventsList[i][j].shortEvent() + "</option>";
         }
     }
@@ -253,10 +342,10 @@ function getEventsOptions(eventsList) {
  * @returns {*[][]} - nested list containing a list of events for each day
  */
 function getEventsList(query, jobQuery) {
-    let eventsList = [[],[],[],[],[],[],[]];
-    for(let i=0; i < query.length; i++) {
+    let eventsList = [[], [], [], [], [], [], []];
+    for (let i = 0; i < query.length; i++) {
         let job = null;
-        for(let j = 0; j < jobQuery.length; j++) {
+        for (let j = 0; j < jobQuery.length; j++) {
             if (query[i].eventJob === jobQuery[j].jobID) {
                 job = jobQuery[j];
             }
@@ -264,7 +353,7 @@ function getEventsList(query, jobQuery) {
         let newEvent = new Event(query[i].eventID, query[i].eventName, query[i].eventDay, query[i].eventStartTime,
             query[i].eventEndTime, job.jobName, job.jobType, job.jobPay);
         eventsList[newEvent.getDay()].push(newEvent);
-        }
+    }
     return eventsList;
 }
 
@@ -274,14 +363,13 @@ function getEventsList(query, jobQuery) {
  * @returns {string[]} - a string list of html code for each day on the calendar
  */
 function getDisplayList(eventsList) {
-    let dispList = ['','','','','','',''];
-    for(let i=0; i<eventsList.length;i++) {
-        if(eventsList[i].length===0) {
+    let dispList = ['', '', '', '', '', '', ''];
+    for (let i = 0; i < eventsList.length; i++) {
+        if (eventsList[i].length === 0) {
             dispList[i] = "<ul><li>No Events On This Day</li></ul>";
-        }
-        else {
+        } else {
             let text = "<ul>"
-            for(let j=0;j<eventsList[i].length;j++) {
+            for (let j = 0; j < eventsList[i].length; j++) {
                 text += "<li>" + eventsList[i][j].printEvent() + "</li>";
             }
             text += "</ul>";
@@ -332,13 +420,17 @@ class Event {
      * Event ID getter method.
      * @returns {int}
      */
-    getEventID() {return this.EventID;}
+    getEventID() {
+        return this.EventID;
+    }
 
     /**
      * Day getter method.
      * @returns {int}
      */
-    getDay() {return this.Day;}
+    getDay() {
+        return this.Day;
+    }
 
     /**
      * Event Start Time getter method.
@@ -347,10 +439,10 @@ class Event {
     getStartTime() {
         let minutes = this.StartTime;
         let min = "";
-        while(minutes > 1) {
+        while (minutes > 1) {
             minutes -= 1;
         }
-        switch(minutes){
+        switch (minutes) {
             case 0.25:
                 min = ":15";
                 break;
@@ -364,17 +456,15 @@ class Event {
                 min = ":00";
                 break;
         }
-        if(this.StartTime - 12 > 0.76) {
+        if (this.StartTime - 12 > 0.76) {
             let time = Math.floor(this.StartTime - 12);
             time = time.toString() + min + "pm";
             return time
-        }
-        else if (this.StartTime - 12 >= 0) {
+        } else if (this.StartTime - 12 >= 0) {
             let time = Math.floor(this.StartTime);
             time = time.toString() + min + "pm";
             return time
-        }
-        else {
+        } else {
             let time = Math.floor(this.StartTime);
             return time.toString() + min + "am";
         }
@@ -387,10 +477,10 @@ class Event {
     getEndTime() {
         let minutes = this.EndTime;
         let min = "";
-        while(minutes > 1) {
+        while (minutes > 1) {
             minutes -= 1;
         }
-        switch(minutes){
+        switch (minutes) {
             case 0.25:
                 min = ":15";
                 break;
@@ -404,40 +494,40 @@ class Event {
                 min = ":00";
                 break;
         }
-        if(this.EndTime - 12 > 0.76) {
+        if (this.EndTime - 12 > 0.76) {
             let time = Math.floor(this.EndTime - 12);
             time = time.toString() + min + "pm";
             return time
-        }
-        else if (this.EndTime - 12 >= 0) {
+        } else if (this.EndTime - 12 >= 0) {
             let time = Math.floor(this.EndTime);
             time = time.toString() + min + "pm";
             return time
-        }
-        else {
+        } else {
             let time = Math.floor(this.EndTime);
             return time.toString() + min + "am";
         }
     }
 
-    getJobType() {return this.JobType;}
+    getJobType() {
+        return this.JobType;
+    }
 
-    getWage() {return this.Wage;}
+    getWage() {
+        return this.Wage;
+    }
 
     calculateEventPay() {
         if (this.JobType) {
             return 0.0;
-        }
-        else {
+        } else {
             return this.calculateNumHours() * this.Wage;
         }
     }
 
     calculateNumHours() {
-        if(this.JobType) {
+        if (this.JobType) {
             return 0;
-        }
-        else {
+        } else {
             return this.getEndTime() - this.getStartTime();
         }
     }

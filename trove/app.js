@@ -18,19 +18,21 @@ const goalsRouter = require('./routes/GoalsRoute.js');
 const calendarRouter = require('./routes/WeeklyCalendar.js');
 const crypto = require("crypto");
 
+
 //domain model classes
-let accountModel = require('./db/Objects/account.js').Account;
-let eventsModel = require('./db/Objects/events.js').Events;
-let DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
-let jobsModel = require('./db/Objects/jobs.js').Jobs;
-let expendModel = require('./db/Objects/expenditures.js').Expenditures;
+const accountModel = require('./db/Objects/account.js').Account;
+const eventsModel = require('./db/Objects/events.js').Events;
+const DbGoalsModel = require('./db/Objects/dbGoals').DbGoals;
+const jobsModel = require('./db/Objects/jobs.js').Jobs;
+const expendModel = require('./db/Objects/expenditures.js').Expenditures;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP
 
-var app = express();    //include express
-//app.use(helmet());
+
+const app = express();    //include express
+
 sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
 accountModel.createModel(sequelize);                            //TODO : Create database models here
@@ -42,7 +44,6 @@ expendModel.createModel(sequelize);
 
 testUser = null;
 
-
 async function createTables() {
     await sequelize.sync();   //create the tables of all the objects initialized
     console.log("created DB tables");
@@ -50,6 +51,7 @@ async function createTables() {
     let testUser = await accountModel.create({
         firstName: "John", lastName: "Doe",
         email: "johndoe@gmail.com", password: testPassword, accComplete: false, hourlyIncome: 57.00
+
     },);//create test user
     let testEvent1 = await eventsModel.create({
         eventID: 0, userID: testUser.id, eventName: "Work Shift",
@@ -78,15 +80,16 @@ async function createTables() {
     //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
     //console.log(JSON.stringify(users,null,2));
 }
+
 createTables();   //run the above function (asynchronously)
 
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
-  secret: "535510nS3cr3tK3y$254ji|{}fi42",
-  saveUninitialized:true,
-  cookie: {maxAge: oneDay },
-  resave:false
+    secret: "535510nS3cr3tK3y$254ji|{}fi42",
+    saveUninitialized: true,
+    cookie: {maxAge: oneDay},
+    resave: false
 }));
 
 // view engine setup
@@ -95,7 +98,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -108,26 +111,26 @@ app.use('/accSettings', accSetRouter);                      //TODO : tell app to
 app.use('/Trove_Login', LoginRouter);
 app.use('/Sign_Up', SignUpRouter);
 app.use('/Dashboard/', dashRouter);
-app.use('/TroveAccounting/',goalsRouter);
+app.use('/TroveAccounting/', goalsRouter);
 app.use('/Weekly-Calendar', calendarRouter);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //HANDLE ERRORS
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  let message = err.message;
-  let error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    let message = err.message;
+    let error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error', {message: message, error: error});
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error', {message: message, error: error});
 });
 
 module.exports = app;

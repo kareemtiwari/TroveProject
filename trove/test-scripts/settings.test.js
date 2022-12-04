@@ -1,7 +1,10 @@
 const request = require("supertest");
 const baseURL = "http://localhost:3000";
 
-describe("Test Login", () => {                                                                                 //TODO Im testing login to get the session cookie
+let cookie;
+
+
+describe("Test Login", () => {
     test("Make sure that logging in with unfinished account goes to accSettings", async () => {
         const form ={
             "UsName":"johndoe@gmail.com",
@@ -9,13 +12,14 @@ describe("Test Login", () => {                                                  
         };
         const response = await request(baseURL).post("/Trove_Login")
             .send(form);
-        cookie = response.headers['set-cookie'];    //get the session cookie to use in the rest of my tests
-        expect(response["text"]).toContain("Found.");   //essentially make sure it didn't crash
+        cookie = response.headers['set-cookie'];
+        expect(response["text"]).toContain("Found.");
     });
 });
 
 describe("Test Correct updating acc", () => {
     test("Should redirect to dashboard", async () => {
+        let fuzz = makeid(50);
         const form ={
             "fname":"john",
             "lname":"doe",
@@ -26,9 +30,9 @@ describe("Test Correct updating acc", () => {
             "expSize":0,
             "formID":"ACC"
         };
-        const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)   //test post route with form data and session cookie
+        const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)
             .send(form);
-        expect(response["text"]).toContain("Found.");   //look in the page html for the word "Found." - this happens in redirects [Found. Redirecting to /Dashboard]
+        expect(response["text"]).toContain("Found.");
     });
 });
 
@@ -88,3 +92,16 @@ describe("Send an empty Date", () => {
         expect(response["text"]).toContain("Date is Empty");
     });
 });
+
+//https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript [csharptest.net]
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+

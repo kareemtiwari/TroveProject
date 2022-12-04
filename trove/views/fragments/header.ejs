@@ -27,26 +27,26 @@
         color: black;
     }
 
-    .tableView table{
+    .tableView table {
         border-radius: 25px;
         color: black;
         background: #E9E3B4;
         border-collapse: collapse;
     }
 
-    .tableView th{
+    .tableView th {
         border: 1px solid Gray;
         background: #AABD8C;
         border-collapse: collapse;
     }
 
-    .tableView td{
+    .tableView td {
         border: 1px solid Gray;
         background: #E9E3B4;
         border-collapse: collapse;
     }
 
-    .tableView tr{
+    .tableView tr {
         border: 1px solid Gray;
         border-radius: 25px;
         background: #E9E3B4;
@@ -54,7 +54,7 @@
     }
 
 
-    .tableView tr.selrow{
+    .tableView tr.selrow {
         border: 3px solid #F39B6D;
         border-collapse: collapse;
     }
@@ -72,7 +72,8 @@
     let path = url.pathname;
     console.log(path);
     let dbb;
-    switch(path){
+
+    switch (path) {
         case '/':
             dbb = document.getElementById("dash");
             console.log('dash');
