@@ -2,14 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Goals</title>
+    <title>Trove</title>
 </head>
+<style>
+    body {
+        background-color: #3E6990;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    select {
+        background-color: #AABD8C;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 10px;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 25%;
+        height: 15px;
+        background: #E9E3B4;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        margin-top: 10px;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        background: #E9E3B4;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        background: #33455A;
+        cursor: pointer;
+    }
+</style>
 <body>
 <%- include('fragments/header'); %>
 <h1><b>Trove Goals</b></h1>
 <h3>Avast, welcome to your Trove Goals page! : </h3>
 <h3>In order to reap the reward for your Trove Goals make sure to read the FAQ page on the dashboard for tips! </h3>
-<form  method="post" name="myForm" id="myForm">
+<form method="post" name="myForm" id="myForm">
     <fieldset>
         <p><b>Create your Goal HERE! </b></p>
         <button type="submit" formaction="/TroveAccounting/add">Add Goal</button>
@@ -19,22 +76,22 @@
             <br>
             <label for="goalID">Goal Number:</label>
             <select id="goalID" name="goalID">
-                <option id="option1" value="1" >Goal1</option>
-                <option id="option2"value="2" >Goal2</option>
-                <option id="option3"value="3" >Goal3</option>
+                <option id="option1" value="1">Goal1</option>
+                <option id="option2" value="2">Goal2</option>
+                <option id="option3" value="3">Goal3</option>
             </select>
             </br>
             <label for="goalAmount">Enter Goal Amount:</label>
             <input type="text" id="goalAmount" name="goalAmount">
             </br>
             <label for="goalProgress">Enter Goal Progress:</label>
-            <input type="text" id="goalProgress" name="goalProgress" >
+            <input type="text" id="goalProgress" name="goalProgress">
             </br>
             <label for="goalName">Enter Goal Name:</label>
             <input type="text" id="goalName" name="goalName">
             </br>
             <label for="goalSlider">Enter Priority:</label>
-            <input type="range" id="goalSlider" name="goalSlider"
+            <input type="range" id="goalSlider" name="goalSlider" class="slider"
                    min="10" max="100" value="100" step="10">
         </div>
         </br>
@@ -44,6 +101,7 @@
         </div>
     </fieldset>
 </form>
+
 <%if(gd[0]["has"]){%>
 
     <div id="goal1Block">
@@ -104,11 +162,13 @@
         <input type="hidden" value="<%=gd[2]["goalProgress"]%>" name="tempProgress" >
         <input type="hidden" value="<%=gd[2]["goalSlider"]%>" name="tempSlider" >
         <input type="hidden" value="<%=gd[2]["goalLimit"]%>" name="tempLimit" >
+
     </form>
 </div>
-<%}%>
+<% } %>
 </body>
 <script>
 
     </script>
+
 </html>

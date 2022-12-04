@@ -62,44 +62,46 @@ router.post('/add', async function(req, res, next) {
     if(isNaN(gAmount) || isNaN(gProgress) || gAmount == '' || gProgress == ''){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value in progress or amount',display: gd});
         console.log("NaN catch");
-        return;
+
         }
     // checking if the starting amount is less than zero
     else if (gAmount < 0){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a valid non negative integer value',display: gd});
         console.log("null amount catch");
-        return;
+
     }
     // checking if the starting amount is less than zero
     else if(nGAmount < 0){
         res.render('Goals', {completion:completionField,remessage: 'Error please enter an amount greater than negative one in the amount field',display: gd});
         console.log("null amount 2 catch");
-        return;
+
     }
     //checking if the progress is less than 0
     else if(nGProgress < 0){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log(nGProgress)
         console.log("null progress catch");
-        return;
+
     }
     //checking if the progress is less than 0
     else if(nGProgress < 0){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value greater than negative one in the progress field',display: gd});
         console.log("null progress 2 catch");
-        return;
+
     }
     // checking if the name field is empty
     else if (gName == ""){
         res.render('Goals', {completion:completionField,remessage: 'Error: Please enter a value in the name field!',display: gd});
         console.log("null name catch");
-        return;
+
     }
     // checking the slidertotal doesn't overexceed the slider value currently
     else if (gSlider > totalSlider){
+
         console.log("Your priority is full you cannot make anymore goals");
         res.render('Goals', {completion:completionField,remessage: 'Error: Slider Value is set to be greater than is allowed, please enter a value lower than '+ totalSlider,display: gd});
         return;
+
         }
     //checking if the progress is set higher than amount, which if true results in a error
     else if (nGProgress > nGAmount){
@@ -362,6 +364,7 @@ router.post('/deleteFunds', async function(req, res, next) {
         if (isNaN(gProgress) || nGProgress == null) {
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
+
             return;
             ///progress cant be less than zero
         } else if (nGProgress < 0){

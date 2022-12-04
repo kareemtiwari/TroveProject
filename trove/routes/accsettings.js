@@ -7,6 +7,8 @@ let jobModel = require('../db/Objects/jobs.js').Jobs;   //NEEDED TO USE DATABASE
 
 let expendModel = require('../db/Objects/expenditures.js').Expenditures;
 
+let eventsModel = require('../db/Objects/events.js').Events;
+
 
 
 /**
@@ -174,7 +176,7 @@ async function doACC(req, res){
       }
       session.accComplete = true;
       res.redirect('/Dashboard');
-      return;
+
     }else{
       let jd = await qJobs(uid);
       let expendQuery = await expendModel.findAll({
@@ -189,7 +191,7 @@ async function doACC(req, res){
         sdata[i] = [curr.name,curr.type,curr.category,curr.value];
       }
       res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata,jd:jd,expend:sdata});
-      return;
+
     }
 }
 
@@ -249,7 +251,7 @@ if(!error){
   }
   res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],jd:jd,expend:sdata}); //TODO : model doesn't have all
 
-  return;
+
   }else{
   //error
 
@@ -286,6 +288,11 @@ async function doDEL(req, res){
   let jobQuery = await jobModel.findAll({raw: true});
   console.log(jobQuery);
   console.log("***Job***" + jID + " Deleted");
+  let eventsQuery = await eventsModel.findAll({where: {userID: uid, eventJob: jID}, raw : true});
+  for(let i = 0; i < eventsQuery.length; i++) {
+    await eventsModel.destroy({where: {userID: uid, eventID: eventsQuery[i].eventID}});
+    console.log('*** Deleted ' + (i+1).toString() + ' Event(s)');
+  }
   let user = await qUser(uid);  //the first user in query - there should really only ever be 1
   let jd = await qJobs(uid);
   let workingDob = user.dob;
