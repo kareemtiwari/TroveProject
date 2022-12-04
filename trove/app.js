@@ -16,6 +16,8 @@ const SignUpRouter = require('./routes/Sign_Up.js');
 const dashRouter = require('./routes/dashboard.js');
 const goalsRouter = require('./routes/GoalsRoute.js');
 const calendarRouter = require('./routes/WeeklyCalendar.js');
+const crypto = require("crypto");
+
 
 //domain model classes
 const accountModel = require('./db/Objects/account.js').Account;
@@ -28,7 +30,9 @@ const expendModel = require('./db/Objects/expenditures.js').Expenditures;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP
 
+
 const app = express();    //include express
+
 sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
 accountModel.createModel(sequelize);                            //TODO : Create database models here
@@ -43,10 +47,11 @@ testUser = null;
 async function createTables() {
     await sequelize.sync();   //create the tables of all the objects initialized
     console.log("created DB tables");
-
+    let testPassword = crypto.createHash('md5').update("test").digest('hex');
     let testUser = await accountModel.create({
         firstName: "John", lastName: "Doe",
-        email: "johndoe@gmail.com", password: "lolcleartext", accComplete: false, hourlyIncome: 57.00
+        email: "johndoe@gmail.com", password: testPassword, accComplete: false, hourlyIncome: 57.00
+
     },);//create test user
     let testEvent1 = await eventsModel.create({
         eventID: 0, userID: testUser.id, eventName: "Work Shift",

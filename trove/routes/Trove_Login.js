@@ -1,4 +1,7 @@
 const express = require('express');
+
+const crypto = require("crypto");
+
 const router = express.Router();
 const accountModel = require('../db/Objects/account.js').Account;
 
@@ -23,7 +26,9 @@ router.post('*', async function (req, res, next) {
     });
 
     let getUsers = JSON.parse(JSON.stringify(name, null, 2))[0];
-    if (getUsers["password"] === Passval) {
+    let hashedTry = crypto.createHash('md5').update(Passval).digest('hex');
+    if (getUsers["password"] === hashedTry) {
+
         session.userID = getUsers["id"];
         session.accComplete = getUsers["accComplete"];
         //res.render('Trove_Login', {nmessage: "Welcome " + getUsers["firstName"]})

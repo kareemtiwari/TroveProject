@@ -1,10 +1,13 @@
-var express = require('express');
-var router = express.Router();
-let accountModel = require('../db/Objects/account.js').Account;
+const express = require('express');
+const router = express.Router();
+const crypto = require('crypto');
+const accountModel = require('../db/Objects/account.js').Account;
+
 /* GET Sign-Up page. */
 router.get('*', function(req, res, next) {
     res.render('Sign-Up', {EmptyErr:"",FirstErr:"",LastErr:"",EmailErr:"",NewPassErr:"",CheckPassErr:"",FName:"",LName:"",ElectMail:"",NewPassword:"",CheckPassword:""});
 });
+
 router.post('*', async function(req, res, next) {
     let session = req.session
 
@@ -63,11 +66,12 @@ router.post('*', async function(req, res, next) {
     if(error){
         res.render('Sign-Up', {EmptyErr:e_empty,FirstErr:e_first,LastErr:e_last,EmailErr:e_email,NewPassErr:e_npass,CheckPassErr:e_checkpass,FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
     }else{
+        let hashPass = crypto.createHash('md5').update(NewPassVal).digest('hex');
         let newuser = await accountModel.create({
             firstName: FirstVal,
             lastName: LastVal,
             email: EmailVal,
-            password: NewPassVal,
+            password: hashPass,
             accComplete: false
         });
         session.userID = newuser.id;
