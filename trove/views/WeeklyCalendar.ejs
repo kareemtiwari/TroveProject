@@ -51,6 +51,7 @@
         <td><%- fri %></td>
         <td><%- sat %></td>
     </tr>
+
 </table><br>
 <div id="del"
 <%if(dEvent=="none;"){%>
@@ -83,13 +84,14 @@
             <button style="background-color: #F39B6D;" type="submit">Confirm Deletion</button>
         </form>
     </div>
-</div><br>
+</div>
+<br>
 
 <form action="/Weekly-Calendar" method="post" id="addEvent">
     <fieldset>
         <legend>Create an Event</legend>
         <label for="eName">Event Name:</label>
-        <input id="eName" name="eName" type="text" value="<%=sName%>"><br>
+        <input id="eName" name="eName" type="text" value="<%= sName %>"><br>
         <p style="color:#F39B6D;"> <%= name %></p>
 
         <label for="eDay">Day:</label>

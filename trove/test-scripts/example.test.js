@@ -1,16 +1,26 @@
-const request = require("supertest");
-const fs = require("fs");       //TODO: Import supertest - jest does not have to be included
-const baseURL = "https://localhost:3000";    //TODO: copy this line exactly it is the server's URL
-const options = {
-    key: fs.readFileSync('key.pem','utf8'),
-    cert: fs.readFileSync('cert.pem','utf8')
-};
+const request = require("supertest"); //TODO: Import supertest - jest does not have to be included
+const baseURL = "http://localhost:3000";    //TODO: copy this line exactly it is the server's URL
 
 //TODO : The format for writing tests
 describe("Test the root path", () => {  //TODO : The string just says what your test does
     test("It should response the GET method", async () => {     //TODO : The string says the expected behavior of the system given input
         const response = await request(baseURL).get("/");   //TODO : Use supertest to interact with the server
         expect(response.statusCode).toBe(302);  //TODO : check if it did what you expected
+    });
+});
+
+let cookie;
+
+describe("Test Login", () => {  //TODO test login to get a session cookie to use in other tests
+    test("Make sure that logging in with unfinished account goes to accSettings", async () => {
+        const form ={
+            "UsName":"johndoe@gmail.com",
+            "Psswd":"test"
+        };
+        const response = await request(baseURL).post("/Trove_Login")
+            .send(form);
+        cookie = response.headers['set-cookie'];
+        expect(response["text"]).toContain("Found. Redirecting to /");
     });
 });
 
@@ -34,9 +44,9 @@ describe("Test the login correct info", () => {
           "UsName":"johndoe@gmail.com",
           "Psswd":"lolcleartext"
         };
-        const response = await request(baseURL).post("/Trove_Login").trustLocalhost(true)
+        const response = await request(baseURL).post("/Trove_Login")
             .send(form);
-            expect(response.statusCode).toBe(302);
+            expect(response.statusCode).toBe(200);
     });
 });
 

@@ -1,4 +1,5 @@
-var {Model, DataTypes} = require('sequelize');
+const {Model, DataTypes} = require('sequelize');
+
 class Expenditures extends Model {
     otherInfo;  //example additional non-database mirrored attribute
     //variables defined in create model are automatically defined and available
@@ -8,7 +9,7 @@ class Expenditures extends Model {
      * createModel - called once to create an instance / table in the sequelize db
      * @param sequelize - the sequelize instance
      */
-    static createModel(sequelize){
+    static createModel(sequelize) {
         Expenditures.init({
             // Model attributes are defined here
             value: {
