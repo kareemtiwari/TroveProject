@@ -31,7 +31,7 @@ describe("Test Sign-Up: leave the First name val form field empty", () => {
 });
 
 describe("Test Sign-Up: leave the Last name val form field empty", () => {
-    test("Should dsiplay an error message to the user.", async () => {
+    test("Should display an error message to the user.", async () => {
         const form = {
             "Fname": "Handy",
             "Lname": "",
