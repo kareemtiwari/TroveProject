@@ -259,7 +259,7 @@ router.post('/addFunds', async function(req, res, next) {
         console.log(goal);
 
         console.log(query);
-
+        // checking if the funds are null
         nGProgress = parseFloat(gProgress);
         if(isNaN(gProgress) || nGProgress == null){
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
@@ -267,12 +267,13 @@ router.post('/addFunds', async function(req, res, next) {
             return;
         }
         else {
-
+            // if the value being input is above the set limit throw error
             if (gProgress > gLimit) {
                 res.render('Goals', {completion:completionField,remessage: "Error: value entered is greater than Trove Limit!",display: gd});
                 console.log("Goal number " + gID + " ENTER A VALUE LOWER THAN " + gLimit);
                 return;
             }
+            /// if the progress is less than zero then throw error
             else if (gProgress < 0){
                 res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the add funds",display: gd});
                 console.log("ENTER A VALUE HIGHER THAN -1");
@@ -297,6 +298,7 @@ router.post('/addFunds', async function(req, res, next) {
                     console.log("Goal number " + gID + " COMPLETED!");
 
                 } else {
+                    // add funds to the goal
                     newGoal = await goalModel.update({
                         userID: uid,
                         goalID: gID,
@@ -356,11 +358,12 @@ router.post('/deleteFunds', async function(req, res, next) {
         console.log(query);
         let nGoalProgress = parseFloat(goalProgress);
         let nGProgress = parseFloat(gProgress);
-
+// checks to see if the progress is not null
         if (isNaN(gProgress) || nGProgress == null) {
             res.render('Goals', {completion:completionField,remessage: '',display: gd});
             console.log("NaN catch");
             return;
+            ///progress cant be less than zero
         } else if (nGProgress < 0){
             res.render('Goals', {completion:completionField,remessage: "Error: Enter a value higher than -1 to the delete funds",display: gd});
             console.log("ENTER A VALUE HIGHER THAN -1");
@@ -375,6 +378,7 @@ router.post('/deleteFunds', async function(req, res, next) {
                 return;
 
             } else {
+                // if the progress doesnt go below zero then subtract the given values
                 newGoal= await goalModel.update({
                     userID: uid,
                     goalID: gID,
