@@ -45,7 +45,7 @@
             </a>
         </td>
         <td>
-            <a href="/accSettings">Expenditures will go here</a>
+            <a href="/accSettings"></a>
                 <table id="expTable">
                     <tr>
                         <th>Name</th>
@@ -53,12 +53,12 @@
                         <th>Category</th>
                         <th>Amount</th>
                     </tr>
-                    <% for(var i =0;i<sdata.length;i++){%>
+                    <%{%>
                     <tr>
-                        <td><%=sdata[i][0];%></td>
-                        <td><%=sdata[i][1];%></td>
-                        <td><%=sdata[i][2];%></td>
-                        <td><%=sdata[i][3];%></td>
+                        <td><%=expend[expend.length - 1][0];%></td>
+                        <td><%=expend[expend.length - 1][1];%></td>
+                        <td><%=expend[expend.length - 1][2];%></td>
+                        <td><%=expend[expend.length - 1][3];%></td>
                     </tr>
                     <%}%>
                 </table>
