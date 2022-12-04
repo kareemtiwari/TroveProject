@@ -3,6 +3,7 @@ const {Account: accountModel} = require("../db/Objects/account");
 const {Events: eventsModel} = require("../db/Objects/events");
 const {Jobs: jobsModel} = require("../db/Objects/jobs");
 const {DbGoals: goalsModel} = require("../db/Objects/dbGoals");
+const {Expenditures: expendModel} = require("../db/Objects/expenditures");
 const router = express.Router();
 
 /* GET Login page. */
@@ -71,12 +72,25 @@ router.get('/', async function (req, res, next) {
                 }
         }
 
+        let expendQuery = await expendModel.findAll({
+            where: {
+                userID : uid
+            },
+            raw : true
+        });
+        let sdata = [];
+        for(let i=0;i<expendQuery.length;i++){
+            let curr = expendQuery[i];
+            sdata[i] = [curr.name,curr.type,curr.category,curr.value];
+        }
+
         res.render('Dashboard', {
             day: day,
             events: dispList[DoW],
             goals: goals,
             userid: user.firstName,
-            path: req.originalUrl
+            path: req.originalUrl,
+            expend: sdata
         });
     } else {
         res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login

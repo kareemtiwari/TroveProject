@@ -102,7 +102,23 @@
             </a>
         </td>
         <td>
-            <a href="/accSettings">Expenditures will go here</a>
+            <a href="/accSettings">Latest Expenditure (Click here to add more):</a>
+            <table id="expTable">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+                <%if(expend.length !== 0){%>
+                    <tr>
+                        <td><%= expend[expend.length - 1][0]; %></td>
+                        <td><%= expend[expend.length - 1][1]; %></td>
+                        <td><%= expend[expend.length - 1][2]; %></td>
+                        <td><%= expend[expend.length - 1][3]; %></td>
+                    </tr>
+                <%}%>
+            </table>
         </td>
     </tr>
 </table>
