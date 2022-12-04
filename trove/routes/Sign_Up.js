@@ -3,11 +3,11 @@ var router = express.Router();
 let accountModel = require('../db/Objects/account.js').Account;
 /* GET Sign-Up page. */
 router.get('*', function(req, res, next) {
-    res.render('Sign-Up', {nmessage:""});
+    res.render('Sign-Up', {EmptyErr:"",FirstErr:"",LastErr:"",EmailErr:"",NewPassErr:"",CheckPassErr:"" });
 });
 router.post('*', async function(req, res, next) {
     session = req.session
-    if(FirstVal !==  "" && LastVal !== ""&& EmailVal !== "" && NewPassVal !== "" && CheckPassVal !== "" ) {
+    if(FirstVal ==  "" && LastVal == ""&& EmailVal == "" && NewPassVal == "" && CheckPassVal == "" ) {
         res.render('Sign-Up', {EmptyErr: 'You have to fill out all forms, Nothing must be left empty', FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
     }
     FirstVal = req.body["Fname"];
@@ -35,7 +35,10 @@ router.post('*', async function(req, res, next) {
     }
     CheckPassVal = req.body["CheckPsswd"];
     if(CheckPassVal !== NewPassVal){
-        res.render('Sign-Up', {CheckPassErr: "The New password value is too short. Needs to be a minimum of 12 characters.", FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+        res.render('Sign-Up', {CheckPassErr: "The Check password value need to match the New password value above", FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
+    }
+    if(CheckPassVal == ""){
+        res.render('Sign-Up', {CheckPassErr: "The Check password value cannot remain empty.Please enter the value that matches the password created above.", FName:FirstVal,LName:LastVal,ElectMail:EmailVal,NewPassword:NewPassVal,CheckPassword:CheckPassVal});
     }
 
 

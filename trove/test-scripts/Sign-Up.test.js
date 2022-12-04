@@ -88,7 +88,23 @@ describe("Test Sign-Up: leave the CheckPsswd val form field empty", () => {
             "CheckPsswd": "",
         };
         const response = await request(baseURL).post('/Sign-Up').send(form);
-        expect.toContain()
+        expect.toContain("The Check password value cannot remain empty.Please enter the value that matches the password created above.")
+
+    });
+
+});
+
+describe("Test Sign-Up: Check if the CheckPsswd val form field matches the New Password form field", () => {
+    test("Should dsiplay an error message to the user.", async () => {
+        const form = {
+            "FName": "Handy",
+            "LName": "Manny",
+            "Email": "WeCanFixIt@gmail.com",
+            "NewPsswd": "CanWeFixitYesWeCan",
+            "CheckPsswd": "NoWeCannotFixThatShit",
+        };
+        const response = await request(baseURL).post('/Sign-Up').send(form);
+        expect.toContain("The Check password value need to match the New password value above")
 
     });
 
