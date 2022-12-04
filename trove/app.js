@@ -30,6 +30,7 @@ let expendModel = require('./db/Objects/expenditures.js').Expenditures;
 //SETUP
 
 var app = express();    //include express
+//app.use(helmet());
 sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
 
 accountModel.createModel(sequelize);                            //TODO : Create database models here

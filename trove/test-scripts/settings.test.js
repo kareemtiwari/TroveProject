@@ -1,9 +1,6 @@
 const request = require("supertest");
 const baseURL = "http://localhost:3000";
 
-
-
-
 describe("Test Login", () => {                                                                                 //TODO Im testing login to get the session cookie
     test("Make sure that logging in with unfinished account goes to accSettings", async () => {
         const form ={
@@ -19,7 +16,6 @@ describe("Test Login", () => {                                                  
 
 describe("Test Correct updating acc", () => {
     test("Should redirect to dashboard", async () => {
-        let fuzz = makeid(50);
         const form ={
             "fname":"john",
             "lname":"doe",

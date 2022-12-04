@@ -71,25 +71,26 @@
     let url = new URL(loc);
     let path = url.pathname;
     console.log(path);
+    let dbb;
     switch(path){
         case '/':
-            var dbb = document.getElementById("dash");
+            dbb = document.getElementById("dash");
             console.log('dash');
             break;
         case '/Dashboard':
-            var dbb = document.getElementById("dash");
+            dbb = document.getElementById("dash");
             console.log('dash');
             break;
         case '/Weekly-Calendar':
-            var dbb = document.getElementById("calendar");
+            dbb = document.getElementById("calendar");
             console.log('calendar');
             break;
         case '/accSettings':
-            var dbb = document.getElementById("accountset");
+            dbb = document.getElementById("accountset");
             console.log('accountset');
             break;
         case '/TroveAccounting':
-            var dbb = document.getElementById("accounting");
+            dbb = document.getElementById("accounting");
             console.log("accounting");
             break;
     }
