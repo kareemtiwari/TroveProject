@@ -62,10 +62,12 @@ router.get('/', async function(req, res, next) {
                                 let amount = goal.goalAmount;
                                 let progress = goal.goalProgress;
                                 let perc = ((progress/amount)*100).toFixed(2);
+                                goals += '<div class="goalline">';
                                 goals += '<label for="goal' + i.toString() + '">' + goal.goalName +
                                     ' Progress: ' + perc.toString() + '% </label>';
                                 goals += '<progress class="bar" id="goal' + i.toString() + '" value="' + progress.toString() +
                                     '" max="' + amount.toString() + '"></progress><br>';
+                                goals += '</div>';
                         }
         }
 
