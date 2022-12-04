@@ -14,11 +14,11 @@ class DbGoals extends Model {
                 allowNull: false
             },
             goalAmount: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: true
             },
             goalProgress: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false
             },
             goalName: {
@@ -27,6 +27,10 @@ class DbGoals extends Model {
             },
             goalSlider: {
                 type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            goalLimit: {
+                type: DataTypes.FLOAT,
                 allowNull: false
             }
 
