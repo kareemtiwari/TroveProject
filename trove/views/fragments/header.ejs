@@ -27,26 +27,26 @@
         color: black;
     }
 
-    .tableView table{
+    .tableView table {
         border-radius: 25px;
         color: black;
         background: #E9E3B4;
         border-collapse: collapse;
     }
 
-    .tableView th{
+    .tableView th {
         border: 1px solid Gray;
         background: #AABD8C;
         border-collapse: collapse;
     }
 
-    .tableView td{
+    .tableView td {
         border: 1px solid Gray;
         background: #E9E3B4;
         border-collapse: collapse;
     }
 
-    .tableView tr{
+    .tableView tr {
         border: 1px solid Gray;
         border-radius: 25px;
         background: #E9E3B4;
@@ -54,7 +54,7 @@
     }
 
 
-    .tableView tr.selrow{
+    .tableView tr.selrow {
         border: 3px solid #F39B6D;
         border-collapse: collapse;
     }
@@ -71,25 +71,26 @@
     let url = new URL(loc);
     let path = url.pathname;
     console.log(path);
-    switch(path){
+    let dbb;
+    switch (path) {
         case '/':
-            var dbb = document.getElementById("dash");
+            dbb = document.getElementById("dash");
             console.log('dash');
             break;
         case '/Dashboard':
-            var dbb = document.getElementById("dash");
+            dbb = document.getElementById("dash");
             console.log('dash');
             break;
         case '/Weekly-Calendar':
-            var dbb = document.getElementById("calendar");
+            dbb = document.getElementById("calendar");
             console.log('calendar');
             break;
         case '/accSettings':
-            var dbb = document.getElementById("accountset");
+            dbb = document.getElementById("accountset");
             console.log('accountset');
             break;
         case '/TroveAccounting':
-            var dbb = document.getElementById("accounting");
+            dbb = document.getElementById("accounting");
             console.log("accounting");
             break;
     }

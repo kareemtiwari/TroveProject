@@ -9,16 +9,16 @@ let mode = "production"; //TODO set to "production" for https, "testing" for tes
 const app = require('../app');
 const debug = require('debug')('trove:server');
 let https;
-if(mode === 'production') {
-  https = require('https'); //literally just adding an s to the requirement [bye bye https]
-}else{
-  https = require('http');
+if (mode === 'production') {
+    https = require('https'); //literally just adding an s to the requirement [bye bye https]
+} else {
+    https = require('http');
 }
 const fs = require('fs');
 
 const options = {
-  key: fs.readFileSync('key.pem','utf8'),
-  cert: fs.readFileSync('cert.pem','utf8')
+    key: fs.readFileSync('key.pem', 'utf8'),
+    cert: fs.readFileSync('cert.pem', 'utf8')
 };
 
 /**
@@ -32,10 +32,10 @@ app.set('port', port);
  * Create HTTP server.
  */
 let server;
-if(mode === 'production') {
-  server = https.createServer(options, app);
-}else{
-  server = https.createServer(app);
+if (mode === 'production') {
+    server = https.createServer(options, app);
+} else {
+    server = https.createServer(app);
 }
 
 const redirect = "will be a server to redirect http to https, will have to be on port 80 or a port routed to 80";
@@ -53,19 +53,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+    let port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -73,27 +73,27 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    let bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -101,10 +101,10 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-console.log('Trove server is now running!');
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+    console.log('Trove server is now running!');
 }

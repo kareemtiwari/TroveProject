@@ -1,10 +1,5 @@
-const request = require("supertest");
-const fs = require("fs");       //TODO: Import supertest - jest does not have to be included
-const baseURL = "https://localhost:3000";    //TODO: copy this line exactly it is the server's URL
-const options = {
-    key: fs.readFileSync('key.pem','utf8'),
-    cert: fs.readFileSync('cert.pem','utf8')
-};
+const request = require("supertest"); //TODO: Import supertest - jest does not have to be included
+const baseURL = "http://localhost:3000";    //TODO: copy this line exactly it is the server's URL
 
 //TODO : The format for writing tests
 describe("Test the root path", () => {  //TODO : The string just says what your test does
@@ -34,7 +29,7 @@ describe("Test the login correct info", () => {
           "UsName":"johndoe@gmail.com",
           "Psswd":"lolcleartext"
         };
-        const response = await request(baseURL).post("/Trove_Login").trustLocalhost(true)
+        const response = await request(baseURL).post("/Trove_Login")
             .send(form);
             expect(response.statusCode).toBe(302);
     });
