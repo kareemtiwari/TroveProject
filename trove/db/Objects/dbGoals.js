@@ -1,8 +1,7 @@
-const {Model, DataTypes} = require('sequelize');
-
+var {Model, DataTypes} = require('sequelize');
 class DbGoals extends Model {
-
-    static createModel(sequelize) {
+    otherInfo;  //additional non-database mirrored attribute
+    static createModel(sequelize){
         DbGoals.init({
             // Model attributes are defined here
             userID: {
@@ -14,11 +13,11 @@ class DbGoals extends Model {
                 allowNull: false
             },
             goalAmount: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: true
             },
             goalProgress: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false
             },
             goalName: {
@@ -27,6 +26,10 @@ class DbGoals extends Model {
             },
             goalSlider: {
                 type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            goalLimit: {
+                type: DataTypes.FLOAT,
                 allowNull: false
             }
 
