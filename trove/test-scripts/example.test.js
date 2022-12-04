@@ -9,6 +9,21 @@ describe("Test the root path", () => {  //TODO : The string just says what your 
     });
 });
 
+let cookie;
+
+describe("Test Login", () => {  //TODO test login to get a session cookie to use in other tests
+    test("Make sure that logging in with unfinished account goes to accSettings", async () => {
+        const form ={
+            "UsName":"johndoe@gmail.com",
+            "Psswd":"test"
+        };
+        const response = await request(baseURL).post("/Trove_Login")
+            .send(form);
+        cookie = response.headers['set-cookie'];
+        expect(response["text"]).toContain("Found. Redirecting to /");
+    });
+});
+
 describe("Test the login path", () => {
     test("It should response the GET method", async () => {
         const response = await request(baseURL).get("/Trove_Login");
@@ -31,7 +46,7 @@ describe("Test the login correct info", () => {
         };
         const response = await request(baseURL).post("/Trove_Login")
             .send(form);
-            expect(response.statusCode).toBe(302);
+            expect(response.statusCode).toBe(200);
     });
 });
 

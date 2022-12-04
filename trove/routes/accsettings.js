@@ -85,12 +85,9 @@ async function doACC(req, res){
 
     let session = req.session;
     let uid = req.session.userID; //need to check if there is one - [also eventually need to check if they are being brute forced??]
-    let fName = req.body["fname"];  //get all variables out of the form
-    let lName = req.body["lname"];
-    let dateb = req.body["dob"];
-   let jPay = req.body["jobPay"];
-  let mode = req.body["jobType"];
-  let jName = req.body["jobName"];
+    let fName = req.body["fname"].replace(/\s/g, "");  //get all variables out of the form
+    let lName = req.body["lname"].replace(/\s/g, "");
+    let dateb = req.body["dob"].replace(/\s/g, "");
     let expSize = req.body["expendSize"];
 
     //expenditures processing
@@ -135,7 +132,7 @@ async function doACC(req, res){
 
     console.log(sdata);
 
-    if(fName == ""||lName == ""||jName == ""){
+    if(fName == ""||lName == ""){
       error = true;
       errorMsg += "You Have to fill out Everything, ";
     }
@@ -155,14 +152,9 @@ async function doACC(req, res){
       errorMsg += "Date is Empty, ";
     }
 
-    if(jPay <= 0){
-      error = true;
-      errorMsg += "you must make over $0, ";
-    }
-
     if(!error){
       //update records
-      await accountModel.update({firstName: fName, lastName: lName, salary:jPay, payMode:mode, dob:dateb, accComplete:true},{where:{id:uid}});
+      await accountModel.update({firstName: fName, lastName: lName, salary:"", payMode:"", dob:dateb, accComplete:true},{where:{id:uid}});
       //update expenditures
       let jd = await qJobs(uid);
       let expendQuery = await expendModel.destroy({
@@ -190,7 +182,7 @@ async function doACC(req, res){
         let curr = expendQuery[i];
         sdata[i] = [curr.name,curr.type,curr.category,curr.value];
       }
-      res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:jPay,salary_sel:isSalarySelected(mode),hourly_sel:isHourlySelected(mode),dob:dateb,expend:sdata,jd:jd,expend:sdata});
+      res.render('AccountSettings', {remessage: errorMsg, fname:fName,lname:lName,salary:"",salary_sel:isSalarySelected(""),hourly_sel:isHourlySelected(""),dob:dateb,expend:sdata,jd:jd,expend:sdata});
 
     }
 }

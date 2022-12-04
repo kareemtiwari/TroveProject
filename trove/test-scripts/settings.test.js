@@ -3,17 +3,34 @@ const baseURL = "http://localhost:3000";
 
 let cookie;
 
+describe("Make sure the page cannot be accessed without logging in", () => {
+    test("It should send an error back", async () => {
+        let fuzz = makeid(5000);
+        const form ={
+            "fname":"jon",
+            "lname":"doe",
+            "dob":"11-04-2000",
+            "jpay":"60",
+            "mode":"salary",
+            "jName":"poo",
+            "expSize":0,
+            "formID":"ACC"
+        };
+        const response = await request(baseURL).post("/accSettings").send(form);
+        expect(response["text"]).toContain("Found. Redirecting to /Trove_Login");
+    });
+});
 
 describe("Test Login", () => {
     test("Make sure that logging in with unfinished account goes to accSettings", async () => {
         const form ={
             "UsName":"johndoe@gmail.com",
-            "Psswd":"lolcleartext"
+            "Psswd":"test"
         };
         const response = await request(baseURL).post("/Trove_Login")
             .send(form);
         cookie = response.headers['set-cookie'];
-        expect(response["text"]).toContain("Found.");
+        expect(response["text"]).toContain("Found. Redirecting to /");
     });
 });
 
@@ -32,7 +49,7 @@ describe("Test Correct updating acc", () => {
         };
         const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)
             .send(form);
-        expect(response["text"]).toContain("Found.");
+        expect(response["text"]).toContain("Found. Redirecting to /Dashboard");
     });
 });
 
@@ -90,6 +107,44 @@ describe("Send an empty Date", () => {
         const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)
             .send(form);
         expect(response["text"]).toContain("Date is Empty");
+    });
+});
+
+describe("Send all empty", () => {
+    test("It should send an error back", async () => {
+        let fuzz = makeid(5000);
+        const form ={
+            "fname":"",
+            "lname":"",
+            "dob":"",
+            "jpay":"",
+            "mode":"",
+            "jName":"",
+            "expSize":0,
+            "formID":"ACC"
+        };
+        const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)
+            .send(form);
+        expect(response["text"]).toContain("You Have to fill out Everything");
+    });
+});
+
+describe("Send all spaces", () => {
+    test("It should send an error back", async () => {
+        let fuzz = makeid(5000);
+        const form ={
+            "fname":" ",
+            "lname":" ",
+            "dob":" ",
+            "jpay":" ",
+            "mode":" ",
+            "jName":" ",
+            "expSize":0,
+            "formID":"ACC"
+        };
+        const response = await request(baseURL).post("/accSettings").set('Cookie',cookie)
+            .send(form);
+        expect(response["text"]).toContain("You Have to fill out Everything");
     });
 });
 
