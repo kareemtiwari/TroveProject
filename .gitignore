@@ -78,3 +78,6 @@ fabric.properties
 trove/node_modules/sqlite3/lib/binding/napi-v6-win32-unknown-x64/node_sqlite3.node
 
 trove/node_modules/*
+
+#do not store db files
+*.db
