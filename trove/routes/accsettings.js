@@ -39,7 +39,11 @@ router.get('/', async function(req, res, next) {
     if(workingDob != null) {
       date = workingDob.split(" ");
     }
-res.render('AccountSettings', {remessage: '', fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],expend:sdata,jd:jd}); //TODO : model doesn't have all  console.log(user.id);
+    let message = "";
+    if(!req.session.accComplete){
+      message = "complete your account to get started";
+    }
+res.render('AccountSettings', {remessage: message, fname:user.firstName,lname:user.lastName,salary:user.salary,salary_sel:isSalarySelected(user.payMode),hourly_sel:isHourlySelected(user.payMode),dob:date[0],expend:sdata,jd:jd}); //TODO : model doesn't have all  console.log(user.id);
 
   }else{
     res.redirect('/Trove_Login'); //If the user wants to access the index ,and they are not logged in- redirect to login

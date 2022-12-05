@@ -30,11 +30,17 @@ const expendModel = require('./db/Objects/expenditures.js').Expenditures;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP
 
+const mode = "production";
 
 const app = express();    //include express
 
-sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
+let sequelize;
 
+if(mode === "test") {
+    sequelize = new Sequelize('sqlite::memory:');   //creates a brand-new database every time it runs
+}else{
+    sequelize = new Sequelize('sqlite:./db/trove.db');
+}
 accountModel.createModel(sequelize);                            //TODO : Create database models here
 DbGoalsModel.createModel(sequelize);                    //create database models
 eventsModel.createModel(sequelize);
@@ -47,35 +53,37 @@ testUser = null;
 async function createTables() {
     await sequelize.sync();   //create the tables of all the objects initialized
     console.log("created DB tables");
-    let testPassword = crypto.createHash('md5').update("test").digest('hex');
-    let testUser = await accountModel.create({
-        firstName: "John", lastName: "Doe",
-        email: "johndoe@gmail.com", password: testPassword, accComplete: false, hourlyIncome: 57.00
+    if(mode === "test") {
+        let testPassword = crypto.createHash('md5').update("test").digest('hex');
+        let testUser = await accountModel.create({
+            firstName: "John", lastName: "Doe",
+            email: "johndoe@gmail.com", password: testPassword, accComplete: false, hourlyIncome: 57.00
 
-    },);//create test user
-    let testEvent1 = await eventsModel.create({
-        eventID: 0, userID: testUser.id, eventName: "Work Shift",
-        eventDay: 1, eventStartTime: 9.0, eventEndTime: 17.0, eventJob: 1
-    });//create first test event
-    let testEvent2 = await eventsModel.create({
-        eventID: 1, userID: testUser.id, eventName: "Side Hustle",
-        eventDay: 6, eventStartTime: 10.5, eventEndTime: 14.5, eventJob: 2
-    });//create second test event
-    let testJob1 = await jobsModel.create({
-        jobID: 1,
-        userID: testUser.id,
-        jobName: "Salary Job",
-        jobType: true,
-        jobPay: 42500.00
-    });//create first test job
-    let testJob2 = await jobsModel.create({
-        jobID: 2,
-        userID: testUser.id,
-        jobName: "Hourly Job",
-        jobType: false,
-        jobPay: 14.25
-    });//create second test job
-    console.log("filled with test data");
+        },);//create test user
+        let testEvent1 = await eventsModel.create({
+            eventID: 0, userID: testUser.id, eventName: "Work Shift",
+            eventDay: 1, eventStartTime: 9.0, eventEndTime: 17.0, eventJob: 1
+        });//create first test event
+        let testEvent2 = await eventsModel.create({
+            eventID: 1, userID: testUser.id, eventName: "Side Hustle",
+            eventDay: 6, eventStartTime: 10.5, eventEndTime: 14.5, eventJob: 2
+        });//create second test event
+        let testJob1 = await jobsModel.create({
+            jobID: 1,
+            userID: testUser.id,
+            jobName: "Salary Job",
+            jobType: true,
+            jobPay: 42500.00
+        });//create first test job
+        let testJob2 = await jobsModel.create({
+            jobID: 2,
+            userID: testUser.id,
+            jobName: "Hourly Job",
+            jobType: false,
+            jobPay: 14.25
+        });//create second test job
+        console.log("filled with test data");
+    }
 
     //const users = await accountModel.findAll();  //This just prints out a list of all users currently in DB
     //console.log(JSON.stringify(users,null,2));

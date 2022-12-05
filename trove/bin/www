@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-let mode = "testing"; //TODO set to "production" for https, "testing" for testing server
+let mode = "production"; //TODO set to "production" for https, "testing" for testing server
 
 const app = require('../app');
 const debug = require('debug')('trove:server');

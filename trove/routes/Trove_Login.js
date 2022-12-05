@@ -50,17 +50,22 @@ router.post('*', async function (req, res, next) {
             },
             raw: true
         });
+        if(name.length>0) {
 
-        getUsers = JSON.parse(JSON.stringify(name, null, 2))[0];
-        let hashedTry = crypto.createHash('md5').update(Passval).digest('hex');
-        if (getUsers["password"] === hashedTry) {
+            getUsers = JSON.parse(JSON.stringify(name, null, 2))[0];
+            let hashedTry = crypto.createHash('md5').update(Passval).digest('hex');
+            if (getUsers["password"] === hashedTry) {
 
-            session.userID = getUsers["id"];
-            session.accComplete = getUsers["accComplete"];
+                session.userID = getUsers["id"];
+                session.accComplete = getUsers["accComplete"];
 
-        } else {
+            } else {
+                error = true;
+                message = "Incorrect Password";
+            }
+        }else{
             error = true;
-            message = "Incorrect Password";
+            message = "Username not found"
         }
     }
 
