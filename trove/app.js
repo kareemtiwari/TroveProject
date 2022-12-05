@@ -94,7 +94,9 @@ createTables();   //run the above function (asynchronously)
 //sessions setup
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
-    secret: "535510nS3cr3tK3y$254ji|{}fi42",
+    secret: "F$#@gj6i35G%@$Gndjv54%G5nb6342",
+    httpOnly: true,
+    secure: true,
     saveUninitialized: true,
     cookie: {maxAge: oneDay},
     resave: false

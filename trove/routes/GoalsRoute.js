@@ -5,6 +5,7 @@ var router = express.Router(); //NEEDED TO USE DATABASE OBJECT
 let goalModel = require('../db/Objects/dbGoals.js').DbGoals;
 let jobsModel = require('../db/Objects/jobs.js').Jobs;
 let eventModel = require('../db/Objects/events.js').Events;//NEEDED TO USE DATABASE OBJECT
+let expendModel = require('../db/Objects/expenditures.js').Expenditures;
 var totalSlider = 100; // holds the total slider value of 100 as a placeholder
 var completionField = ''; // field that holds the completed goals value
 var flag1 = 0; // flags 1-3 are created in order to negate the creation of multiple goals with the same ID
@@ -117,12 +118,34 @@ router.post('/add', async function(req, res, next) {
             totalSlider = totalSlider - gSliderSum;
 
             // Grabbing the event salary, job salary and Expenditures
-            // await eventGrab = eventModel.findAll({where: {id: uid}, raw : true});
+            let eventQuery = await eventModel.findAll({where: {userID: uid}, raw : true});
+            let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw : true});
+            let expendQuery = await expendModel.findAll({where: {userID: uid}, raw : true});
+            let totalExpend = 0;
+            let totalSalary = 0;
+            let totalHourly = 0;
+            for(let i=0;i<jobQuery.length;i++){
+                let job = jobQuery[i];
+                if(job.jobType){ //salary
+                    totalSalary += job.jobPay/12;
+                }else {//hourly
+                    for(let j=0;j<eventQuery.length;j++){
+                        let event = eventQuery[j];
+                        if(event.eventJob == job.jobID){
+                            let hours = event.eventEndTime - event.eventStartTime;
+                            totalHourly += hours;
+                        }
+                    }
+                }
+            }
+            for(let i=0;i<expendQuery.length;i++){
+                totalExpend += expendQuery[i].value;
+            }
             // hourlyWage = (eventGrab.wage)*4
             // salaryWage = (Jobs.jobPay)
 
 
-            let wage = 2000/10.0;
+            let wage = ((totalSalary+totalHourly)-totalExpend)/10.0;
             let priorityMultiplier = gSlider/100;
             let troveLimit = wage * priorityMultiplier;
             gLimit = troveLimit;
@@ -132,7 +155,9 @@ router.post('/add', async function(req, res, next) {
             if ((gID == 1) & (flag1 == 0)){
                 // creating a new goal
                 let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-                let query = await goalModel.findAll({raw:true});
+                let query = await goalModel.findAll({where: {
+                        userID: uid
+                    },raw:true});
                 console.log(query);
                 console.log("***Goal***"+gID+" Created");
                 let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
@@ -144,7 +169,9 @@ router.post('/add', async function(req, res, next) {
             else if ((gID == 2) & (flag2 == 0)){
                 // creating a new goal
                 let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-                let query = await goalModel.findAll({raw:true});
+                let query = await goalModel.findAll({where: {
+                        userID: uid
+                    },raw:true});
                 console.log(query);
                 console.log("***Goal***"+gID+" Created");
                 let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
@@ -156,7 +183,9 @@ router.post('/add', async function(req, res, next) {
             else if ((gID == 3) & (flag3 == 0)){
                 // creating a new goal
                 let newGoal = await goalModel.create({userID: uid, goalID: gID, goalAmount: nGAmount, goalProgress: nGProgress, goalName: gName,goalSlider: gSlider,goalLimit: gLimit});
-                let query = await goalModel.findAll({raw:true});
+                let query = await goalModel.findAll({where: {
+                        userID: uid
+                    },raw:true});
                 console.log(query);
                 console.log("***Goal***"+gID+" Created");
                 let gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
@@ -212,7 +241,9 @@ router.post('/delete', async function(req, res, next) {
         }
         // destroying the selected goal with the .destroy
         removeGoal = await goalModel.destroy({where: {userID: uid, goalID: gID}});
-        let query = await goalModel.findAll({raw: true});
+        let query = await goalModel.findAll({where: {
+                userID: uid
+            },raw: true});
         console.log(query);
         console.log("***Goal***" + gID + " Deleted");
         gd = await queryData(uid); // MUST COME AFTER UPDATE QUERY FOR PAGE TO UPDATE
