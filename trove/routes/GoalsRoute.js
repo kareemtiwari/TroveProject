@@ -127,7 +127,7 @@ router.post('/add', async function(req, res, next) {
             for(let i=0;i<jobQuery.length;i++){
                 let job = jobQuery[i];
                 if(job.jobType){ //salary
-                    totalSalary += job.jobPay/12;
+                    totalSalary += job.jobPay; // got rid of div 12
                 }else {//hourly
                     for(let j=0;j<eventQuery.length;j++){
                         let event = eventQuery[j];
