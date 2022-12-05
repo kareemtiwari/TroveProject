@@ -7,72 +7,24 @@
 <body>
 <%- include('fragments/header'); %>
 <style>
-    body {
-        background-color: #3E6990;
-        color: #ffffff;
+    body {background-color: #3E6990; color: #ffffff;}
+    button {background-color: #AABD8C; color:#000000; border: 1px solid #000000; border-radius: 10px;
+        padding: 10px;}
+    button:hover {cursor: pointer;}
+    .bar {-webkit-appearance: none; width: 25%; height: 15px; color: #2B2A32; background-color: #AABD8C;
+        -webkit-transition: .2s; transition: opacity .2s; margin-top: 10px; border: none;}
+    a {color: #FFFFFF; text-decoration: none;}
+    a:hover {font-weight: bold; cursor: pointer;}
+    table {color:#000000; padding:30px; border-spacing: 10px; margin-left:auto; margin-right:auto; layout:fixed;}
+    td {border:1px solid #33455A; background-color:#33455A; color:#000000; padding:30px; border-radius: 25px; color:white; width:50%;}
+    #cal {padding:0px; background-color: #33455A; color:white;}
+    #day {border-color:#E9E3B4;background-color: #E9E3B4; color:black;}
+    .goalline{background-color: #2B2A32; border-radius: 25px; padding: 10px; margin-bottom: 10px;}
+    #expTable th{ background-color: #2B2A32; border-radius: 5px; color:white; padding: 2px;
     }
-
-    button {
-        background-color: #AABD8C;
-        color: #000000;
-        border: 1px solid #000000;
-        border-radius: 10px;
-        padding: 10px;
+    #expTable{ background-color: #2B2A32; border-radius: 25px; padding: 2px; margin-top:5px;
     }
-
-    button:hover {
-        cursor: pointer;
-    }
-
-    .bar {
-        -webkit-appearance: none;
-        width: 25%;
-        height: 15px;
-        color: #2B2A32;
-        background-color: #AABD8C;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-        margin-top: 10px;
-        border: none;
-    }
-
-    a {
-        color: #FFFFFF;
-        text-decoration: none;
-    }
-
-    a:hover {
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    table {
-        width: 100%;
-        color: #000000;
-        padding: 30px;
-        border-spacing: 10px;
-    }
-
-    td {
-        border: 1px solid black;
-        background-color: #33455A;
-        color: #000000;
-        padding: 30px;
-        border-radius: 25px;
-        color: white;
-        border-color: #33455A;
-    }
-
-    #cal {
-        padding: 0px;
-        background-color: #33455A;
-        color: white;
-    }
-
-    #day {
-        border-color: #E9E3B4;
-        background-color: #E9E3B4;
-        color: black;
+    #expTable tr{ background-color: #2B2A32; border-radius: 5px; color:white; padding: 2px;
     }
 </style>
 <h1>Dashboard</h1>

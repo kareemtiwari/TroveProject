@@ -60,6 +60,30 @@
         border-radius: 8px;
         background-color: #E9E3B4;
     }
+    fieldset{
+        border-radius: 25px;
+    }
+    #job1Block{
+        border-radius: 25px;
+        background-color: #2B2A32;
+        padding:10px;
+        margin-top: 10px;
+    }
+    #job2Block{
+        border-radius: 25px;
+        background-color: #2B2A32;
+        padding:10px;
+        margin-top: 10px;
+    }
+    #job3Block{
+        border-radius: 25px;
+        background-color: #2B2A32;
+        padding:10px;
+        margin-top: 10px;
+    }
+    legend{
+        padding-top:10px;
+    }
 
 </style>
 <body>
@@ -92,8 +116,8 @@
                    value="<%= dob %>"
                    min="1901-01-01" max="2020-12-31">
 
-
-            <h3>Expenditures</h3>
+            <fieldset>
+                <legend>Expenditures</legend>
             <div class="tableView">
                 <p>Click "Add new Expenditure" to add a row</p>
                 <p> Click on a row to edit it</p>
@@ -121,9 +145,11 @@
                 <input type="hidden" value="<%= expend[i][2]; %>" name="expend[<%= i %>][2]" id="SM<%= i %>n2">
                 <input type="hidden" value="<%= expend[i][3]; %>" name="expend[<%= i %>][3]" id="SM<%= i %>n3">
                 <% } %>
-                <button type="button" onclick="addE();">Add New Expenditure</button>
-                <button type="button" id="del" onclick="deleteE();">Delete Selected Expenditure</button>
+                <br>
+                <button type="button" onclick="addE();">Add New</button>
+                <button type="button" id="del" onclick="deleteE();">Delete Selected</button>
             </div>
+            </fieldset>
             <br>
             <br>
             <input type="hidden" value="ACC" name="formID">
