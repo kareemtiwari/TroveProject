@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <h1>Create an Account</h1>
+    <h1 style="text-align: center;">Create an Account</h1>
 </head>
 
 <style>
@@ -13,8 +13,8 @@
   a {color: #ffffff;}
   a:hover {font-weight: bold; cursor: pointer;}
   #signup {text-align: center;}
-  #logo {padding-top: 100px; width: 250px; height: 250px;}
-  #signupForm {padding: 30px; background-color: #33455A; border-radius: 25px; width:min-content; margin:auto;}
+  #logo {display:block; width: 250px; height: 250px; margin: auto;}
+  form {padding: 30px; background-color: #33455A; border-radius: 25px; width:min-content; margin:auto;}
   input {
     border: 2px solid #AABD8C;
     border-radius: 8px;
@@ -23,6 +23,7 @@
 </style>
 
 <body>
+<img src="images/TroveLogo.png" alt="Trove Logo" id="logo"/>
 <form action="/Sign_Up" method="post">
   <label for ="Fname">First Name:</label><br>
   <input type="text" id="Fname" name="Fname" value="<%=FName%>"><br>
@@ -40,7 +41,7 @@
   <input type="password" id="CheckPsswd" name="CheckPsswd" value="<%=CheckPassword%>"><br>
   <p style="color:#F39B6D;"><%= CheckPassErr%></p>
 
-  <input type="submit" value="Submit">
+  <button type="submit">Submit</button>
   <p style="color:#F39B6D;"><%= EmptyErr%></p>
 </form>
 </body>

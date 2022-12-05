@@ -15,31 +15,63 @@ router.get('*', function (req, res, next) {
 router.post('*', async function (req, res, next) {
     let session = req.session;
 
-    let Userval = req.body["UsName"];
-    let Passval = req.body["Psswd"];
+    let error = false;
+    let message = "";
 
-    let name = await accountModel.findAll({
-        where: {
-            email: Userval
-        },
-        raw: true
-    });
+    let Userval = req.body["UsName"].replace(/\s/g, "");
+    let Passval = req.body["Psswd"].replace(/\s/g, "");
 
-    let getUsers = JSON.parse(JSON.stringify(name, null, 2))[0];
-    let hashedTry = crypto.createHash('md5').update(Passval).digest('hex');
-    if (getUsers["password"] === hashedTry) {
+    if(!Userval.length>=1){
+        error = true;
+        message = "you must enter a username";
+    }
 
-        session.userID = getUsers["id"];
-        session.accComplete = getUsers["accComplete"];
-        //res.render('Trove_Login', {nmessage: "Welcome " + getUsers["firstName"]})
+    if(!Passval.length>=1){
+        error = true;
+        message = "you must enter a password";
+    }
+
+    if(Userval.length>=30){
+        error = true;
+        message = "username is incorrect";
+    }else
+
+    if(Passval.length>=30){
+        error = true;
+        message = "Incorrect Password";
+    }
+
+    let getUsers;
+
+    if(!error) {
+        let name = await accountModel.findAll({
+            where: {
+                email: Userval
+            },
+            raw: true
+        });
+
+        getUsers = JSON.parse(JSON.stringify(name, null, 2))[0];
+        let hashedTry = crypto.createHash('md5').update(Passval).digest('hex');
+        if (getUsers["password"] === hashedTry) {
+
+            session.userID = getUsers["id"];
+            session.accComplete = getUsers["accComplete"];
+
+        } else {
+            error = true;
+            message = "Incorrect Password";
+        }
+    }
+
+    if(error) {
+        res.render('Trove_Login', {nmessage: message})
+    }else{
         if (getUsers["accComplete"]) {
             res.redirect('/');
         } else {
             res.redirect('/accSettings');
         }
-
-    } else {
-        res.render('Trove_Login', {nmessage: "Passwords Do NOT Match"})
     }
 });
 
