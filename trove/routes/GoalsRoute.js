@@ -143,7 +143,7 @@ router.post('/add', async function(req, res, next) {
             }
             // hourlyWage = (eventGrab.wage)*4
             // salaryWage = (Jobs.jobPay)
-
+            totalHourly *=4;
 
             let wage = ((totalSalary+totalHourly)-totalExpend)/10.0;
             let priorityMultiplier = gSlider/100;
