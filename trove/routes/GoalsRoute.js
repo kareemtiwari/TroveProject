@@ -127,7 +127,7 @@ router.post('/add', async function(req, res, next) {
             for(let i=0;i<jobQuery.length;i++){
                 let job = jobQuery[i];
                 if(job.jobType){ //salary
-                    totalSalary += job.jobPay; // got rid of div 12
+                    totalSalary += job.jobPay/12;
                 }else {//hourly
                     for(let j=0;j<eventQuery.length;j++){
                         let event = eventQuery[j];
@@ -275,12 +275,39 @@ router.post('/addFunds', async function(req, res, next) {
         let gLimit = req.body["tempLimit"];
         let gSliderSum = 0;
         gProgress = parseFloat(gProgress);
-        priorityMultiplier = gSlider/100;
 
-        wage = 2000/10;
-        gLimit = wage * priorityMultiplier;
-        console.log(gID, gProgress);
-        console.log(gLimit+" is the number you cant pass!");
+        // Grabbing the event salary, job salary and Expenditures
+        let eventQuery = await eventModel.findAll({where: {userID: uid}, raw : true});
+        let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw : true});
+        let expendQuery = await expendModel.findAll({where: {userID: uid}, raw : true});
+        let totalExpend = 0;
+        let totalSalary = 0;
+        let totalHourly = 0;
+        for(let i=0;i<jobQuery.length;i++){
+            let job = jobQuery[i];
+            if(job.jobType){ //salary
+                totalSalary += job.jobPay/12;
+            }else {//hourly
+                for(let j=0;j<eventQuery.length;j++){
+                    let event = eventQuery[j];
+                    if(event.eventJob == job.jobID){
+                        let hours = event.eventEndTime - event.eventStartTime;
+                        totalHourly += hours;
+                    }
+                }
+            }
+        }
+        for(let i=0;i<expendQuery.length;i++){
+            totalExpend += expendQuery[i].value;
+        }
+        
+
+
+        let wage = ((totalSalary+totalHourly)-totalExpend)/10.0;
+        let priorityMultiplier = gSlider/100;
+        let troveLimit = wage * priorityMultiplier;
+        gLimit = troveLimit;
+        console.log('***************************'+gLimit);
 
 
         let query = await goalModel.findAll({
