@@ -121,36 +121,31 @@ router.post('/add', async function(req, res, next) {
             let eventQuery = await eventModel.findAll({where: {userID: uid}, raw : true});
             let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw : true});
             let expendQuery = await expendModel.findAll({where: {userID: uid}, raw : true});
+            let accountQuery = await accountModel.findAll({where: {id: uid}, raw : true});
+
             let totalExpend = 0;
             let totalSalary = 0;
             let totalHourly = 0;
+            let hourlyInc = 0;
             for(let i=0;i<jobQuery.length;i++){
                 let job = jobQuery[i];
                 if(job.jobType){ //salary
                     totalSalary += job.jobPay/12;
                 }else {//hourly
-                    for(let j=0;j<eventQuery.length;j++){
-                        let event = eventQuery[j];
-                        if(event.eventJob == job.jobID){
-                            let hours = event.eventEndTime - event.eventStartTime;
-                            totalHourly += hours;
-                        }
-                    }
+                    hourlyInc = accountQuery[0].hourlyIncome;
+
                 }
             }
             for(let i=0;i<expendQuery.length;i++){
                 totalExpend += expendQuery[i].value;
+                console.log(totalExpend);
             }
-            // hourlyWage = (eventGrab.wage)*4
-            // salaryWage = (Jobs.jobPay)
 
-
-            let wage = ((totalSalary+totalHourly)-totalExpend)/10.0;
+            let wage = ((totalSalary+(hourlyInc*4))-totalExpend)/10.0;
+            console.log("wage is "+wage);
             let priorityMultiplier = gSlider/100;
             let troveLimit = wage * priorityMultiplier;
             gLimit = troveLimit;
-            console.log('***************************'+gLimit);
-
             // if the ID is set to 1 and the flag1 is open then add goal
             if ((gID == 1) & (flag1 == 0)){
                 // creating a new goal
@@ -280,30 +275,29 @@ router.post('/addFunds', async function(req, res, next) {
         let eventQuery = await eventModel.findAll({where: {userID: uid}, raw : true});
         let jobQuery = await jobsModel.findAll({where: {userID: uid}, raw : true});
         let expendQuery = await expendModel.findAll({where: {userID: uid}, raw : true});
+        let accountQuery = await accountModel.findAll({where: {id: uid}, raw : true});
         let totalExpend = 0;
         let totalSalary = 0;
         let totalHourly = 0;
+        let hourlyInc = 0;
         for(let i=0;i<jobQuery.length;i++){
             let job = jobQuery[i];
             if(job.jobType){ //salary
                 totalSalary += job.jobPay/12;
             }else {//hourly
-                for(let j=0;j<eventQuery.length;j++){
-                    let event = eventQuery[j];
-                    if(event.eventJob == job.jobID){
-                        let hours = event.eventEndTime - event.eventStartTime;
-                        totalHourly += hours;
-                    }
-                }
+                hourlyInc = accountQuery[0].hourlyIncome;
             }
         }
         for(let i=0;i<expendQuery.length;i++){
             totalExpend += expendQuery[i].value;
+            console.log("total expend "+totalExpend);
         }
-        
 
+        console.log("hourly income "+ hourlyInc);
 
-        let wage = ((totalSalary+totalHourly)-totalExpend)/10.0;
+        let wage = ((totalSalary+(hourlyInc * 4)-totalExpend)/10.0);
+        console.log("wage is "+wage);
+
         let priorityMultiplier = gSlider/100;
         let troveLimit = wage * priorityMultiplier;
         gLimit = troveLimit;

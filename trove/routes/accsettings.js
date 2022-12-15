@@ -222,7 +222,14 @@ async function doADD(req, res){
 
 
 if(!error){
-  newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: jType, jobPay: nJPay});
+  let type;
+  if(jType === "Salary"){
+    type = true;
+  }
+  else{
+    type = false;
+  }
+  newJob = await jobModel.create({userID: uid, jobID: jID, jobName: jName, jobType: type, jobPay: nJPay});
   let jobQuery = await jobModel.findAll({raw:true});
   console.log(jobQuery);
   console.log("***Job***"+jID+" Created");
